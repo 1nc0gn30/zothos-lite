@@ -89,7 +89,112 @@ const CORE_SECURITY_DEV_TOOLS = [
     status: 'CORE_LOCKED',
     immutable: true,
     description: 'git, gnupg2 (Ed25519), age, sops, neovim, tmux, btop (braille), ripgrep, rustc/cargo, python3, node & local AI audit CLI.',
-    cliExample: 'zoth-dev-core verify- toolchain && nvim -u /etc/zothos-lite/monotone.lua'
+    cliExample: 'zoth-dev-core verify-toolchain && nvim -u /etc/zothos-lite/monotone.lua'
+  },
+  {
+    id: 'capsule-jail-seccomp-enclave',
+    binary: 'zoth-capsule-jail',
+    name: 'Capsule Jail Seccomp-BPF Enclave',
+    category: 'Core Security (Mandatory)',
+    sizeMb: 19,
+    status: 'CORE_LOCKED',
+    immutable: true,
+    description: 'Zero-syscall-escape Seccomp-BPF & user-namespace ephemeral sandbox for untrusted binaries and scripts.',
+    cliExample: 'zoth-capsule-jail --seccomp=strict --net=none ./untrusted-binary'
+  },
+  {
+    id: 'braille-dither-art-studio',
+    binary: 'zoth-braille-art',
+    name: 'Braille & Bayer ASCII Art Engine',
+    category: 'Core Monotone Studio (Mandatory)',
+    sizeMb: 8,
+    status: 'CORE_LOCKED',
+    immutable: true,
+    description: 'Unicode U+2800 2x4 sub-pixel Braille rasterizer, Ordered Bayer 4x4/8x8 dither synth & cryptographic RandomArt generator.',
+    cliExample: 'zoth-braille-art --mode=bayer4x4 --banner "ZOTHOS-LITE"'
+  }
+];
+
+const ZOTHOS_DAEMONS = [
+  {
+    id: 'egress-sentinel-daemon',
+    unit: 'zoth-egress-sentinel.service',
+    name: 'Egress Sentinel & Tor Firewall',
+    port: 8135,
+    ramMb: 18,
+    preinstalled: true,
+    defaultRunning: true,
+    description: 'eBPF + nftables zero-egress packet inspector & strict Tor 9050/9040 transparent proxy enforcer.'
+  },
+  {
+    id: 'prompt-firewall-daemon',
+    unit: 'zoth-prompt-firewall.service',
+    name: 'Prompt Firewall & MCP Guard',
+    port: 8136,
+    ramMb: 22,
+    preinstalled: true,
+    defaultRunning: true,
+    description: 'Real-time adversarial prompt-injection interceptor & Model Context Protocol (MCP) JSON-RPC sanitizer.'
+  },
+  {
+    id: 'capsule-jail-daemon',
+    unit: 'zoth-capsule-jail.service',
+    name: 'Capsule Jail Sandbox Daemon',
+    port: 8137,
+    ramMb: 16,
+    preinstalled: true,
+    defaultRunning: true,
+    description: 'Ephemeral tmpfs & Seccomp-BPF container isolation daemon for executing untrusted code in RAM.'
+  },
+  {
+    id: 'vaelor-node-daemon',
+    unit: 'vaelor-zoth-node.service',
+    name: 'Vaelor L1 Account-Lattice Node',
+    port: 8140,
+    ramMb: 34,
+    preinstalled: true,
+    defaultRunning: true,
+    description: 'Feeless DAG consensus validator, Ed25519 cold-sign relay & Proof-of-Useful-Work (PoUW) verifier.'
+  },
+  {
+    id: 'sentinel-watchdog-daemon',
+    unit: 'zoth-sentinel-ai.service',
+    name: 'Sentinel AI & USB Panic Watchdog',
+    port: 8092,
+    ramMb: 24,
+    preinstalled: true,
+    defaultRunning: true,
+    description: 'Monitors USB bus removal, kernel ASLR integrity, and triggers instant sdmem RAM wipe on tamper.'
+  },
+  {
+    id: 'flight-recorder-daemon',
+    unit: 'zoth-flight-recorder.service',
+    name: 'Flight Recorder Blackbox Daemon',
+    port: 8138,
+    ramMb: 19,
+    preinstalled: false,
+    defaultRunning: true,
+    description: 'Deterministic Merkle-chained syscall & agent trajectory audit log stored in volatile RAM.'
+  },
+  {
+    id: 'swarm-conductor-daemon',
+    unit: 'zoth-agent-conductor.service',
+    name: '21-Agent Swarm Conductor Daemon',
+    port: 8790,
+    ramMb: 38,
+    preinstalled: false,
+    defaultRunning: false,
+    description: 'Local multi-agent task router and thermal-aware GPU inference multiplexer.'
+  },
+  {
+    id: 'pantheon-stargate-daemon',
+    unit: 'zoth-civilization.service',
+    name: 'Pantheon 3D Stargate Bridge',
+    port: 9393,
+    ramMb: 46,
+    preinstalled: false,
+    defaultRunning: false,
+    description: 'P2P World Portal & 23-agent sovereign society simulation bridge.'
   }
 ];
 
@@ -272,6 +377,15 @@ function buildSnapshot() {
   const totalMemGb = (os.totalmem() / (1024 ** 3)).toFixed(1);
   const freeMemGb = (os.freemem() / (1024 ** 3)).toFixed(1);
 
+  const daemonOverrides = state.daemonStates || {};
+  const daemons = ZOTHOS_DAEMONS.map((d) => {
+    const running = d.id in daemonOverrides ? Boolean(daemonOverrides[d.id]) : d.defaultRunning;
+    return {
+      ...d,
+      running
+    };
+  });
+
   return {
     ok: true,
     osName: 'ZothOS-Lite v1.0 (Amnesic Monotone Edition)',
@@ -296,6 +410,7 @@ function buildSnapshot() {
       kernelFlags: 'toram noswap slab_nomerge init_on_alloc=1 init_on_free=1 page_alloc.shuffle=1 pti=on'
     },
     amnesiaConfig: state.amnesiaConfig,
+    daemons,
     coreTools: CORE_SECURITY_DEV_TOOLS.map((t) => ({
       ...t,
       sha256: crypto.createHash('sha256').update(`zothos-core:${t.id}`).digest('hex')
@@ -382,6 +497,26 @@ const server = http.createServer(async (req, res) => {
       ok: true,
       action: 'PURGED',
       toolId,
+      snapshot: buildSnapshot()
+    });
+  }
+
+  if (pathname === '/api/daemons/toggle' && req.method === 'POST') {
+    const body = await readJsonBody(req);
+    const daemonId = String(body.daemonId || '').trim();
+    const found = ZOTHOS_DAEMONS.find((d) => d.id === daemonId);
+    if (!found) {
+      return sendJson(res, 404, { ok: false, error: `Unknown daemon: ${daemonId}` });
+    }
+    const state = loadState();
+    state.daemonStates = state.daemonStates || {};
+    const cur = daemonId in state.daemonStates ? Boolean(state.daemonStates[daemonId]) : found.defaultRunning;
+    state.daemonStates[daemonId] = !cur;
+    saveState(state);
+    return sendJson(res, 200, {
+      ok: true,
+      daemonId,
+      running: state.daemonStates[daemonId],
       snapshot: buildSnapshot()
     });
   }
