@@ -475,6 +475,163 @@ const server = http.createServer(async (req, res) => {
     });
   }
 
+  // ---------------------------------------------------------------------------
+  // Air-Gapped Vaelor L1 Ed25519 Cold Signer + Optional Local L1 Broadcast
+  // ---------------------------------------------------------------------------
+  if (pathname === '/api/crypto/cold-sign' && req.method === 'POST') {
+    const body = await readJsonBody(req);
+    const from = String(body.from || '@neal').trim();
+    const to = String(body.to || '@zoth').trim();
+    const amountVlr = Math.max(0.01, Number(body.amountVlr) || 10);
+    const memo = String(body.memo || 'Air-gapped ZothOS-Lite cold-signed transfer').trim();
+    const broadcastToL1 = Boolean(body.broadcastToL1);
+
+    const txPayload = {
+      protocol: 'VAELOR-L1-COLD-SIGN-v1',
+      from,
+      to,
+      amountVlr,
+      memo,
+      timestamp: new Date().toISOString(),
+      amnesicMac: loadState().amnesiaConfig?.spoofedMac || '02:42:ac:11:00:7f'
+    };
+
+    // Compute deterministic SHA-256 micro-work proof (8-bit zero prefix)
+    let workNonce = 0;
+    let workHash = '';
+    const baseStr = JSON.stringify(txPayload);
+    while (workNonce < 50000) {
+      workHash = crypto.createHash('sha256').update(`${baseStr}:${workNonce}`).digest('hex');
+      if (workHash.startsWith('00')) break;
+      workNonce++;
+    }
+
+    const blockHash = crypto.createHash('sha256').update(`${baseStr}:${workNonce}:${workHash}`).digest('hex');
+    const ed25519Sig = crypto.sign(null, Buffer.from(blockHash, 'utf8'), privateKey).toString('hex');
+
+    // Generate a Unicode U+2800 2x4 Braille RandomArt seal from the signature bytes
+    const sigBuf = Buffer.from(ed25519Sig, 'hex');
+    const brailleSealRows = [];
+    for (let r = 0; r < 4; r++) {
+      let line = '│ ';
+      for (let c = 0; c < 16; c++) {
+        const byteVal = sigBuf[(r * 16 + c) % sigBuf.length];
+        line += String.fromCharCode(0x2800 + byteVal);
+      }
+      line += ' │';
+      brailleSealRows.push(line);
+    }
+    const brailleRandomArt = [
+      '┌──[ED25519 SEAL]──┐',
+      ...brailleSealRows,
+      '└──[RFC-8032 BFT]──┘'
+    ].join('\n');
+
+    let l1RelayResult = null;
+    if (broadcastToL1) {
+      try {
+        const resp = await fetch('http://127.0.0.1:8140/api/tx/send', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ from, to, amountVlr, memo }),
+          signal: AbortSignal.timeout(3500)
+        });
+        if (resp.ok) {
+          l1RelayResult = await resp.json();
+        }
+      } catch (_e) {}
+    }
+
+    return sendJson(res, 200, {
+      ok: true,
+      txPayload,
+      workNonce,
+      workHash,
+      blockHash,
+      ed25519PubKey: PUBKEY_HEX,
+      ed25519Signature: ed25519Sig,
+      brailleRandomArt,
+      broadcasted: Boolean(l1RelayResult && l1RelayResult.ok),
+      l1BlockHeight: l1RelayResult?.result?.sendBlock?.height || null
+    });
+  }
+
+  // ---------------------------------------------------------------------------
+  // GhostByte Metadata Stripper (mat2 style) + BLAKE2b / SHA-256 Braille Digest
+  // ---------------------------------------------------------------------------
+  if (pathname === '/api/ghostbyte/strip' && req.method === 'POST') {
+    const body = await readJsonBody(req);
+    const rawText = String(body.input || body.content || '').trim();
+    const beforeHash = crypto.createHash('sha256').update(rawText).digest('hex');
+
+    const strippedFields = [];
+    let sanitized = rawText;
+
+    // Strip sensitive metadata keys in JSON/YAML/SVG/HTML/Headers
+    const metaPatterns = [
+      { label: 'EXIF/GPS Coordinates', rx: /(?:^|\s|")?(?:gps|gpslatitude|gpslongitude|latitude|longitude|location|exif|camera|device_id|imei)"?\s*:\s*[^,\n}]+,?/gi },
+      { label: 'Author/Creator Identity', rx: /(?:^|\s|")?(?:author|creator|creatortool|owner|username|email|ip_address|client_ip|mac_address)"?\s*:\s*[^,\n}]+,?/gi },
+      { label: 'XML/SVG Metadata Block', rx: /<(?:metadata|rdf:RDF|exif:[a-zA-Z0-9]+)[\s\S]*?<\/(?:metadata|rdf:RDF|exif:[a-zA-Z0-9]+)>/gi },
+      { label: 'Tracking & Telemetry Headers', rx: /(?:X-Forwarded-For|User-Agent|CF-Connecting-IP|X-Real-IP)\s*:\s*[^\n]+/gi }
+    ];
+
+    metaPatterns.forEach((mp) => {
+      const matches = sanitized.match(mp.rx);
+      if (matches && matches.length) {
+        strippedFields.push(`${mp.label} (${matches.length}x removed)`);
+        sanitized = sanitized.replace(mp.rx, '/* [GHOSTBYTE-STRIPPED] */');
+      }
+    });
+
+    const afterHash = crypto.createHash('sha256').update(sanitized).digest('hex');
+    const blake2bHash = crypto.createHash('blake2b512').update(sanitized).digest('hex').slice(0, 64);
+
+    return sendJson(res, 200, {
+      ok: true,
+      strippedCount: strippedFields.length,
+      strippedFields,
+      beforeBytes: Buffer.byteLength(rawText, 'utf8'),
+      afterBytes: Buffer.byteLength(sanitized, 'utf8'),
+      beforeSha256: beforeHash,
+      afterSha256: afterHash,
+      blake2b256: blake2bHash,
+      sanitizedOutput: sanitized
+    });
+  }
+
+  // ---------------------------------------------------------------------------
+  // Live Sovereign Fleet Bridge (:8140 Vaelor L1 + :9393 Zoth Civilization)
+  // ---------------------------------------------------------------------------
+  if (pathname === '/api/bridge/telemetry' && req.method === 'GET') {
+    let vaelor = { online: false, totalBlocks: 0, stateMerkleRoot: '0x00' };
+    let civ = { online: false, imperator: 'MERCURY', agentsCount: 23 };
+    try {
+      const vr = await fetch('http://127.0.0.1:8140/api/state', { signal: AbortSignal.timeout(1500) });
+      if (vr.ok) {
+        const vd = await vr.json();
+        const snap = vd.snapshot || vd;
+        vaelor = {
+          online: true,
+          totalBlocks: snap.totalBlocks || 0,
+          totalSupplyVlr: snap.totalSupplyVlr || 0,
+          stateMerkleRoot: snap.stateMerkleRoot || '0x00'
+        };
+      }
+    } catch (_e) {}
+    try {
+      const cr = await fetch('http://127.0.0.1:9393/', { signal: AbortSignal.timeout(1500) });
+      if (cr.ok) {
+        civ = {
+          online: true,
+          imperator: 'MERCURY',
+          agentsCount: 23
+        };
+      }
+    } catch (_e) {}
+
+    return sendJson(res, 200, { ok: true, vaelor, civ });
+  }
+
   // Serve static files from public/
   let filePath = path.join(PUBLIC_DIR, pathname === '/' ? 'index.html' : pathname);
   if (!filePath.startsWith(PUBLIC_DIR)) {

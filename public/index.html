@@ -784,6 +784,112 @@ API_SECRET="zoth_ephemeral_test_token_99481a"</textarea>
 
     </section>
 
+    <!-- Row 3: Air-Gapped Vaelor L1 Cold Signer + GhostByte Metadata Stripper + Sovereign Bridge -->
+    <section class="hero-boot-grid" style="margin-top:16px;">
+
+      <!-- Left: [04] Vaelor L1 Air-Gapped Ed25519 Cold Signer & Braille RandomArt Seal -->
+      <div class="ascii-window">
+        <div class="ascii-window-titlebar">
+          <span>┌── [04] VAELOR L1 AIR-GAPPED ED25519 COLD SIGNER (zoth-node-lite)</span>
+          <span>[RFC-8032 // SHA-256]</span>
+        </div>
+        <div class="ascii-window-body">
+          <div style="font-size:0.71rem;color:#cccccc;margin-bottom:10px;">
+            Construct and sign deterministic <strong>Vaelor L1 Account-Lattice blocks</strong> inside ZothOS-Lite's volatile RAM enclave using <strong>RFC-8032 Ed25519</strong> and 8-bit <strong>SHA-256 micro-work</strong>. Optionally relay the signed block directly to your local Zoth Node (<code>:8140</code>):
+          </div>
+
+          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:8px;">
+            <div>
+              <label for="coldFromInput" style="display:block;font-size:0.66rem;color:#888888;margin-bottom:3px;">FROM @HANDLE</label>
+              <input id="coldFromInput" class="bw-input" type="text" value="@neal" />
+            </div>
+            <div>
+              <label for="coldToInput" style="display:block;font-size:0.66rem;color:#888888;margin-bottom:3px;">TO @HANDLE</label>
+              <input id="coldToInput" class="bw-input" type="text" value="@zoth" />
+            </div>
+            <div>
+              <label for="coldAmountInput" style="display:block;font-size:0.66rem;color:#888888;margin-bottom:3px;">AMOUNT (◈ VLR)</label>
+              <input id="coldAmountInput" class="bw-input" type="number" step="0.5" value="25.0" />
+            </div>
+          </div>
+
+          <div style="margin-bottom:8px;">
+            <label for="coldMemoInput" style="display:block;font-size:0.66rem;color:#888888;margin-bottom:3px;">TRANSACTION MEMO // ENCLAVE ATTESTATION</label>
+            <input id="coldMemoInput" class="bw-input" type="text" value="ZothOS-Lite Air-Gapped Cold Signature Settlement" />
+          </div>
+
+          <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px;">
+            <button type="button" class="bw-btn bw-btn-solid" id="btnColdSignOffline" style="flex:1;">
+              █ Sign Offline Ed25519 Block
+            </button>
+            <button type="button" class="bw-btn" id="btnColdSignAndBroadcast" style="flex:1;">
+              ▓ Sign & Broadcast to Vaelor L1 (:8140)
+            </button>
+          </div>
+
+          <div style="display:grid;grid-template-columns:auto 1fr;gap:10px;align-items:stretch;">
+            <pre id="coldBrailleSealBox" class="braille-box" style="margin:0;font-size:0.70rem;display:flex;align-items:center;justify-content:center;min-width:165px;">┌──[ED25519 SEAL]──┐
+│ ⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿ │
+│ ⣿░░▒▒▓▓████▓▓▒▒░░⣿ │
+│ ⣿⣀⣠⣤⣴⣶⣾⣿⣷⣶⣦⣤⣄⣀⣿ │
+│ ⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿ │
+└──[RFC-8032 BFT]──┘</pre>
+            <pre id="coldSignOutputBox" style="margin:0;padding:8px 10px;background:#030303;border:1px solid rgba(255,255,255,0.3);font-size:0.68rem;line-height:1.38;color:#e8e8e8;white-space:pre-wrap;word-break:break-all;max-height:135px;overflow-y:auto;">root@zothos-lite:~# zoth-node-lite --status
+[COLD WALLET] Ready in volatile tmpfs RAM.
+Click "Sign Offline Ed25519 Block" to compute SHA-256 micro-work and RFC-8032 signature.</pre>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right: [05] GhostByte Metadata Stripper (mat2) + Live Fleet Bridge -->
+      <div class="ascii-window">
+        <div class="ascii-window-titlebar">
+          <span>┌── [05] GHOSTBYTE METADATA STRIPPER (mat2) & FLEET BRIDGE</span>
+          <span>[SHA-256 // BLAKE2b]</span>
+        </div>
+        <div class="ascii-window-body">
+          <div style="font-size:0.71rem;color:#cccccc;margin-bottom:6px;">
+            Strip identifying EXIF, GPS, Creator, IP, and tracking headers from JSON, SVG, or HTTP payloads before publishing, and verify cryptographic digests:
+          </div>
+
+          <label for="ghostStripInput" style="display:block;font-size:0.66rem;color:#888888;margin-bottom:3px;">PAYLOAD WITH IDENTIFYING METADATA TO SCRUB:</label>
+          <textarea id="ghostStripInput" class="bw-textarea" rows="3" aria-label="GhostByte Metadata Stripper Input">{
+  "document": "sovereign-audit-report.json",
+  "author": "Neal Frazier",
+  "client_ip": "192.168.1.247",
+  "gps": "36.8508,-76.2859",
+  "device_id": "IMEI-99481029481",
+  "payload": "Zero-leak cryptographic attestation verified."
+}</textarea>
+
+          <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px;margin-bottom:8px;">
+            <button type="button" class="bw-btn bw-btn-solid" id="btnRunGhostStrip" style="min-height:38px;padding:6px 12px;">
+              █ Strip Metadata (mat2) + Hash BLAKE2b
+            </button>
+            <a href="http://localhost:8140" target="_blank" rel="noopener noreferrer" class="bw-btn" style="min-height:38px;padding:6px 10px;">
+              ◈ Vaelor L1 (:8140) ↗
+            </a>
+            <a href="http://localhost:9393" target="_blank" rel="noopener noreferrer" class="bw-btn" style="min-height:38px;padding:6px 10px;">
+              🏛️ 3D World (:9393) ↗
+            </a>
+            <a href="http://localhost:3000" target="_blank" rel="noopener noreferrer" class="bw-btn" style="min-height:38px;padding:6px 10px;">
+              ▣ Zoth Studio (:3000) ↗
+            </a>
+          </div>
+
+          <pre id="ghostStripOutputBox" style="margin:0;padding:8px 10px;background:#030303;border:1px solid rgba(255,255,255,0.3);font-size:0.68rem;line-height:1.38;color:#e8e8e8;white-space:pre-wrap;word-break:break-all;max-height:125px;overflow-y:auto;">root@zothos-lite:~# zoth-ghostbyte --strip-meta
+[READY] Paste JSON, SVG, or headers above and click "Strip Metadata (mat2)".</pre>
+
+          <div id="liveFleetBridgeBar" style="margin-top:8px;padding:6px 10px;background:#000000;border:1px solid rgba(255,255,255,0.35);display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;font-size:0.67rem;color:#bdbdbd;">
+            <span id="bridgeVaelorStat">⛓️ VAELOR L1 (:8140): SYNCING...</span>
+            <span id="bridgeCivStat">🏛️ PANTHEON (:9393): 23 AGENTS</span>
+            <span>▓▒░ 100% LOCAL LOOPBACK</span>
+          </div>
+        </div>
+      </div>
+
+    </section>
+
     <!-- Footer -->
     <footer style="margin-top:20px;padding:14px 16px;border-top:1px solid rgba(255,255,255,0.3);display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;font-size:0.72rem;color:#888888;">
       <div>
@@ -1394,11 +1500,96 @@ API_SECRET="zoth_ephemeral_test_token_99481a"</textarea>
         brailleEl.textContent = lines.join('\n');
       }
 
+      // -----------------------------------------------------------------------
+      // 4. Vaelor L1 Cold Signer, GhostByte Metadata Stripper & Fleet Bridge
+      // -----------------------------------------------------------------------
+      async function runColdSigner(broadcastToL1) {
+        const from = document.getElementById('coldFromInput')?.value || '@neal';
+        const to = document.getElementById('coldToInput')?.value || '@zoth';
+        const amountVlr = parseFloat(document.getElementById('coldAmountInput')?.value || '25');
+        const memo = document.getElementById('coldMemoInput')?.value || '';
+        const outBox = document.getElementById('coldSignOutputBox');
+        const sealBox = document.getElementById('coldBrailleSealBox');
+
+        try {
+          const res = await fetch('/api/crypto/cold-sign', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ from, to, amountVlr, memo, broadcastToL1 })
+          });
+          const data = await res.json();
+          if (data && data.ok) {
+            if (sealBox && data.brailleRandomArt) {
+              sealBox.textContent = data.brailleRandomArt;
+            }
+            if (outBox) {
+              outBox.textContent =
+                `root@zothos-lite:~# zoth-node-lite sign ${broadcastToL1 ? '--broadcast-l1' : '--offline'} ${from} -> ${to} (${amountVlr} VLR)\n` +
+                `[WORK PROOF]  nonce=${data.workNonce} • sha256=${data.workHash.slice(0, 32)}…\n` +
+                `[BLOCK HASH]  ${data.blockHash}\n` +
+                `[ED25519 SIG] ${data.ed25519Signature.slice(0, 64)}…\n` +
+                (data.broadcasted
+                  ? `[L1 RELAY]    ░░▒▒▓▓██ BROADCASTED TO VAELOR L1 (:8140) — BLOCK #${data.l1BlockHeight} FINALIZED ██▓▓▒▒░░`
+                  : `[AIR-GAPPED]  Signed block ready in volatile RAM (0 network packets emitted).`);
+            }
+            pollBridgeTelemetry();
+          }
+        } catch (_e) {}
+      }
+
+      document.getElementById('btnColdSignOffline')?.addEventListener('click', () => runColdSigner(false));
+      document.getElementById('btnColdSignAndBroadcast')?.addEventListener('click', () => runColdSigner(true));
+
+      document.getElementById('btnRunGhostStrip')?.addEventListener('click', async () => {
+        const inp = document.getElementById('ghostStripInput')?.value || '';
+        const outBox = document.getElementById('ghostStripOutputBox');
+        try {
+          const res = await fetch('/api/ghostbyte/strip', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ input: inp })
+          });
+          const data = await res.json();
+          if (data && data.ok && outBox) {
+            const strippedList = (data.strippedFields || []).join(' | ') || 'No tracking fields found';
+            outBox.textContent =
+              `root@zothos-lite:~# zoth-ghostbyte --strip-meta --hash=blake2b\n` +
+              `[SCRUBBED]    ${strippedList} (${data.beforeBytes}B -> ${data.afterBytes}B)\n` +
+              `[SHA-256]     ${data.afterSha256}\n` +
+              `[BLAKE2b-256] ${data.blake2b256}\n` +
+              `[CLEAN PAYLOAD]\n${data.sanitizedOutput}`;
+          }
+        } catch (_e) {}
+      });
+
+      async function pollBridgeTelemetry() {
+        try {
+          const res = await fetch('/api/bridge/telemetry');
+          const d = await res.json();
+          if (d && d.ok) {
+            const vEl = document.getElementById('bridgeVaelorStat');
+            const cEl = document.getElementById('bridgeCivStat');
+            if (vEl && d.vaelor) {
+              vEl.textContent = d.vaelor.online
+                ? `⛓️ VAELOR L1 (:8140): ${d.vaelor.totalBlocks} BLKS • MERKLE ${(d.vaelor.stateMerkleRoot || '').slice(0, 10)}…`
+                : '⛓️ VAELOR L1 (:8140): STANDBY';
+            }
+            if (cEl && d.civ) {
+              cEl.textContent = d.civ.online
+                ? `🏛️ PANTHEON (:9393): ${d.civ.agentsCount} AGENTS • IMPERATOR ${d.civ.imperator}`
+                : '🏛️ PANTHEON (:9393): STANDBY';
+            }
+          }
+        } catch (_e) {}
+      }
+
       fetchSnapshot();
+      pollBridgeTelemetry();
       renderDitherCanvas();
       renderBrailleScope();
       setInterval(renderDitherCanvas, 48);
       setInterval(renderBrailleScope, 115);
+      setInterval(pollBridgeTelemetry, 6000);
     })();
   </script>
 </body>
