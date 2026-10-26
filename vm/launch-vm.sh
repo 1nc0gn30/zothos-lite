@@ -1,14 +1,15 @@
 #!/usr/bin/env bash
 # ==============================================================================
-# ZOTHOS-LITE v1.0 // QEMU/KVM AMNESIC RAM-ONLY VM LAUNCHER
+# ZOTHOS-LITE v1.0 // QEMU/KVM AMNESIC RAM-ONLY GUI VM LAUNCHER
 # Boots zothos-lite-1.0-amd64.iso / vmlinuz + initrd-zothos-lite.img in KVM
-# with 2048 MB volatile RAM, 0 hard disks, spoofed MAC 02:42:ac:11:00:7f,
-# Desktop GTK Window (:0), VNC (:5905), QMP socket, and Serial socket.
+# with 3072 MB volatile RAM, 4 vCPUs, 0 hard disks, Amnesic RAM OverlayFS,
+# Xorg :0 (1280x800) + ZothOS-Lite 1-Bit Black & White Graphical Desktop!
 # ==============================================================================
 set -euo pipefail
 
 VM_DIR="/home/zoth/NullAITech/zothos-lite/vm"
-KERNEL="/boot/vmlinuz"
+KERNEL="/boot/vmlinuz-6.12.107+deb13-amd64"
+[ ! -f "$KERNEL" ] && KERNEL="/boot/vmlinuz"
 INITRD="$VM_DIR/initrd-zothos-lite.img"
 ISO="$VM_DIR/zothos-lite-1.0-amd64.iso"
 PIDFILE="/tmp/zothos-lite-vm.pid"
@@ -35,20 +36,25 @@ if [ -n "$XAUTH_FILE" ]; then
   export XAUTHORITY="$XAUTH_FILE"
 fi
 
-echo "[::] Launching ZothOS-Lite v1.0 QEMU/KVM Virtual Machine..."
+echo "[::] Launching ZothOS-Lite v1.0 QEMU/KVM Graphical Virtual Machine (Xorg 1280x800 GUI)..."
 qemu-system-x86_64 \
-  -name "ZothOS-Lite v1.0 // Amnesic 1-Bit Monotone VM (toram noswap)" \
+  -name "ZothOS-Lite v1.0 // Amnesic 1-Bit Monotone OS (GUI + RAM Overlay)" \
   -enable-kvm \
   -cpu host \
-  -smp 2 \
-  -m 2048 \
+  -smp 4 \
+  -m 3072 \
   -kernel "$KERNEL" \
   -initrd "$INITRD" \
   -cdrom "$ISO" \
   -append "toram noswap slab_nomerge init_on_alloc=1 init_on_free=1 console=tty0 console=ttyS0,115200n8 quiet" \
+  -virtfs local,path=/,mount_tag=hostfs,security_model=none,readonly=on \
   -nic user,model=virtio-net-pci,mac=02:42:ac:11:00:7f \
   -vga std \
-  -display gtk \
+  -global VGA.vgamem_mb=64 \
+  -usb \
+  -device usb-ehci,id=ehci \
+  -device usb-tablet,bus=ehci.0 \
+  -display gtk,zoom-to-fit=on \
   -vnc 127.0.0.1:5 \
   -chardev socket,id=charserial0,path="$SERIAL_SOCK",server=on,wait=off,logfile="$SERIAL_LOG",logappend=on \
   -serial chardev:charserial0 \
@@ -58,9 +64,8 @@ qemu-system-x86_64 \
 
 sleep 2
 VM_PID=$(cat "$PIDFILE")
-echo "[OK] ZothOS-Lite v1.0 VM online (PID: $VM_PID)"
-echo "     • Desktop Display : GTK Window on DISPLAY=$DISPLAY"
+echo "[OK] ZothOS-Lite v1.0 Graphical VM online (PID: $VM_PID)"
+echo "     • Desktop Display : GTK Window on DISPLAY=$DISPLAY (1280x800 X11 GUI)"
 echo "     • VNC Endpoint    : 127.0.0.1:5905"
 echo "     • Serial Socket   : $SERIAL_SOCK"
 echo "     • QMP Socket      : $QMP_SOCK"
-echo "     • Console Log     : $SERIAL_LOG"

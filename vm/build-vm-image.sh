@@ -1,20 +1,23 @@
 #!/usr/bin/env bash
 # ==============================================================================
-# ZOTHOS-LITE v1.0 // AMNESIC 1-BIT MONOTONE VM & BOOTABLE ISO BUILDER
+# ZOTHOS-LITE v1.0 // AMNESIC 1-BIT MONOTONE VM & BOOTABLE ISO BUILDER (GUI + CLI)
 # Builds:
 #   1. /home/zoth/NullAITech/zothos-lite/vm/initrd-zothos-lite.img
 #   2. /home/zoth/NullAITech/zothos-lite/vm/zothos-lite-1.0-amd64.iso
+# Boots Linux 6.12 -> Amnesic RAM OverlayFS -> Xorg :0 (1280x800) -> ZothOS-Lite GUI!
 # ==============================================================================
 set -euo pipefail
 
 VM_DIR="/home/zoth/NullAITech/zothos-lite/vm"
 ROOTFS="$VM_DIR/rootfs"
 ISO_ROOT="$VM_DIR/iso_root"
-KERNEL="/boot/vmlinuz"
+KVER="6.12.107+deb13-amd64"
+KERNEL="/boot/vmlinuz-$KVER"
+[ ! -f "$KERNEL" ] && KERNEL="/boot/vmlinuz"
 
-echo "[::] Building ZothOS-Lite v1.0 Amnesic RAM Initramfs & Bootable ISO..."
+echo "[::] Building ZothOS-Lite v1.0 Amnesic RAM Initramfs (with GUI X11/DRM/9p/OverlayFS) & ISO..."
 rm -rf "$ROOTFS" "$ISO_ROOT"
-mkdir -p "$ROOTFS"/{bin,sbin,usr/bin,usr/sbin,usr/local/bin,etc/zoth-lite,proc,sys,dev,tmp,run,var/lib/zoth-lite/pulled,root,lib/x86_64-linux-gnu,lib64}
+mkdir -p "$ROOTFS"/{bin,sbin,usr/bin,usr/sbin,usr/local/bin,etc/zoth-lite,proc,sys,dev,tmp,run,var/lib/zoth-lite/pulled,root,lib/x86_64-linux-gnu,lib64,lib/modules,mnt/lower,mnt/ram,mnt/newroot}
 
 # 1. Copy busybox and required shared libraries
 cp /usr/bin/busybox "$ROOTFS/bin/busybox"
@@ -23,12 +26,56 @@ cp /lib/x86_64-linux-gnu/libresolv.so.2 "$ROOTFS/lib/x86_64-linux-gnu/"
 cp /lib/x86_64-linux-gnu/libc.so.6 "$ROOTFS/lib/x86_64-linux-gnu/"
 cp /lib64/ld-linux-x86-64.so.2 "$ROOTFS/lib64/"
 
-# Create busybox symlinks for all supported applets
 for app in $("$ROOTFS/bin/busybox" --list); do
   ln -sf /bin/busybox "$ROOTFS/bin/$app" 2>/dev/null || true
 done
 
-# 2. Seed ZothOS-Lite Amnesic Metadata & State
+# 2. Decompress and include essential kernel modules for 9p, overlayfs, DRM (bochs/virtio-gpu), USB tablet & input
+MOD_SRC="/lib/modules/$KVER/kernel"
+MOD_DST="$ROOTFS/lib/modules"
+mkdir -p "$MOD_DST"
+
+MODULES_ORDERED=(
+  "fs/netfs/netfs.ko.xz"
+  "net/9p/9pnet.ko.xz"
+  "net/9p/9pnet_virtio.ko.xz"
+  "fs/9p/9p.ko.xz"
+  "fs/overlayfs/overlay.ko.xz"
+  "net/core/failover.ko.xz"
+  "drivers/net/net_failover.ko.xz"
+  "drivers/net/virtio_net.ko.xz"
+  "drivers/gpu/drm/drm.ko.xz"
+  "drivers/gpu/drm/drm_kms_helper.ko.xz"
+  "drivers/gpu/drm/ttm/ttm.ko.xz"
+  "drivers/gpu/drm/drm_ttm_helper.ko.xz"
+  "drivers/gpu/drm/drm_vram_helper.ko.xz"
+  "drivers/gpu/drm/tiny/bochs.ko.xz"
+  "drivers/gpu/drm/drm_shmem_helper.ko.xz"
+  "drivers/virtio/virtio_dma_buf.ko.xz"
+  "drivers/gpu/drm/virtio/virtio-gpu.ko.xz"
+  "drivers/input/evdev.ko.xz"
+  "drivers/input/mouse/psmouse.ko.xz"
+  "drivers/virtio/virtio_input.ko.xz"
+  "drivers/usb/common/usb-common.ko.xz"
+  "drivers/usb/core/usbcore.ko.xz"
+  "drivers/usb/host/ehci-hcd.ko.xz"
+  "drivers/usb/host/ehci-pci.ko.xz"
+  "drivers/usb/host/uhci-hcd.ko.xz"
+  "drivers/hid/hid.ko.xz"
+  "drivers/hid/hid-generic.ko.xz"
+  "drivers/hid/usbhid/usbhid.ko.xz"
+)
+
+> "$MOD_DST/load_order.txt"
+for rel in "${MODULES_ORDERED[@]}"; do
+  if [ -f "$MOD_SRC/$rel" ]; then
+    base=$(basename "$rel" .xz)
+    xz -dc "$MOD_SRC/$rel" > "$MOD_DST/$base"
+    echo "$base" >> "$MOD_DST/load_order.txt"
+  fi
+done
+
+# 3. Seed ZothOS-Lite Amnesic Metadata & State
 cat > "$ROOTFS/etc/hostname" << 'EOF'
 zothos-lite-amnesic
 EOF
@@ -58,10 +105,17 @@ zoth-jwt-inspector|JWT & Ed25519 Crypto Inspector|12MB|RAM_TMPFS
 zoth-hermes-llm|Zoth-Hermes Local GGUF Agent CLI|55MB|RAM_TMPFS
 EOF
 
-# 3. Create the 6 Core Zoth Security & Dev CLI Tools + zoth-lite-pkg inside the VM
+# 4. Create the 6 Core Zoth Security & Dev CLI Tools + zoth-lite-pkg
 cat > "$ROOTFS/usr/local/bin/zoth-lite-pkg" << 'EOF'
 #!/bin/sh
 DB="/var/lib/zoth-lite/pulled_packages.txt"
+mkdir -p /var/lib/zoth-lite
+[ ! -f "$DB" ] && cat > "$DB" << 'INITDB'
+zoth-promptmaster|PromptMaster & Jailbreak Auditor|24MB|RAM_TMPFS
+zoth-jwt-inspector|JWT & Ed25519 Crypto Inspector|12MB|RAM_TMPFS
+zoth-hermes-llm|Zoth-Hermes Local GGUF Agent CLI|55MB|RAM_TMPFS
+INITDB
+
 cmd="${1:-status}"
 arg="${2:-}"
 
@@ -192,7 +246,7 @@ cat > "$ROOTFS/usr/local/bin/zoth-amnesia" << 'EOF'
 #!/bin/sh
 echo "┌──[ ZOTHOS-LITE // TAILS-STYLE AMNESIC TELEMETRY ]────────────────────────┐"
 echo "│ Kernel Cmdline : $(cat /proc/cmdline 2>/dev/null || echo 'toram noswap quiet')"
-echo "│ Root Mount     : tmpfs on / type tmpfs (rw,relatime,mode=755)            │"
+echo "│ Root Mount     : overlayfs (upperdir=tmpfs RAM — Zero Disk Writes)       │"
 echo "│ Swap Status    : 0 kB (STRICT NOSWAP ENFORCED)                           │"
 echo "│ Hardware MAC   : 02:42:ac:11:00:7f (Spoofed on link-up)                  │"
 echo "│ Tor KillSwitch : ACTIVE (nftables drop non-Tor clearnet egress)          │"
@@ -212,91 +266,153 @@ echo "└───────────────────────�
 EOF
 chmod +x "$ROOTFS/usr/local/bin/zoth-hexstrike"
 
-# 4. Create the /init script for the ZothOS-Lite VM
+# 5. Create /init that loads kernel modules, mounts Amnesic RAM OverlayFS, and starts the Xorg GUI inside the VM!
 cat > "$ROOTFS/init" << 'EOF'
 #!/bin/sh
 export PATH="/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
 export HOME="/root"
 export TERM="linux"
-export PS1="\[\033[1;37m\][zoth@zothos-lite-vm \W]#\[\033[0m\] "
+export PS1="[zoth@zothos-lite-vm \W]# "
 
 mount -t proc proc /proc 2>/dev/null || true
 mount -t sysfs sysfs /sys 2>/dev/null || true
 mount -t devtmpfs devtmpfs /dev 2>/dev/null || true
-mkdir -p /dev/pts /tmp /run
+mkdir -p /dev/pts /dev/shm /tmp /run
 mount -t devpts devpts /dev/pts 2>/dev/null || true
+mount -t tmpfs -o size=512M tmpfs /dev/shm 2>/dev/null || true
 mount -t tmpfs -o size=512M tmpfs /tmp 2>/dev/null || true
+
+# Load kernel modules for 9p, overlayfs, DRM framebuffer, and input devices
+if [ -f /lib/modules/load_order.txt ]; then
+  while read -r mod; do
+    [ -z "$mod" ] && continue
+    insmod "/lib/modules/$mod" 2>/dev/null || true
+  done < /lib/modules/load_order.txt
+fi
 
 hostname zothos-lite-amnesic 2>/dev/null || true
 ip link set lo up 2>/dev/null || ifconfig lo 127.0.0.1 up 2>/dev/null || true
 ip link set eth0 address 02:42:ac:11:00:7f 2>/dev/null || true
 ip link set eth0 up 2>/dev/null || true
 ip addr add 10.0.2.15/24 dev eth0 2>/dev/null || true
+ip route add default via 10.0.2.2 2>/dev/null || true
 
-print_banner() {
-  KVER=$(uname -sr 2>/dev/null || echo "Linux 6.12-amd64")
-  cat << BANNER
-+============================================================================+
-|  ███████╗ ██████╗ ████████╗██╗  ██╗ ██████╗ ███████╗   ██╗     ██╗████████╗|
-|  ╚══███╔╝██╔═══██╗╚══██╔══╝██║  ██║██╔═══██╗██╔════╝   ██║     ██║╚══██╔══╝|
-|    ███╔╝ ██║   ██║   ██║   ███████║██║   ██║███████╗██╗██║     ██║   ██║   |
-|   ███╔╝  ██║   ██║   ██║   ██╔══██║██║   ██║╚════██║╚═╝██║     ██║   ██║   |
-|  ███████╗╚██████╔╝   ██║   ██║  ██║╚██████╔╝███████║   ███████╗██║   ██║   |
-|  ╚══════╝ ╚═════╝    ╚═╝   ╚═╝  ╚═╝ ╚═════╝ ╚══════╝   ╚══════╝╚═╝   ╚═╝   |
-+============================================================================+
-| [::] ZOTHOS-LITE v1.0 // TAILS-STYLE AMNESIC 1-BIT MONOTONE OS             |
-| [::] Kernel: $KVER | Mode: toram noswap | MAC: 02:42:ac:11:00:7f |
-| [::] 6 Core Zoth Security/Dev Tools Locked in RAM | Modular Pull: ACTIVE   |
-+----------------------------------------------------------------------------+
-| Commands: zoth-lite-pkg {status|list|pull <id>} | zoth-amnesia             |
-|           zoth-envguard | zoth-ghostbyte | zoth-cold-sign | zoth-hexstrike |
-+============================================================================+
-BANNER
-}
+# Mount read-only 9p hostfs + volatile RAM tmpfs overlay for full graphical X11 desktop in RAM
+if mount -t 9p -o trans=virtio,version=9p2000.L,msize=524288,ro hostfs /mnt/lower 2>/dev/null; then
+  mount -t tmpfs -o size=1024M tmpfs /mnt/ram
+  mkdir -p /mnt/ram/upper /mnt/ram/work /mnt/newroot
+  if mount -t overlay overlay -o lowerdir=/mnt/lower,upperdir=/mnt/ram/upper,workdir=/mnt/ram/work /mnt/newroot 2>/dev/null; then
+    mkdir -p /mnt/newroot/proc /mnt/newroot/sys /mnt/newroot/dev /mnt/newroot/tmp /mnt/newroot/run /mnt/newroot/var/log /mnt/newroot/var/lib/zoth-lite
+    mount --bind /proc /mnt/newroot/proc
+    mount --bind /sys /mnt/newroot/sys
+    mount --bind /dev /mnt/newroot/dev
+    mount -t devpts devpts /mnt/newroot/dev/pts 2>/dev/null || true
+    mount -t tmpfs -o size=512M tmpfs /mnt/newroot/dev/shm 2>/dev/null || true
+    mount -t tmpfs -o size=512M tmpfs /mnt/newroot/tmp 2>/dev/null || true
+    mount -t tmpfs -o size=256M tmpfs /mnt/newroot/run 2>/dev/null || true
+    mount -t tmpfs -o size=128M tmpfs /mnt/newroot/var/log 2>/dev/null || true
 
-# Print compact VGA banner + status to /dev/tty0 (80x25 VGA display)
-cat << 'VGABANNER' > /dev/tty0 2>/dev/null || true
-+============================================================================+
-| [::] ZOTHOS-LITE v1.0 // TAILS-STYLE AMNESIC 1-BIT BLACK & WHITE OS        |
-| [::] Boot: toram noswap (Zero Disk) | Spoofed MAC: 02:42:ac:11:00:7f       |
-| [::] Bayer 4x4 Dither: [####%%%%::::....] | 6 Core Zoth Tools Locked       |
-+============================================================================+
-VGABANNER
-/usr/local/bin/zoth-lite-pkg status > /dev/tty0 2>/dev/null || true
-printf "\n[zoth@zothos-lite-vm /]# " > /dev/tty0 2>/dev/null || true
+    # Copy our ZothOS-Lite CLI tools into the RAM overlay /usr/local/bin
+    cp -f /usr/local/bin/zoth-* /mnt/newroot/usr/local/bin/ 2>/dev/null || true
+    cp -rf /var/lib/zoth-lite/* /mnt/newroot/var/lib/zoth-lite/ 2>/dev/null || true
 
-# Print full UTF-8 banner + status to Serial console (/dev/ttyS0)
-print_banner > /dev/ttyS0 2>/dev/null || true
-/usr/local/bin/zoth-lite-pkg status > /dev/ttyS0 2>/dev/null || true
+    cat > /mnt/newroot/tmp/start-zoth-gui.sh << 'GUISCRIPT'
+#!/bin/bash
+export PATH="/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+export HOME="/tmp/zoth-home"
+mkdir -p "$HOME" /tmp/.X11-unix /run/udev
 
-# Spawn an interactive root shell strictly on VGA /dev/tty1 (never touch /dev/ttyS0)
-if [ -c /dev/tty1 ]; then
-  (
+# Start udevd so Xorg discovers DRM modesetting + USB tablet mouse + keyboard
+/lib/systemd/systemd-udevd --daemon 2>/dev/null || true
+udevadm trigger 2>/dev/null || true
+udevadm settle --timeout=3 2>/dev/null || true
+
+# Start ZothOS-Lite v1.0 daemon inside the VM on 127.0.0.1:8145
+PORT=8145 node /home/zoth/NullAITech/zothos-lite/server.js >/tmp/zothos-lite-server.log 2>&1 &
+sleep 1
+
+# Create Xorg config for 1280x800 resolution inside QEMU
+mkdir -p /etc/X11
+cat > /etc/X11/xorg-zoth-lite.conf << 'XCONF'
+Section "ServerFlags"
+    Option "DontVTSwitch" "true"
+    Option "AutoAddDevices" "true"
+    Option "AutoEnableDevices" "true"
+    Option "BlankTime" "0"
+    Option "StandbyTime" "0"
+    Option "SuspendTime" "0"
+    Option "OffTime" "0"
+EndSection
+
+Section "Device"
+    Identifier "QemuCard"
+    Driver "modesetting"
+EndSection
+
+Section "Screen"
+    Identifier "DefaultScreen"
+    Device "QemuCard"
+    DefaultDepth 24
+    SubSection "Display"
+        Depth 24
+        Modes "1280x800" "1024x768"
+    EndSubSection
+EndSection
+XCONF
+
+# Launch Xorg :0 on vt1 in background
+Xorg :0 vt1 -noreset -nolisten tcp -config /etc/X11/xorg-zoth-lite.conf >/tmp/xorg.log 2>&1 &
+sleep 2
+export DISPLAY=:0
+xrandr --output Virtual-1 --mode 1280x800 2>/dev/null || xrandr -s 1280x800 2>/dev/null || true
+
+# Launch the ZothOS-Lite 1-Bit Black & White Graphical Desktop inside the VM!
+google-chrome \
+  --no-sandbox \
+  --test-type \
+  --disable-gpu \
+  --disable-software-rasterizer \
+  --disable-dev-shm-usage \
+  --no-first-run \
+  --no-default-browser-check \
+  --user-data-dir=/tmp/zoth-chrome-profile \
+  --kiosk \
+  --window-position=0,0 \
+  --window-size=1280,800 \
+  "http://127.0.0.1:8145" >/tmp/chrome-gui.log 2>&1 &
+GUISCRIPT
+    chmod +x /mnt/newroot/tmp/start-zoth-gui.sh
+
+    echo "[::] Starting ZothOS-Lite v1.0 1-Bit Black & White X11 Graphical Desktop inside QEMU/KVM VM..." > /dev/ttyS0
+    chroot /mnt/newroot /tmp/start-zoth-gui.sh &
+
+    # Run interactive root shell on Serial console (/dev/ttyS0) inside the RAM overlay chroot
     while true; do
-      setsid sh </dev/tty1 >/dev/tty1 2>&1
+      chroot /mnt/newroot /bin/bash --norc -i </dev/ttyS0 >/dev/ttyS0 2>&1 || sh </dev/ttyS0 >/dev/ttyS0 2>&1
       sleep 1
     done
-  ) &
+  fi
 fi
 
-# Run interactive shell strictly on Serial /dev/ttyS0 for host bridge & live exec
+# Fallback if 9p not mounted: interactive shell on tty1 and ttyS0
+/usr/local/bin/zoth-lite-pkg status > /dev/tty0 2>/dev/null || true
+/usr/local/bin/zoth-lite-pkg status > /dev/ttyS0 2>/dev/null || true
+if [ -c /dev/tty1 ]; then
+  (while true; do setsid sh </dev/tty1 >/dev/tty1 2>&1; sleep 1; done) &
+fi
 while true; do
-  if [ -c /dev/ttyS0 ]; then
-    setsid sh </dev/ttyS0 >/dev/ttyS0 2>&1
-  else
-    sh
-  fi
+  setsid sh </dev/ttyS0 >/dev/ttyS0 2>&1
   sleep 1
 done
 EOF
 chmod +x "$ROOTFS/init"
 
-# 5. Pack initramfs image
+# 6. Pack initramfs image
 echo "[::] Packing $VM_DIR/initrd-zothos-lite.img..."
-(cd "$ROOTFS" && find . -print0 | cpio --null -ov --format=newc 2>/dev/null | gzip -9 > "$VM_DIR/initrd-zothos-lite.img")
+(cd "$ROOTFS" && find . -print0 | cpio --null -ov --format=newc 2>/dev/null | gzip -6 > "$VM_DIR/initrd-zothos-lite.img")
 ls -lh "$VM_DIR/initrd-zothos-lite.img"
 
-# 6. Build bootable GRUB ISO (zothos-lite-1.0-amd64.iso)
+# 7. Build bootable GRUB ISO (zothos-lite-1.0-amd64.iso)
 mkdir -p "$ISO_ROOT/boot/grub"
 cp "$KERNEL" "$ISO_ROOT/boot/vmlinuz"
 cp "$VM_DIR/initrd-zothos-lite.img" "$ISO_ROOT/boot/initrd.img"
@@ -307,7 +423,7 @@ set default=0
 set menu_color_normal=white/black
 set menu_color_highlight=black/white
 
-menuentry "ZothOS-Lite v1.0 // Amnesic 1-Bit Monotone (toram noswap)" {
+menuentry "ZothOS-Lite v1.0 // Amnesic 1-Bit Monotone GUI + CLI (toram noswap)" {
     linux /boot/vmlinuz toram noswap slab_nomerge init_on_alloc=1 init_on_free=1 console=tty0 console=ttyS0,115200n8
     initrd /boot/initrd.img
 }
@@ -316,4 +432,4 @@ EOF
 echo "[::] Building bootable ISO $VM_DIR/zothos-lite-1.0-amd64.iso..."
 grub-mkrescue -o "$VM_DIR/zothos-lite-1.0-amd64.iso" "$ISO_ROOT" 2>/dev/null
 ls -lh "$VM_DIR/zothos-lite-1.0-amd64.iso"
-echo "[OK] ZothOS-Lite v1.0 Bootable ISO & Initramfs ready."
+echo "[OK] ZothOS-Lite v1.0 GUI Bootable ISO & Initramfs ready."
