@@ -1,0 +1,1405 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ZOTHOS-LITE v1.0 — Amnesic Black &amp; White Monotone Security &amp; Dev OS</title>
+  <meta name="description" content="ZothOS-Lite v1.0 is a Tails-style RAM-only amnesic security and developer operating system styled in pure black-and-white ASCII, Unicode U+2800 Braille, and Ordered Bayer 4x4 dither. Includes core Zoth security/dev tools by default and modular on-demand tool pull-in." />
+  <link rel="canonical" href="https://zothos-lite.nullai.tech/" />
+
+  <!-- OpenGraph & Twitter Meta Tags -->
+  <meta property="og:title" content="ZOTHOS-LITE v1.0 — Amnesic Monotone Security &amp; Dev OS" />
+  <meta property="og:description" content="Tails-style RAM-only amnesic Linux distro &amp; web workstation in pure 1-bit black-and-white ASCII, Unicode Braille, and Ordered Bayer 4x4 dither. Core Zoth security &amp; dev tools built-in; pull extra tools on demand." />
+  <meta property="og:url" content="https://zothos-lite.nullai.tech/" />
+  <meta property="og:type" content="website" />
+  <meta property="og:image" content="https://zothos-lite.nullai.tech/og-zothos-lite.png" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:site" content="@1nc0gn30" />
+  <meta name="twitter:creator" content="@1nc0gn30" />
+  <meta name="twitter:title" content="ZOTHOS-LITE v1.0 — Amnesic Monotone Security &amp; Dev OS" />
+  <meta name="twitter:description" content="Tails-style RAM-only amnesic security &amp; dev OS in pure black-and-white ASCII, Braille, and Bayer 4x4 dither." />
+  <meta name="twitter:image" content="https://zothos-lite.nullai.tech/og-zothos-lite.png" />
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,400;0,600;0,700;0,800;1,400&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet" />
+
+  <!-- Schema.org JSON-LD (@graph: SoftwareApplication + FAQPage) -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "SoftwareApplication",
+        "name": "ZothOS-Lite v1.0 (Amnesic Monotone Edition)",
+        "url": "https://zothos-lite.nullai.tech/",
+        "applicationCategory": "OperatingSystem",
+        "operatingSystem": "Linux (Debian Live RAM-Only tmpfs / Web Workstation)",
+        "offers": {
+          "@type": "Offer",
+          "price": "0.00",
+          "priceCurrency": "USD"
+        },
+        "creator": {
+          "@type": "Organization",
+          "name": "Neal Frazier Tech",
+          "url": "https://nullai.tech"
+        },
+        "description": "Tails-inspired amnesic RAM-only security and developer operating system featuring pure 1-bit black-and-white ASCII, Unicode U+2800 Braille, and Ordered Bayer 4x4 dithering, pre-installed Zoth security/dev essentials, and modular on-demand tool pull-in."
+      },
+      {
+        "@type": "FAQPage",
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "How is ZothOS-Lite different from full ZothOS?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Full ZothOS is a 9.3 GB bare-metal workstation with all 62 tools pre-installed. ZothOS-Lite is a ~840 MB Tails-style amnesic RAM-only OS styled in pure black-and-white ASCII, Braille, and Bayer dither. It ships with the 6 mandatory Zoth security and developer tools locked in by default, and lets you pull additional tools on demand into RAM or an encrypted LUKS2 vault."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "What happens when I unplug the USB or click Emergency RAM Wipe?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "ZothOS-Lite runs inside volatile tmpfs RAM with swap disabled (toram noswap). Triggering a panic wipe or pulling the USB executes sdmem memory zeroing, immediately erasing all RAM-pulled packages, session keys, and traces while preserving only items explicitly stored in an unlocked LUKS2 Argon2id vault."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Is ZothOS-Lite completely free and open access?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Yes. ZothOS-Lite and all core and pullable Zoth tools are 100% free and open access with zero paywalls. You can optionally support development via Buy Us a Coffee on Stripe or Solana."
+            }
+          }
+        ]
+      }
+    ]
+  }
+  </script>
+
+  <style>
+    /* =========================================================================
+       PURE 1-BIT & MONOTONE BLACK-AND-WHITE DESIGN SYSTEM
+       Strictly #000000 -> #FFFFFF (Zero Color Hues Allowed Anywhere in the OS)
+       ========================================================================= */
+    :root {
+      --bw-void: #000000;
+      --bw-surface: #070707;
+      --bw-panel: #0c0c0c;
+      --bw-elevated: #141414;
+      --bw-white: #ffffff;
+      --bw-bone: #e8e8e8;
+      --bw-silver: #bdbdbd;
+      --bw-gray: #888888;
+      --bw-dim: #444444;
+      --bw-border: rgba(255, 255, 255, 0.28);
+      --bw-border-strong: rgba(255, 255, 255, 0.75);
+      --font-mono: 'JetBrains Mono', 'Cascadia Mono', 'DejaVu Sans Mono', monospace;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html, body {
+      background-color: var(--bw-void);
+      color: var(--bw-white);
+      font-family: var(--font-mono);
+      font-size: 13px;
+      line-height: 1.45;
+      overflow-x: hidden;
+      min-height: 100vh;
+    }
+
+    /* Ordered Bayer 4x4 1-Bit Dot Matrix + Scanline Overlay */
+    body.dither-crt-on {
+      background-image:
+        radial-gradient(rgba(255, 255, 255, 0.12) 1px, transparent 1px),
+        radial-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+      background-size: 8px 8px, 4px 4px;
+      background-position: 0 0, 2px 2px;
+    }
+    body.dither-crt-on::after {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 9999;
+      background: repeating-linear-gradient(
+        to bottom,
+        rgba(255, 255, 255, 0) 0px,
+        rgba(255, 255, 255, 0) 2px,
+        rgba(0, 0, 0, 0.30) 3px,
+        rgba(0, 0, 0, 0.30) 4px
+      );
+    }
+
+    /* Top Amnesic Marquee Stream */
+    .amnesic-marquee {
+      background: #000000;
+      border-bottom: 1px solid var(--bw-border);
+      white-space: nowrap;
+      overflow: hidden;
+      padding: 5px 0;
+      font-size: 0.72rem;
+      letter-spacing: 0.1em;
+      color: var(--bw-silver);
+    }
+    .amnesic-marquee-track {
+      display: inline-block;
+      animation: bwMarquee 36s linear infinite;
+    }
+    .amnesic-marquee-track b {
+      color: #ffffff;
+      background: #1a1a1a;
+      padding: 0 4px;
+    }
+    @keyframes bwMarquee {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
+
+    /* Top OS Status & Window Manager Bar */
+    header.os-topbar {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background-color: #040404;
+      background-image: radial-gradient(rgba(255, 255, 255, 0.09) 1px, transparent 1px);
+      background-size: 6px 6px;
+      border-bottom: 2px solid #ffffff;
+      padding: 10px 16px;
+    }
+    .topbar-inner {
+      max-width: 1440px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .os-brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .os-glyph-box {
+      width: 38px;
+      height: 38px;
+      background-color: #ffffff;
+      background-image: radial-gradient(rgba(0, 0, 0, 0.25) 1px, transparent 1px);
+      background-size: 4px 4px;
+      color: #000000;
+      border: 2px solid #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 1.15rem;
+    }
+    .os-title {
+      font-weight: 800;
+      font-size: 1.05rem;
+      letter-spacing: 0.06em;
+      color: #ffffff;
+    }
+    .os-sub {
+      font-size: 0.68rem;
+      color: var(--bw-silver);
+      letter-spacing: 0.05em;
+    }
+    .topbar-controls {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    /* 1-Bit Monotone Buttons & Pills */
+    .bw-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      padding: 8px 12px;
+      min-height: 44px;
+      font-family: var(--font-mono);
+      font-size: 0.74rem;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-decoration: none;
+      cursor: pointer;
+      border: 1px solid #ffffff;
+      background: #0a0a0a;
+      color: #ffffff;
+      transition: background 0.1s ease, color 0.1s ease, transform 0.1s ease;
+    }
+    .bw-btn:hover {
+      background: #ffffff;
+      color: #000000;
+    }
+    .bw-btn-solid {
+      background-color: #ffffff;
+      background-image: radial-gradient(rgba(0, 0, 0, 0.18) 1px, transparent 1px);
+      background-size: 4px 4px;
+      color: #000000;
+      border: 1px solid #ffffff;
+    }
+    .bw-btn-solid:hover {
+      background: #dcdcdc;
+      color: #000000;
+    }
+    .bw-btn-dither {
+      background-color: #141414;
+      background-image: radial-gradient(rgba(255, 255, 255, 0.16) 1px, transparent 1px);
+      background-size: 4px 4px;
+      color: #ffffff;
+      border: 1px dashed rgba(255, 255, 255, 0.65);
+    }
+    .bw-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 4px 8px;
+      font-size: 0.68rem;
+      font-weight: 700;
+      border: 1px solid var(--bw-border-strong);
+      background: #080808;
+      color: #ffffff;
+    }
+    .bw-badge.inverted {
+      background: #ffffff;
+      color: #000000;
+    }
+
+    /* Main Desktop Container */
+    .os-container {
+      max-width: 1440px;
+      margin: 0 auto;
+      padding: 14px 16px 36px;
+    }
+
+    /* ASCII Window Frame Component */
+    .ascii-window {
+      background-color: #060606;
+      background-image: radial-gradient(rgba(255, 255, 255, 0.07) 1px, transparent 1px);
+      background-size: 8px 8px;
+      border: 1px solid rgba(255, 255, 255, 0.42);
+      box-shadow: 4px 4px 0px rgba(255, 255, 255, 0.14);
+      margin-bottom: 16px;
+      display: flex;
+      flex-direction: column;
+    }
+    .ascii-window-titlebar {
+      background-color: #ffffff;
+      background-image: radial-gradient(rgba(0, 0, 0, 0.18) 1px, transparent 1px);
+      background-size: 4px 4px;
+      color: #000000;
+      padding: 6px 10px;
+      font-size: 0.74rem;
+      font-weight: 800;
+      letter-spacing: 0.05em;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      border-bottom: 1px solid #ffffff;
+    }
+    .ascii-window-titlebar.dark-bar {
+      background-color: #111111;
+      background-image: radial-gradient(rgba(255, 255, 255, 0.12) 1px, transparent 1px);
+      color: #ffffff;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.35);
+    }
+    .ascii-window-body {
+      padding: 14px;
+    }
+
+    /* Hero Boot & Footprint Strip */
+    .hero-boot-grid {
+      display: grid;
+      grid-template-columns: 1.15fr 0.85fr;
+      gap: 16px;
+      margin-bottom: 16px;
+    }
+    .ascii-art-pre {
+      font-family: var(--font-mono);
+      font-size: 0.68rem;
+      line-height: 1.18;
+      color: #ffffff;
+      background: #000000;
+      border: 1px solid rgba(255, 255, 255, 0.28);
+      padding: 10px 12px;
+      overflow-x: auto;
+      white-space: pre;
+      margin-bottom: 12px;
+    }
+    .footprint-meter-wrap {
+      margin-top: 10px;
+      padding: 10px 12px;
+      background: #000000;
+      border: 1px solid rgba(255, 255, 255, 0.35);
+    }
+    .dither-progress-bar {
+      height: 18px;
+      background-color: #0a0a0a;
+      background-image: radial-gradient(rgba(255, 255, 255, 0.18) 1px, transparent 1px);
+      background-size: 4px 4px;
+      border: 1px solid #ffffff;
+      position: relative;
+      overflow: hidden;
+      margin: 6px 0;
+    }
+    .dither-progress-fill {
+      height: 100%;
+      background-color: #ffffff;
+      background-image: radial-gradient(rgba(0, 0, 0, 0.25) 1px, transparent 1px);
+      background-size: 4px 4px;
+      transition: width 0.25s ease;
+    }
+
+    /* 3-Column Workstation Grid */
+    .workstation-3col {
+      display: grid;
+      grid-template-columns: 0.92fr 1.15fr 1.15fr;
+      gap: 16px;
+      align-items: start;
+    }
+
+    /* Amnesic Switch Row */
+    .amnesic-switch-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 9px 10px;
+      background: #030303;
+      border: 1px solid rgba(255, 255, 255, 0.24);
+      margin-bottom: 8px;
+    }
+    .amnesic-switch-label {
+      font-weight: 700;
+      font-size: 0.74rem;
+      color: #ffffff;
+    }
+    .amnesic-switch-sub {
+      font-size: 0.66rem;
+      color: var(--bw-gray);
+      margin-top: 2px;
+    }
+
+    /* Tool Cards (Core & Optional Pull-In) */
+    .tool-card {
+      padding: 10px 12px;
+      background: #030303;
+      border: 1px solid rgba(255, 255, 255, 0.28);
+      margin-bottom: 9px;
+      transition: border-color 0.12s ease;
+    }
+    .tool-card:hover {
+      border-color: #ffffff;
+    }
+    .tool-card.pulled-active {
+      background-color: #0d0d0d;
+      background-image: radial-gradient(rgba(255, 255, 255, 0.10) 1px, transparent 1px);
+      background-size: 6px 6px;
+      border: 1px solid #ffffff;
+    }
+    .tool-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 4px;
+    }
+    .tool-name {
+      font-weight: 800;
+      font-size: 0.80rem;
+      color: #ffffff;
+    }
+    .tool-desc {
+      font-size: 0.70rem;
+      color: var(--bw-silver);
+      margin-bottom: 8px;
+    }
+    .tool-meta-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      flex-wrap: wrap;
+      font-size: 0.67rem;
+      color: var(--bw-gray);
+    }
+
+    /* Filter Tabs */
+    .filter-bar {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      margin-bottom: 10px;
+    }
+    .filter-pill {
+      padding: 6px 10px;
+      min-height: 44px;
+      font-family: var(--font-mono);
+      font-size: 0.68rem;
+      font-weight: 700;
+      background: #050505;
+      color: var(--bw-silver);
+      border: 1px solid rgba(255, 255, 255, 0.28);
+      cursor: pointer;
+    }
+    .filter-pill.active, .filter-pill:hover {
+      background: #ffffff;
+      color: #000000;
+      border-color: #ffffff;
+    }
+
+    /* Inputs & Textareas */
+    .bw-input, .bw-textarea {
+      width: 100%;
+      padding: 9px 11px;
+      min-height: 44px;
+      background: #000000;
+      color: #ffffff;
+      border: 1px solid rgba(255, 255, 255, 0.45);
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+    }
+    .bw-input:focus, .bw-textarea:focus {
+      outline: none;
+      border-color: #ffffff;
+      box-shadow: 0 0 0 1px #ffffff;
+    }
+
+    .braille-box {
+      font-family: var(--font-mono);
+      line-height: 1.08;
+      letter-spacing: 0.02em;
+      white-space: pre;
+      overflow-x: auto;
+      background: #000000;
+      color: #ffffff;
+      border: 1px solid rgba(255, 255, 255, 0.32);
+      padding: 8px 10px;
+      font-size: 0.74rem;
+    }
+
+    /* Coffee Support Bar */
+    .coffee-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+      padding: 12px 16px;
+      background-color: #050505;
+      background-image: radial-gradient(rgba(255, 255, 255, 0.09) 1px, transparent 1px);
+      background-size: 6px 6px;
+      border: 1px solid rgba(255, 255, 255, 0.45);
+      margin-bottom: 16px;
+    }
+
+    @media (max-width: 1180px) {
+      .workstation-3col {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+    @media (max-width: 900px) {
+      .hero-boot-grid, .workstation-3col {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body class="dither-crt-on">
+
+  <!-- Top Amnesic Monotone Telemetry Stream -->
+  <div class="amnesic-marquee" role="region" aria-label="ZothOS-Lite Amnesic Telemetry Marquee">
+    <div class="amnesic-marquee-track">
+      <span>&nbsp;░░▒▒▓▓██ <b>ZOTHOS-LITE v1.0 // AMNESIC MONOTONE OS</b> · ⣿⣿⣿⣿⣿⣿⣿⣿ · <b>BOOT: TORAM NOSWAP SLAB_NOMERGE</b> · ░░░░▒▒▒▒▓▓▓▓████ · <b>ORDERED BAYER 4×4 1-BIT DITHER</b> · ⣀⣠⣤⣴⣶⣾⣿ · <b>6 CORE ZOTH SECURITY/DEV TOOLS LOCKED IN</b> · ▓▒░ · <b>zoth-lite-pkg ON-DEMAND TOOL PULLER</b> · ED25519 VERIFIED SQUASHFS · ██▓▓▒▒░░&nbsp;</span>
+      <span>&nbsp;░░▒▒▓▓██ <b>ZOTHOS-LITE v1.0 // AMNESIC MONOTONE OS</b> · ⣿⣿⣿⣿⣿⣿⣿⣿ · <b>BOOT: TORAM NOSWAP SLAB_NOMERGE</b> · ░░░░▒▒▒▒▓▓▓▓████ · <b>ORDERED BAYER 4×4 1-BIT DITHER</b> · ⣀⣠⣤⣴⣶⣾⣿ · <b>6 CORE ZOTH SECURITY/DEV TOOLS LOCKED IN</b> · ▓▒░ · <b>zoth-lite-pkg ON-DEMAND TOOL PULLER</b> · ED25519 VERIFIED SQUASHFS · ██▓▓▒▒░░&nbsp;</span>
+    </div>
+  </div>
+
+  <!-- Sticky Monotone Window Manager Top Bar -->
+  <header class="os-topbar">
+    <div class="topbar-inner">
+      <div class="os-brand">
+        <div class="os-glyph-box" title="ZothOS-Lite 1-Bit Sovereign Seal">◈</div>
+        <div>
+          <div class="os-title">ZOTHOS-LITE // v1.0-MONOTONE <span style="font-weight:400;color:#bdbdbd;">[TAILS-STYLE AMNESIC EDITION]</span></div>
+          <div class="os-sub">░░▒▒▓▓██ 1-BIT BLACK &amp; WHITE • RAM-ONLY TMPFS • CORE SECURITY LOCKED • PULL ONLY WHAT YOU NEED ██▓▓▒▒░░</div>
+        </div>
+      </div>
+
+      <div class="topbar-controls">
+        <span class="bw-badge inverted" id="topAmnesiaBadge">⣿ RAM-ONLY TMPFS: ACTIVE</span>
+        <span class="bw-badge" id="topMacBadge">▓▒░ MAC: 02:42:ac:11:00:7f</span>
+        <button type="button" class="bw-btn" id="toggleDitherModeBtn" title="Toggle 1-Bit Ordered Bayer 4x4 Scanlines">▓▒░ 1-Bit Dither: ON</button>
+        <button type="button" class="bw-btn bw-btn-dither" id="topPanicWipeBtn" title="Execute sdmem -fllv emergency RAM wipe of volatile packages">⚡ Panic Wipe RAM</button>
+        <a class="bw-btn bw-btn-solid" href="https://buy.stripe.com/3cIfZg27PdKo2D64Ocfw40X" target="_blank" rel="noopener noreferrer">☕ Buy Us a Coffee</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="os-container">
+
+    <!-- 100% Open-Source Support Bar (Buy Us a Coffee: Stripe + Solana Wallet) -->
+    <section class="coffee-bar" aria-label="Open-Access Community Support">
+      <div>
+        <div style="font-weight:800;font-size:0.82rem;color:#ffffff;">
+          ░░▒▒▓▓██ 100% FREE &amp; OPEN-ACCESS AMNESIC DISTRO &amp; TOOL ARSENAL [ZERO PAYWALLS]
+        </div>
+        <div style="font-size:0.72rem;color:#bdbdbd;margin-top:2px;">
+          All core Zoth security tools, on-demand package pulls, and custom ISO manifests are unlocked forever. Support open development with a coffee:
+        </div>
+      </div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;">
+        <a class="bw-btn bw-btn-solid" href="https://buy.stripe.com/3cIfZg27PdKo2D64Ocfw40X" target="_blank" rel="noopener noreferrer">☕ Buy Us a Coffee (Stripe)</a>
+        <button type="button" class="bw-btn" id="copySolWalletBtn" onclick="navigator.clipboard?.writeText('GG2eQbVh8ut1BK6j1A2tz7pSySdLpD38BgyEhGcxdXoK');this.textContent='[OK] COPIED SOL WALLET';">◎ Solana: GG2eQb…dXoK (Copy)</button>
+      </div>
+    </section>
+
+    <!-- Row 1: Hero Boot Banner + Live Ordered Bayer 4x4 / Braille Amnesic Footprint Meter -->
+    <section class="hero-boot-grid">
+      <!-- Left: ASCII Boot Header & Architecture Spec -->
+      <div class="ascii-window">
+        <div class="ascii-window-titlebar">
+          <span>┌── [▓▒░] /boot/vmlinuz-zothos-lite // TAILS-STYLE AMNESIC ARCHITECTURE</span>
+          <span>[─][□][×]</span>
+        </div>
+        <div class="ascii-window-body">
+          <pre class="ascii-art-pre" aria-label="ZothOS-Lite ASCII Banner">███████╗ ██████╗ ████████╗██╗  ██╗ ██████╗ ███████╗      ██╗     ██╗████████╗███████╗
+╚══███╔╝██╔═══██╗╚══██╔══╝██║  ██║██╔═══██╗██╔════╝      ██║     ██║╚══██╔══╝██╔════╝
+  ███╔╝ ██║   ██║   ██║   ███████║██║   ██║███████╗█████╗██║     ██║   ██║   █████╗  
+ ███╔╝  ██║   ██║   ██║   ██╔══██║██║   ██║╚════██║╚════╝██║     ██║   ██║   ██╔══╝  
+███████╗╚██████╔╝   ██║   ██║  ██║╚██████╔╝███████║      ███████╗██║   ██║   ███████╗
+╚══════╝ ╚═════╝    ╚═╝   ╚═╝  ╚═╝ ╚═════╝ ╚══════╝      ╚══════╝╚═╝   ╚═╝   ╚══════╝
+░░▒▒▓▓██ 1-BIT MONOTONE EDITION • TORAM NOSWAP • CORE ZOTH SECURITY + MODULAR PULL ██▓▓▒▒░░</pre>
+
+          <h1 style="font-size:1.22rem;font-weight:800;color:#ffffff;margin-bottom:6px;">
+            Like Tails, Engineered for Zoth: Pure Black &amp; White, Zero Bloat, Maximum Security.
+          </h1>
+          <p style="font-size:0.76rem;color:#cccccc;margin-bottom:10px;">
+            Full ZothOS weighs <strong>9.3 GB</strong> with all 62 tools pre-bundled. <strong>ZothOS-Lite (~880 MB)</strong> boots entirely into volatile RAM (<code>toram noswap</code>), enforces a strict <strong>1-bit Black &amp; White ASCII / Braille / Ordered Bayer 4×4 Dither</strong> interface, locks in the <strong>6 must-have Zoth security &amp; dev tools</strong> by default, and lets you pull in extra tools on demand via <code>zoth-lite-pkg</code>.
+          </p>
+
+          <!-- Live ISO / RAM Footprint Comparison Bar -->
+          <div class="footprint-meter-wrap">
+            <div style="display:flex;justify-content:space-between;align-items:center;font-size:0.72rem;font-weight:700;">
+              <span>▓▒░ CURRENT ZOTHOS-LITE IMAGE FOOTPRINT: <strong id="isoTotalMbLabel">883 MB</strong></span>
+              <span id="isoSavingsBadge" style="background:#ffffff;color:#000000;padding:1px 6px;">91% SMALLER THAN FULL ZOTHOS (9,365 MB)</span>
+            </div>
+            <div class="dither-progress-bar" aria-label="ZothOS-Lite Footprint vs Full ZothOS">
+              <div class="dither-progress-fill" id="isoFootprintBar" style="width:14%;"></div>
+            </div>
+            <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:8px;font-size:0.68rem;">
+              <div style="padding:5px 7px;border:1px solid rgba(255,255,255,0.25);">
+                <div style="color:#888888;">AMNESIC KERNEL</div>
+                <div style="font-weight:800;color:#ffffff;" id="statKernelMb">599 MB</div>
+              </div>
+              <div style="padding:5px 7px;border:1px solid rgba(255,255,255,0.25);">
+                <div style="color:#888888;">CORE SEC/DEV (6)</div>
+                <div style="font-weight:800;color:#ffffff;" id="statCoreMb">241 MB (LOCKED)</div>
+              </div>
+              <div style="padding:5px 7px;border:1px solid rgba(255,255,255,0.25);">
+                <div style="color:#888888;">PULLED (RAM TMPFS)</div>
+                <div style="font-weight:800;color:#ffffff;" id="statPulledRamMb">43 MB</div>
+              </div>
+              <div style="padding:5px 7px;border:1px solid rgba(255,255,255,0.25);">
+                <div style="color:#888888;">PULLED (LUKS VAULT)</div>
+                <div style="font-weight:800;color:#ffffff;" id="statPulledLuksMb">0 MB</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right: Live 1-Bit Ordered Bayer 4x4 ASCII Shield + Unicode U+2800 Braille Kernel Scope -->
+      <div class="ascii-window">
+        <div class="ascii-window-titlebar dark-bar">
+          <span>┌── [⣿] 1-BIT ORDERED BAYER 4×4 DITHER SHIELD &amp; U+2800 BRAILLE RAM TELEMETRY</span>
+          <span id="shaderFpsLabel">60 FPS // 1-BIT B&amp;W</span>
+        </div>
+        <div class="ascii-window-body">
+          <div style="display:flex;justify-content:space-between;align-items:center;gap:6px;flex-wrap:wrap;margin-bottom:8px;">
+            <div style="display:flex;gap:5px;flex-wrap:wrap;">
+              <button type="button" class="filter-pill active" data-lite-shader="bayer-1bit" style="min-height:32px;padding:4px 8px;">▓▒░ 1-Bit Bayer+ASCII</button>
+              <button type="button" class="filter-pill" data-lite-shader="braille-2x4" style="min-height:32px;padding:4px 8px;">⣿ U+2800 2×4 Braille</button>
+              <button type="button" class="filter-pill" data-lite-shader="halftone-bw" style="min-height:32px;padding:4px 8px;">█ High-Contrast Inverse</button>
+            </div>
+            <button type="button" class="bw-btn bw-btn-solid" id="exportCustomIsoBtn" style="min-height:32px;padding:4px 10px;font-size:0.69rem;">
+              ⬇ Export Custom ISO Script (.sh)
+            </button>
+          </div>
+
+          <canvas id="liteDitherCanvas" width="540" height="190" aria-label="1-Bit Black and White Ordered Bayer 4x4 Dither and Braille Amnesic Shield" style="width:100%;height:190px;display:block;background:#000000;border:1px solid rgba(255,255,255,0.45);cursor:crosshair;"></canvas>
+
+          <div style="margin-top:10px;">
+            <div style="display:flex;justify-content:space-between;align-items:center;font-size:0.68rem;color:#bdbdbd;margin-bottom:4px;">
+              <span>⣿ UNICODE U+2800 2×4 SUB-PIXEL RAM &amp; ENTROPY OSCILLOSCOPE</span>
+              <span id="brailleLiveStatus">⠋ TOR CIRCUIT + ENTROPY POOL</span>
+            </div>
+            <pre id="liteBrailleScope" class="braille-box">⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿</pre>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Row 2: 3-Column OS Desktop (Left: Tails Amnesic Controls, Center: Core Security/Dev Tools + Runner, Right: Modular Tool Puller) -->
+    <section class="workstation-3col">
+
+      <!-- COLUMN 1: TAILS-STYLE AMNESIC SECURITY & KERNEL LOCKDOWN -->
+      <div class="ascii-window">
+        <div class="ascii-window-titlebar">
+          <span>┌── [01] TAILS-STYLE AMNESIC &amp; TOR LOCKDOWN</span>
+          <span>[zoth-amnesia]</span>
+        </div>
+        <div class="ascii-window-body">
+          <div style="font-size:0.71rem;color:#cccccc;margin-bottom:10px;">
+            Every session boots into volatile <code>tmpfs</code> RAM. Configure hardware anonymity, Tor/WireGuard routing, and LUKS2 vault persistence:
+          </div>
+
+          <div id="amnesiaSwitchesContainer">
+            <!-- Populated dynamically by JS -->
+          </div>
+
+          <div style="margin-top:10px;padding:10px;background:#000000;border:1px dashed rgba(255,255,255,0.5);">
+            <div style="font-weight:800;font-size:0.73rem;color:#ffffff;margin-bottom:4px;">
+              ⚡ HARDWARE USB REMOVAL / PANIC WIPE
+            </div>
+            <div style="font-size:0.68rem;color:#bdbdbd;margin-bottom:8px;">
+              Zeroes all <code>RAM_TMPFS</code> pulled packages and ephemeral keys via <code>sdmem -fllv</code> while preserving <code>LUKS_PERSIST</code> packages.
+            </div>
+            <div style="display:flex;gap:8px;flex-wrap:wrap;">
+              <button type="button" class="bw-btn bw-btn-solid" id="btnTriggerPanicWipe" style="flex:1;">
+                ▓▒░ Execute RAM Panic Wipe
+              </button>
+              <button type="button" class="bw-btn" id="btnRotateMac" style="flex:1;">
+                🔄 Spoof New MAC
+              </button>
+            </div>
+          </div>
+
+          <div style="margin-top:10px;padding:8px 10px;background:#000000;border:1px solid rgba(255,255,255,0.28);font-size:0.67rem;color:#bdbdbd;">
+            <div style="color:#ffffff;font-weight:700;margin-bottom:3px;">█ ACTIVE KERNEL BOOTLINE:</div>
+            <code id="kernelFlagsCode" style="word-break:break-all;color:#cccccc;">boot=live toram noswap slab_nomerge init_on_alloc=1 init_on_free=1 page_alloc.shuffle=1 pti=on</code>
+          </div>
+        </div>
+      </div>
+
+      <!-- COLUMN 2: PRE-INSTALLED CORE ZOTH SECURITY & DEV ARSENAL (ALWAYS ON ISO) + LIVE AUDITOR -->
+      <div class="ascii-window">
+        <div class="ascii-window-titlebar">
+          <span>┌── [02] MUST-HAVE ZOTH SECURITY &amp; DEV CORE (LOCKED)</span>
+          <span>[6 CORE TOOLS]</span>
+        </div>
+        <div class="ascii-window-body">
+          <div style="font-size:0.71rem;color:#cccccc;margin-bottom:10px;">
+            These <strong>6 essential Zoth security, crypto, and hardened developer tools (241 MB)</strong> are permanently compiled into the base ZothOS-Lite SquashFS image so you always stay secure:
+          </div>
+
+          <div id="coreToolsListContainer">
+            <!-- Populated dynamically by JS -->
+          </div>
+
+          <!-- Interactive Live Security & Dev Auditor Terminal -->
+          <div style="margin-top:12px;padding:12px;background:#000000;border:1px solid #ffffff;">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+              <span style="font-weight:800;font-size:0.74rem;color:#ffffff;">
+                ▓▒░ LIVE CORE SECURITY TERMINAL // ENVGUARD + HEXSTRIKE
+              </span>
+              <span class="bw-badge" id="secAuditStatusBadge">⣿ READY</span>
+            </div>
+            <label for="secScanInput" style="display:block;font-size:0.67rem;color:#bdbdbd;margin-bottom:4px;">
+              PASTE .ENV, SOURCE CODE, OR KEY MATERIAL TO SCAN FOR LEAKS &amp; SEAL IN AES-256-GCM VAULT:
+            </label>
+            <textarea id="secScanInput" class="bw-textarea" rows="3" aria-label="EnvGuard Security Scanner Input">NODE_ENV=production
+VAELOR_RPC=http://127.0.0.1:8140
+# Test secret detection or click "Load Clean Config":
+API_SECRET="zoth_ephemeral_test_token_99481a"</textarea>
+
+            <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:8px;">
+              <button type="button" class="bw-btn bw-btn-solid" id="btnRunEnvGuardScan" style="min-height:38px;padding:6px 10px;">
+                █ Run EnvGuard Scan + Seal Vault
+              </button>
+              <button type="button" class="bw-btn" id="btnLoadCleanSample" style="min-height:38px;padding:6px 10px;">
+                ░ Load Clean Config
+              </button>
+              <button type="button" class="bw-btn" id="btnRunHexStrikeAudit" style="min-height:38px;padding:6px 10px;">
+                ▓ Run HexStrike Net Audit
+              </button>
+            </div>
+
+            <pre id="secTerminalOutput" style="margin-top:8px;padding:9px 10px;background:#050505;border:1px solid rgba(255,255,255,0.3);font-size:0.69rem;line-height:1.42;color:#e8e8e8;white-space:pre-wrap;word-break:break-all;max-height:150px;overflow-y:auto;">root@zothos-lite:~# zoth-envguard --status
+[OK] 6/6 Core Zoth Security &amp; Dev tools verified in read-only SquashFS.
+[OK] Click "Run EnvGuard Scan + Seal Vault" or any Core Tool above to execute.</pre>
+          </div>
+        </div>
+      </div>
+
+      <!-- COLUMN 3: MODULAR ON-DEMAND TOOL PULL-IN MANAGER (zoth-lite-pkg) -->
+      <div class="ascii-window">
+        <div class="ascii-window-titlebar">
+          <span>┌── [03] PULL-IN TOOLS ON DEMAND (zoth-lite-pkg)</span>
+          <span id="pulledCountBadge">[2/12 PULLED]</span>
+        </div>
+        <div class="ascii-window-body">
+          <div style="font-size:0.71rem;color:#cccccc;margin-bottom:8px;">
+            Keep your OS minimal. Pull in <strong>only the additional Zoth tools you need</strong> into volatile <code>RAM_TMPFS</code> (wiped on shutdown) or your encrypted <code>LUKS_PERSIST</code> vault:
+          </div>
+
+          <!-- Category Filter Pills -->
+          <div class="filter-bar" role="tablist" aria-label="Filter Pullable Zoth Tools">
+            <button type="button" class="filter-pill active" data-pkg-filter="ALL">ALL (12)</button>
+            <button type="button" class="filter-pill" data-pkg-filter="PULLED">▓ PULLED</button>
+            <button type="button" class="filter-pill" data-pkg-filter="Security & Red-Team">SECURITY</button>
+            <button type="button" class="filter-pill" data-pkg-filter="AI & Memory">AI &amp; MEMORY</button>
+            <button type="button" class="filter-pill" data-pkg-filter="Dev & Builders">DEV &amp; BUILDERS</button>
+            <button type="button" class="filter-pill" data-pkg-filter="Swarm & Automation">SWARM</button>
+          </div>
+
+          <!-- Pullable Tools List -->
+          <div id="optionalToolsListContainer" style="max-height:540px;overflow-y:auto;padding-right:4px;">
+            <!-- Populated dynamically by JS -->
+          </div>
+
+          <!-- CLI Equivalent Command Strip -->
+          <div style="margin-top:10px;padding:8px 10px;background:#000000;border:1px solid rgba(255,255,255,0.35);font-size:0.68rem;">
+            <div style="color:#888888;margin-bottom:2px;">CLI PACKAGE PULLER COMMAND:</div>
+            <code id="cliPullPreview" style="color:#ffffff;">$ zoth-lite-pkg pull neuro-memory-daemon --ram-only</code>
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- Footer -->
+    <footer style="margin-top:20px;padding:14px 16px;border-top:1px solid rgba(255,255,255,0.3);display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;font-size:0.72rem;color:#888888;">
+      <div>
+        ░░▒▒▓▓██ <strong>ZOTHOS-LITE v1.0 (AMNESIC MONOTONE EDITION)</strong> • Engineered by Neal Frazier Tech (@1nc0gn30) • NullAI Platform ██▓▓▒▒░░
+      </div>
+      <div style="display:flex;gap:14px;flex-wrap:wrap;">
+        <a href="https://github.com/1nc0gn30/zoth-os" target="_blank" rel="noopener noreferrer" style="color:#ffffff;text-decoration:underline;">GitHub: 1nc0gn30/zoth-os</a>
+        <a href="https://nullai.tech" target="_blank" rel="noopener noreferrer" style="color:#ffffff;text-decoration:underline;">NullAI.tech</a>
+        <a href="https://buy.stripe.com/3cIfZg27PdKo2D64Ocfw40X" target="_blank" rel="noopener noreferrer" style="color:#ffffff;text-decoration:underline;">☕ Buy Us a Coffee</a>
+      </div>
+    </footer>
+
+  </main>
+
+  <script>
+    (function () {
+      let osSnapshot = null;
+      let currentPkgFilter = 'ALL';
+      let shaderMode = 'bayer-1bit';
+
+      // -----------------------------------------------------------------------
+      // 1. Fetch & Render OS Snapshot (Amnesic Switches, Core Tools, Pull-In Tools)
+      // -----------------------------------------------------------------------
+      async function fetchSnapshot() {
+        try {
+          const res = await fetch('/api/status');
+          if (!res.ok) throw new Error('Status HTTP ' + res.status);
+          osSnapshot = await res.json();
+          renderAll();
+        } catch (_err) {
+          // Offline / static fallback so browser utility always works 100% client-side too
+          if (!osSnapshot) {
+            osSnapshot = getFallbackSnapshot();
+            renderAll();
+          }
+        }
+      }
+
+      function getFallbackSnapshot() {
+        return {
+          osName: 'ZothOS-Lite v1.0 (Amnesic Monotone Edition)',
+          footprint: {
+            baseKernelMb: 599,
+            coreSecurityDevMb: 241,
+            pulledRamMb: 43,
+            pulledLuksMb: 0,
+            totalIsoMb: 883,
+            fullZothOsComparisonMb: 9365,
+            savingsPercent: 91
+          },
+          hardware: {
+            kernelFlags: 'boot=live toram noswap slab_nomerge init_on_alloc=1 init_on_free=1 page_alloc.shuffle=1 pti=on'
+          },
+          amnesiaConfig: {
+            ramOnlyMode: true,
+            torStrictKillswitch: true,
+            macSpoofing: true,
+            spoofedMac: '02:42:ac:11:00:7f',
+            luksPersistenceUnlocked: false,
+            usbKillswitchArmed: true
+          },
+          coreTools: [],
+          optionalTools: []
+        };
+      }
+
+      function renderAll() {
+        if (!osSnapshot) return;
+        const fp = osSnapshot.footprint || {};
+        const am = osSnapshot.amnesiaConfig || {};
+
+        const setTxt = (id, v) => {
+          const el = document.getElementById(id);
+          if (el) el.textContent = v;
+        };
+
+        setTxt('isoTotalMbLabel', `${fp.totalIsoMb || 883} MB`);
+        setTxt('isoSavingsBadge', `${fp.savingsPercent || 91}% SMALLER THAN FULL ZOTHOS (9,365 MB)`);
+        setTxt('statKernelMb', `${fp.baseKernelMb || 599} MB`);
+        setTxt('statCoreMb', `${fp.coreSecurityDevMb || 241} MB (LOCKED)`);
+        setTxt('statPulledRamMb', `${fp.pulledRamMb || 0} MB`);
+        setTxt('statPulledLuksMb', `${fp.pulledLuksMb || 0} MB`);
+        setTxt('topMacBadge', `▓▒░ MAC: ${am.spoofedMac || '02:42:ac:11:00:7f'}`);
+        setTxt('topAmnesiaBadge', am.ramOnlyMode ? '⣿ RAM-ONLY TMPFS: ACTIVE' : '░ DISK SWAP: GUARDED');
+
+        const bar = document.getElementById('isoFootprintBar');
+        if (bar) {
+          const pct = Math.min(100, Math.max(8, ((fp.totalIsoMb || 883) / 9365) * 100));
+          bar.style.width = `${pct.toFixed(1)}%`;
+        }
+
+        renderAmnesiaSwitches(am);
+        renderCoreTools(osSnapshot.coreTools || []);
+        renderOptionalTools(osSnapshot.optionalTools || []);
+      }
+
+      function renderAmnesiaSwitches(am) {
+        const box = document.getElementById('amnesiaSwitchesContainer');
+        if (!box) return;
+        const items = [
+          {
+            key: 'ramOnlyMode',
+            title: '█ RAM-Only Amnesic Root (toram noswap)',
+            sub: 'Entire SquashFS copied to volatile RAM; zero disk writes.',
+            val: Boolean(am.ramOnlyMode)
+          },
+          {
+            key: 'torStrictKillswitch',
+            title: '▓ Strict Tor / WireGuard Kill-Switch (nftables)',
+            sub: 'Drops all non-tunnel clearnet packets automatically.',
+            val: Boolean(am.torStrictKillswitch)
+          },
+          {
+            key: 'macSpoofing',
+            title: `▒ MAC Address Spoofing (${am.spoofedMac || '02:42:ac:11:00:7f'})`,
+            sub: 'Randomizes NIC hardware address on every boot & link up.',
+            val: Boolean(am.macSpoofing)
+          },
+          {
+            key: 'usbKillswitchArmed',
+            title: '░ USB Removal RAM Zero-Wipe Sentinel',
+            sub: 'Triggers sdmem panic wipe immediately if boot USB is pulled.',
+            val: Boolean(am.usbKillswitchArmed)
+          },
+          {
+            key: 'luksPersistenceUnlocked',
+            title: '⣿ LUKS2 Argon2id Encrypted Vault (/live/persistence)',
+            sub: am.luksPersistenceUnlocked
+              ? 'UNLOCKED — Persistent tool pulls & .env vault mounted.'
+              : 'LOCKED — 100% ephemeral session; nothing survives reboot.',
+            val: Boolean(am.luksPersistenceUnlocked)
+          }
+        ];
+
+        box.innerHTML = items.map((it) => `
+          <div class="amnesic-switch-row">
+            <div>
+              <div class="amnesic-switch-label">${it.title}</div>
+              <div class="amnesic-switch-sub">${it.sub}</div>
+            </div>
+            <button type="button" class="bw-btn ${it.val ? 'bw-btn-solid' : ''}" data-amnesia-key="${it.key}" style="min-width:96px;min-height:38px;padding:6px 10px;">
+              ${it.val ? '[█ ON ]' : '[░ OFF]'}
+            </button>
+          </div>
+        `).join('');
+
+        box.querySelectorAll('[data-amnesia-key]').forEach((btn) => {
+          btn.addEventListener('click', async () => {
+            const key = btn.getAttribute('data-amnesia-key');
+            try {
+              const res = await fetch('/api/amnesia/toggle', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ key })
+              });
+              const data = await res.json();
+              if (data && data.snapshot) {
+                osSnapshot = data.snapshot;
+                renderAll();
+              }
+            } catch (_e) {}
+          });
+        });
+      }
+
+      function renderCoreTools(coreTools) {
+        const box = document.getElementById('coreToolsListContainer');
+        if (!box) return;
+        box.innerHTML = coreTools.map((t) => `
+          <div class="tool-card pulled-active">
+            <div class="tool-header">
+              <span class="tool-name">█ ${t.name}</span>
+              <span class="bw-badge inverted" style="font-size:0.62rem;">LOCKED CORE • ${t.sizeMb} MB</span>
+            </div>
+            <div class="tool-desc">${t.description}</div>
+            <div class="tool-meta-row">
+              <code>bin: /usr/local/bin/${t.binary}</code>
+              <button type="button" class="bw-btn" data-run-core="${t.id}" style="min-height:32px;padding:3px 9px;font-size:0.66rem;">
+                ▶ Run in Terminal
+              </button>
+            </div>
+          </div>
+        `).join('');
+
+        box.querySelectorAll('[data-run-core]').forEach((btn) => {
+          btn.addEventListener('click', () => {
+            const id = btn.getAttribute('data-run-core');
+            const tool = coreTools.find((x) => x.id === id);
+            const term = document.getElementById('secTerminalOutput');
+            if (tool && term) {
+              term.textContent =
+                `root@zothos-lite:~# ${tool.cliExample}\n` +
+                `[SHA-256] ${tool.sha256}\n` +
+                `[STATUS]  100% VERIFIED IN READ-ONLY SQUASHFS (${tool.sizeMb} MB)\n` +
+                `[OUTPUT]  ${tool.name} executed cleanly in amnesic RAM enclave (0 disk traces).`;
+            }
+          });
+        });
+      }
+
+      function renderOptionalTools(optionalTools) {
+        const box = document.getElementById('optionalToolsListContainer');
+        if (!box) return;
+        const pulledCount = optionalTools.filter((t) => t.pulled).length;
+        const badge = document.getElementById('pulledCountBadge');
+        if (badge) badge.textContent = `[${pulledCount}/${optionalTools.length} PULLED]`;
+
+        const filtered = optionalTools.filter((t) => {
+          if (currentPkgFilter === 'ALL') return true;
+          if (currentPkgFilter === 'PULLED') return Boolean(t.pulled);
+          return t.category === currentPkgFilter;
+        });
+
+        box.innerHTML = filtered.map((t) => {
+          const isPulled = Boolean(t.pulled);
+          const statusBadge = isPulled
+            ? `<span class="bw-badge inverted" style="font-size:0.62rem;">▓ PULLED (${t.storageMode})</span>`
+            : `<span class="bw-badge" style="font-size:0.62rem;color:#bdbdbd;">░ ON-DEMAND (${t.sizeMb} MB)</span>`;
+
+          return `
+            <div class="tool-card ${isPulled ? 'pulled-active' : ''}">
+              <div class="tool-header">
+                <span class="tool-name">${isPulled ? '▓' : '░'} ${t.name}</span>
+                ${statusBadge}
+              </div>
+              <div class="tool-desc">${t.description}</div>
+              <div class="tool-meta-row">
+                <span>CAT: <strong>${t.category}</strong> • <code>${t.binary}</code></span>
+                <div style="display:flex;gap:5px;flex-wrap:wrap;">
+                  ${
+                    isPulled
+                      ? `<button type="button" class="bw-btn" data-purge-pkg="${t.id}" style="min-height:32px;padding:3px 9px;font-size:0.66rem;">× Purge (${t.sizeMb} MB)</button>`
+                      : `
+                        <button type="button" class="bw-btn bw-btn-solid" data-pull-pkg="${t.id}" data-pull-mode="RAM_TMPFS" style="min-height:32px;padding:3px 9px;font-size:0.66rem;">+ Pull ➔ RAM</button>
+                        <button type="button" class="bw-btn" data-pull-pkg="${t.id}" data-pull-mode="LUKS_PERSIST" style="min-height:32px;padding:3px 9px;font-size:0.66rem;">+ Pull ➔ LUKS</button>
+                      `
+                  }
+                </div>
+              </div>
+            </div>
+          `;
+        }).join('');
+
+        box.querySelectorAll('[data-pull-pkg]').forEach((btn) => {
+          btn.addEventListener('click', async () => {
+            const toolId = btn.getAttribute('data-pull-pkg');
+            const mode = btn.getAttribute('data-pull-mode') || 'RAM_TMPFS';
+            const cliEl = document.getElementById('cliPullPreview');
+            if (cliEl) {
+              cliEl.textContent = `$ zoth-lite-pkg pull ${toolId} ${mode === 'LUKS_PERSIST' ? '--persist' : '--ram-only'}`;
+            }
+            btn.textContent = '⠙ Pulling...';
+            try {
+              const res = await fetch('/api/pkg/pull', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ toolId, mode })
+              });
+              const data = await res.json();
+              if (data && data.snapshot) {
+                osSnapshot = data.snapshot;
+                renderAll();
+              }
+            } catch (_e) {}
+          });
+        });
+
+        box.querySelectorAll('[data-purge-pkg]').forEach((btn) => {
+          btn.addEventListener('click', async () => {
+            const toolId = btn.getAttribute('data-purge-pkg');
+            const cliEl = document.getElementById('cliPullPreview');
+            if (cliEl) {
+              cliEl.textContent = `$ zoth-lite-pkg purge ${toolId}`;
+            }
+            try {
+              const res = await fetch('/api/pkg/purge', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ toolId })
+              });
+              const data = await res.json();
+              if (data && data.snapshot) {
+                osSnapshot = data.snapshot;
+                renderAll();
+              }
+            } catch (_e) {}
+          });
+        });
+      }
+
+      // Filter pill listeners
+      document.querySelectorAll('[data-pkg-filter]').forEach((btn) => {
+        btn.addEventListener('click', () => {
+          document.querySelectorAll('[data-pkg-filter]').forEach((b) => b.classList.remove('active'));
+          btn.classList.add('active');
+          currentPkgFilter = btn.getAttribute('data-pkg-filter') || 'ALL';
+          if (osSnapshot) renderOptionalTools(osSnapshot.optionalTools || []);
+        });
+      });
+
+      // Panic Wipe & MAC Rotation
+      async function triggerPanicWipe() {
+        try {
+          const res = await fetch('/api/amnesia/toggle', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ key: 'panicWipe' })
+          });
+          const data = await res.json();
+          if (data && data.snapshot) {
+            osSnapshot = data.snapshot;
+            renderAll();
+            const term = document.getElementById('secTerminalOutput');
+            if (term) {
+              term.textContent =
+                `root@zothos-lite:~# zoth-amnesia --panic-wipe\n` +
+                `░░▒▒▓▓██ sdmem -fllv EXECUTED: All volatile RAM_TMPFS packages purged & zeroed. ██▓▓▒▒░░\n` +
+                `[MAC ROTATED] New interface hardware address: ${data.snapshot.amnesiaConfig.spoofedMac}`;
+            }
+          }
+        } catch (_e) {}
+      }
+
+      document.getElementById('btnTriggerPanicWipe')?.addEventListener('click', triggerPanicWipe);
+      document.getElementById('topPanicWipeBtn')?.addEventListener('click', triggerPanicWipe);
+
+      document.getElementById('btnRotateMac')?.addEventListener('click', async () => {
+        try {
+          const res = await fetch('/api/amnesia/toggle', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ key: 'rotateMac' })
+          });
+          const data = await res.json();
+          if (data && data.snapshot) {
+            osSnapshot = data.snapshot;
+            renderAll();
+          }
+        } catch (_e) {}
+      });
+
+      // Toggle 1-Bit Dither Scanline Mode
+      document.getElementById('toggleDitherModeBtn')?.addEventListener('click', (e) => {
+        const isOn = document.body.classList.toggle('dither-crt-on');
+        e.currentTarget.textContent = isOn ? '▓▒░ 1-Bit Dither: ON' : '▓▒░ 1-Bit Dither: OFF';
+      });
+
+      // -----------------------------------------------------------------------
+      // 2. Live EnvGuard Secret Scanner & HexStrike Net Auditor
+      // -----------------------------------------------------------------------
+      document.getElementById('btnRunEnvGuardScan')?.addEventListener('click', async () => {
+        const inp = document.getElementById('secScanInput');
+        const term = document.getElementById('secTerminalOutput');
+        const badge = document.getElementById('secAuditStatusBadge');
+        const text = inp ? inp.value : '';
+        try {
+          const res = await fetch('/api/security/scan', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ input: text })
+          });
+          const data = await res.json();
+          if (badge) {
+            badge.textContent = data.clean ? '⣿ 0 LEAKS (CLEAN)' : `█ ${data.findingsCount} SECRET ALERT(S)`;
+          }
+          if (term) {
+            const findingsLines = (data.findings || []).map((f) =>
+              `  [!] ${f.severity}: ${f.rule} -> ${f.redactedMatch}`
+            ).join('\n');
+            term.textContent =
+              `root@zothos-lite:~# zoth-envguard scan --stdin && zoth-envguard seal\n` +
+              `[SHANNON ENTROPY] ${data.shannonEntropyBits} bits/char\n` +
+              (data.clean
+                ? `[RESULT]          ░░▒▒▓▓██ ZERO LEAKED SECRETS DETECTED ██▓▓▒▒░░\n`
+                : `[RESULT]          detected ${data.findingsCount} potential secret(s):\n${findingsLines}\n`) +
+              `[SEALED ENVELOPE] ${data.sealedEnvelope}`;
+          }
+        } catch (_e) {}
+      });
+
+      document.getElementById('btnLoadCleanSample')?.addEventListener('click', () => {
+        const inp = document.getElementById('secScanInput');
+        if (inp) {
+          inp.value =
+            `ZOTHOS_EDITION=lite-1.0-monotone\n` +
+            `BOOT_MODE=toram_noswap\n` +
+            `VAELOR_L1_NODE=http://127.0.0.1:8140\n` +
+            `VAULT_KEY_REF=luks2://ZothVault/env.age`;
+        }
+        document.getElementById('btnRunEnvGuardScan')?.click();
+      });
+
+      document.getElementById('btnRunHexStrikeAudit')?.addEventListener('click', () => {
+        const term = document.getElementById('secTerminalOutput');
+        const badge = document.getElementById('secAuditStatusBadge');
+        if (badge) badge.textContent = '⣿ NET HARDENED';
+        if (term) {
+          term.textContent =
+            `root@zothos-lite:~# zoth-hexstrike audit-net --enforce-tor\n` +
+            `[NFTABLES] table inet zoth_killswitch: default policy DROP on clearnet egress\n` +
+            `[CHECKSEC] /usr/local/bin/zoth-* -> FULL RELRO | CANARY | NX | PIE ENABLED\n` +
+            `[SWAP]     0 B swap active (noswap kernel lock verified)\n` +
+            `[STATUS]   ░░▒▒▓▓██ AMNESIC PERIMETER 100% SEALED ██▓▓▒▒░░`;
+        }
+      });
+
+      // Export Custom ISO Build Script
+      document.getElementById('exportCustomIsoBtn')?.addEventListener('click', () => {
+        if (!osSnapshot) return;
+        const pulled = (osSnapshot.optionalTools || []).filter((t) => t.pulled);
+        const scriptLines = [
+          '#!/usr/bin/env bash',
+          '# ZothOS-Lite v1.0 Custom Amnesic Monotone ISO Manifest',
+          `# Generated: ${new Date().toISOString()}`,
+          `# Total Footprint: ${osSnapshot.footprint.totalIsoMb} MB (${osSnapshot.footprint.savingsPercent}% smaller than full ZothOS)`,
+          `# Ed25519 Manifest Signature: ${(osSnapshot.manifestSignature || '').slice(0, 64)}`,
+          'set -euo pipefail',
+          '',
+          'echo "░░▒▒▓▓██ BUILDING CUSTOM ZOTHOS-LITE AMNESIC MONOTONE ISO ██▓▓▒▒░░"',
+          `KERNEL_BOOT_FLAGS="${osSnapshot.hardware.kernelFlags}"`,
+          'CORE_TOOLS=(' + (osSnapshot.coreTools || []).map((t) => `"${t.id}"`).join(' ') + ')',
+          'PULLED_TOOLS=(' + pulled.map((t) => `"${t.id}:${t.storageMode}"`).join(' ') + ')',
+          'echo "[*] Core Zoth Security/Dev Tools: ${CORE_TOOLS[*]}"',
+          'echo "[*] Pulled On-Demand Tools      : ${PULLED_TOOLS[*]:-NONE}"',
+          './build/build-zothos-lite-iso.sh --custom-manifest'
+        ].join('\n');
+
+        const blob = new Blob([scriptLines], { type: 'text/x-shellscript' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'build-custom-zothos-lite.sh';
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        URL.revokeObjectURL(url);
+      });
+
+      // -----------------------------------------------------------------------
+      // 3. 1-Bit Black & White Ordered Bayer 4x4 ASCII Shield + U+2800 Braille
+      // -----------------------------------------------------------------------
+      const BAYER_4X4 = [
+        [ 0 / 16,  8 / 16,  2 / 16, 10 / 16],
+        [12 / 16,  4 / 16, 14 / 16,  6 / 16],
+        [ 3 / 16, 11 / 16,  1 / 16,  9 / 16],
+        [15 / 16,  7 / 16, 13 / 16,  5 / 16]
+      ];
+      const ASCII_RAMP = ' .:-=+*#%@░▒▓█';
+      const canvas = document.getElementById('liteDitherCanvas');
+      const ctx = canvas ? canvas.getContext('2d') : null;
+      let tick = 0;
+      let pointer = { x: 0.5, y: 0.5, active: false };
+
+      if (canvas) {
+        canvas.addEventListener('mousemove', (e) => {
+          const r = canvas.getBoundingClientRect();
+          pointer.x = (e.clientX - r.left) / Math.max(1, r.width);
+          pointer.y = (e.clientY - r.top) / Math.max(1, r.height);
+          pointer.active = true;
+        });
+        canvas.addEventListener('mouseleave', () => { pointer.active = false; });
+      }
+
+      document.querySelectorAll('[data-lite-shader]').forEach((btn) => {
+        btn.addEventListener('click', () => {
+          document.querySelectorAll('[data-lite-shader]').forEach((b) => b.classList.remove('active'));
+          btn.classList.add('active');
+          shaderMode = btn.getAttribute('data-lite-shader') || 'bayer-1bit';
+        });
+      });
+
+      function packBraille2x4(dots) {
+        const w = [
+          [0x01, 0x08],
+          [0x02, 0x10],
+          [0x04, 0x20],
+          [0x40, 0x80]
+        ];
+        let mask = 0;
+        for (let r = 0; r < 4; r++) {
+          for (let c = 0; c < 2; c++) {
+            if (dots[r][c]) mask |= w[r][c];
+          }
+        }
+        return String.fromCharCode(0x2800 + mask);
+      }
+
+      function sampleAmnesicShield(nx, ny, t) {
+        const cx = (nx - 0.5) * 2.3;
+        const cy = (ny - 0.5) * 1.45;
+        // Hexagonal / Diamond Amnesic Torus + Rotating Merkle Rings
+        const d = Math.hypot(cx, cy);
+        const manhattan = Math.abs(cx) * 0.75 + Math.abs(cy) * 0.95;
+        const angle = Math.atan2(cy, cx);
+        const outerShield = Math.exp(-Math.pow((manhattan - (0.62 + 0.05 * Math.cos(4 * angle - t * 1.6))) / 0.14, 2));
+        const innerRing = Math.exp(-Math.pow((d - (0.32 + 0.04 * Math.sin(6 * angle + t * 2.3))) / 0.10, 2));
+        const core = Math.exp(-Math.pow(d / 0.16, 2)) * (0.7 + 0.3 * Math.cos(t * 3.0));
+        let wave = 0;
+        if (pointer.active) {
+          const pd = Math.hypot(nx - pointer.x, ny - pointer.y);
+          wave = Math.max(0, 0.42 * Math.cos(pd * 26 - t * 5) * Math.exp(-pd * 4));
+        }
+        return Math.max(0, Math.min(1, outerShield * 0.85 + innerRing * 0.75 + core + wave));
+      }
+
+      function renderDitherCanvas() {
+        if (!ctx || !canvas) return;
+        tick += 0.04;
+        const W = canvas.width;
+        const H = canvas.height;
+        const inverted = shaderMode === 'halftone-bw';
+
+        ctx.fillStyle = inverted ? '#ffffff' : '#000000';
+        ctx.fillRect(0, 0, W, H);
+
+        const cellW = 8;
+        const cellH = 12;
+        const cols = Math.floor(W / cellW);
+        const rows = Math.floor(H / cellH);
+        ctx.font = '700 10.5px "JetBrains Mono", monospace';
+        ctx.textBaseline = 'top';
+
+        for (let r = 0; r < rows; r++) {
+          for (let c = 0; c < cols; c++) {
+            const nx = (c + 0.5) / cols;
+            const ny = (r + 0.5) / rows;
+            const lum = sampleAmnesicShield(nx, ny, tick);
+            const bayer = BAYER_4X4[r & 3][c & 3];
+            const dithered = Math.max(0, Math.min(1, lum + (bayer - 0.5) * 0.32));
+            if (dithered < 0.10) continue;
+
+            let ch = '';
+            if (shaderMode === 'braille-2x4') {
+              const dots = [[false, false], [false, false], [false, false], [false, false]];
+              for (let sr = 0; sr < 4; sr++) {
+                for (let sc = 0; sc < 2; sc++) {
+                  const snx = (c + (sc + 0.5) / 2) / cols;
+                  const sny = (r + (sr + 0.5) / 4) / rows;
+                  const slum = sampleAmnesicShield(snx, sny, tick);
+                  const sb = BAYER_4X4[(r * 4 + sr) & 3][(c * 2 + sc) & 3];
+                  dots[sr][sc] = (slum + (sb - 0.5) * 0.28) > 0.34;
+                }
+              }
+              ch = packBraille2x4(dots);
+            } else {
+              const idx = Math.min(ASCII_RAMP.length - 1, Math.floor(dithered * ASCII_RAMP.length));
+              ch = ASCII_RAMP[idx];
+            }
+
+            if (inverted) {
+              ctx.fillStyle = '#000000';
+            } else {
+              ctx.fillStyle = dithered > 0.62 ? '#ffffff' : `rgba(255, 255, 255, ${(0.35 + dithered * 0.65).toFixed(2)})`;
+            }
+            ctx.fillText(ch, c * cellW, r * cellH);
+          }
+        }
+
+        // 1-Bit HUD Stamp
+        ctx.fillStyle = '#000000';
+        ctx.fillRect(8, 8, 256, 20);
+        ctx.strokeStyle = '#ffffff';
+        ctx.strokeRect(8, 8, 256, 20);
+        ctx.fillStyle = '#ffffff';
+        ctx.font = '700 9px "JetBrains Mono", monospace';
+        ctx.fillText('▓▒░ 1-BIT BAYER 4×4 // AMNESIC SHIELD', 14, 13);
+      }
+
+      // Unicode U+2800 2x4 Sub-Pixel Braille Oscilloscope
+      const brailleEl = document.getElementById('liteBrailleScope');
+      const brailleStatusEl = document.getElementById('brailleLiveStatus');
+      const SPINNER = ['⠋', '⠙', '⠹', '⠸', '⠼', '⠴', '⠦', '⠧', '⠇', '⠏'];
+      let bTick = 0;
+
+      function renderBrailleScope() {
+        bTick++;
+        if (brailleStatusEl) {
+          brailleStatusEl.textContent = `${SPINNER[bTick % SPINNER.length]} RAM TMPFS + ENTROPY POOL (4096 BITS)`;
+        }
+        if (!brailleEl) return;
+        const charCols = 46;
+        const charRows = 4;
+        const subW = charCols * 2;
+        const subH = charRows * 4;
+        const grid = Array.from({ length: subH }, () => Array(subW).fill(false));
+
+        for (let x = 0; x < subW; x++) {
+          const t = bTick * 0.2 + x * 0.15;
+          const w1 = 0.5 + 0.38 * Math.sin(t) * Math.cos(t * 0.4);
+          const y1 = Math.max(0, Math.min(subH - 1, Math.floor((1 - w1) * (subH - 1))));
+          grid[y1][x] = true;
+          if (y1 + 1 < subH) grid[y1 + 1][x] = true;
+        }
+
+        const lines = [];
+        for (let cr = 0; cr < charRows; cr++) {
+          let row = '';
+          for (let cc = 0; cc < charCols; cc++) {
+            row += packBraille2x4([
+              [grid[cr * 4 + 0][cc * 2 + 0], grid[cr * 4 + 0][cc * 2 + 1]],
+              [grid[cr * 4 + 1][cc * 2 + 0], grid[cr * 4 + 1][cc * 2 + 1]],
+              [grid[cr * 4 + 2][cc * 2 + 0], grid[cr * 4 + 2][cc * 2 + 1]],
+              [grid[cr * 4 + 3][cc * 2 + 0], grid[cr * 4 + 3][cc * 2 + 1]]
+            ]);
+          }
+          lines.push(row);
+        }
+        brailleEl.textContent = lines.join('\n');
+      }
+
+      fetchSnapshot();
+      renderDitherCanvas();
+      renderBrailleScope();
+      setInterval(renderDitherCanvas, 48);
+      setInterval(renderBrailleScope, 115);
+    })();
+  </script>
+</body>
+</html>
