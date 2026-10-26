@@ -4,12 +4,12 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>ZOTHOS-LITE v1.0 — Amnesic Monotone Desktop GUI (Tails-Style Security OS)</title>
-  <meta name="description" content="ZothOS-Lite v1.0 Graphical Desktop Environment (GUI). A Tails-style RAM-only amnesic operating system featuring high-craft white background, black fill, monotone grey shades, animated Unicode U+2800 Braille, Ordered Bayer 4x4 dither, and ASCII aesthetics." />
+  <meta name="description" content="ZothOS-Lite v1.0 Graphical Desktop Environment (GUI). A Tails-style RAM-only amnesic operating system featuring a true non-scrolling OS desktop, draggable/minimizable/closable windows, white background, black fill, monotone grey shades, animated Unicode U+2800 Braille, Ordered Bayer 4x4 dither, and ASCII aesthetics." />
   <link rel="canonical" href="https://zothos-lite.nullai.tech/" />
 
   <!-- OpenGraph & Twitter Meta -->
   <meta property="og:title" content="ZOTHOS-LITE v1.0 — Amnesic Monotone Desktop GUI" />
-  <meta property="og:description" content="Tails-style RAM-only amnesic security OS with a pure White, Black Fill, and Monotone Grey animated Braille/Dither/ASCII Graphical Desktop Environment." />
+  <meta property="og:description" content="Tails-style RAM-only amnesic security OS with a pure White, Black Fill, and Monotone Grey animated Braille/Dither/ASCII Graphical Window Manager." />
   <meta property="og:url" content="https://zothos-lite.nullai.tech/" />
   <meta property="og:type" content="website" />
   <meta property="og:image" content="https://zothos-lite.nullai.tech/og-zothos-lite.svg" />
@@ -36,7 +36,7 @@
         "url": "https://zothos-lite.nullai.tech/",
         "applicationCategory": "OperatingSystem",
         "operatingSystem": "Linux (Debian 13 Live RAM-Only SquashFS / x86_64)",
-        "description": "Tails-style RAM-only amnesic security and developer operating system with a pure White, Black Fill, and Monotone Grey animated Braille, Bayer 4x4 Dither, and ASCII graphical desktop environment.",
+        "description": "Tails-style RAM-only amnesic security and developer operating system with a pure White, Black Fill, and Monotone Grey animated Braille, Bayer 4x4 Dither, and ASCII graphical desktop window manager.",
         "offers": {
           "@type": "Offer",
           "price": "0",
@@ -56,7 +56,7 @@
             "name": "How does the ZothOS-Lite Graphical Desktop (GUI) work like Tails?",
             "acceptedAnswer": {
               "@type": "Answer",
-              "text": "ZothOS-Lite boots entirely into volatile RAM (toram noswap) and launches an X11 graphical desktop featuring the ZothOS-Lite Amnesic Greeter, Tor Connection & Kill-Switch Assistant, the 6 Locked Core Zoth Security/Dev Tools, and the zoth-lite-pkg On-Demand Modular Tool Puller."
+              "text": "ZothOS-Lite boots entirely into volatile RAM (toram noswap) and launches an X11 graphical window manager featuring the ZothOS-Lite Amnesic Greeter, Tor Connection & Kill-Switch Assistant, the 6 Locked Core Zoth Security/Dev Tools, and the zoth-lite-pkg On-Demand Modular Tool Puller."
             }
           },
           {
@@ -101,7 +101,6 @@
       /* Ordered Bayer 4x4 Halftone Pattern in Subtle Monotone Grey */
       --bayer-dots-light: radial-gradient(rgba(10, 10, 10, 0.14) 1px, transparent 1px);
       --bayer-dots-med: radial-gradient(rgba(10, 10, 10, 0.28) 1px, transparent 1px);
-      --bayer-check-grey: repeating-conic-gradient(rgba(10, 10, 10, 0.08) 0% 25%, transparent 0% 50%);
     }
 
     * {
@@ -110,15 +109,16 @@
       padding: 0;
     }
 
+    /* STRICT NON-SCROLLING FULL-VIEWPORT OS DESKTOP */
     html, body {
-      width: 100%;
-      min-height: 100vh;
+      width: 100vw;
+      height: 100vh;
+      overflow: hidden;
       background-color: var(--bg-white);
       color: var(--fill-black);
       font-family: var(--font-mono);
-      font-size: 13px;
-      line-height: 1.45;
-      overflow-x: hidden;
+      font-size: 12.5px;
+      line-height: 1.42;
       -webkit-font-smoothing: antialiased;
       user-select: none;
     }
@@ -128,41 +128,38 @@
     }
 
     /* =========================================================================
-       DESKTOP SHELL LAYOUT (TAILS-STYLE TOP PANEL + DESKTOP WORKSPACE + DOCK)
+       OS DESKTOP SHELL (FIXED TOP BAR 38px + DESKTOP STAGE + FIXED BOTTOM DOCK 42px)
        ========================================================================= */
     .os-desktop-shell {
       position: relative;
-      width: 100%;
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
+      width: 100vw;
+      height: 100vh;
+      display: grid;
+      grid-template-rows: 38px 1fr 42px;
       background-color: var(--bg-white);
       background-image:
-        linear-gradient(to right, rgba(10, 10, 10, 0.04) 1px, transparent 1px),
-        linear-gradient(to bottom, rgba(10, 10, 10, 0.04) 1px, transparent 1px);
+        linear-gradient(to right, rgba(10, 10, 10, 0.045) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(10, 10, 10, 0.045) 1px, transparent 1px);
       background-size: 24px 24px;
-      overflow-x: hidden;
+      overflow: hidden;
     }
 
     /* Animated Braille + Bayer Dither Background Canvas */
     #desktopWallpaperCanvas {
-      position: fixed;
-      inset: 38px 0 48px 0;
+      position: absolute;
+      inset: 38px 0 42px 0;
       width: 100%;
-      height: calc(100vh - 86px);
+      height: calc(100vh - 80px);
       pointer-events: none;
       z-index: 0;
-      opacity: 0.92;
     }
 
     /* =========================================================================
-       1. TAILS-STYLE TOP SYSTEM BAR (BLACK FILL + WHITE & MONOTONE GREY PILLS)
+       1. TAILS-STYLE TOP SYSTEM BAR (38px FIXED)
        ========================================================================= */
     .tails-top-panel {
-      position: sticky;
-      top: 0;
-      z-index: 200;
+      position: relative;
+      z-index: 500;
       height: 38px;
       background: var(--fill-black);
       color: var(--bg-pure-white);
@@ -170,14 +167,14 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 0 12px;
-      gap: 8px;
+      padding: 0 10px;
+      gap: 6px;
     }
 
     .panel-left, .panel-center, .panel-right {
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 6px;
     }
 
     .panel-menu-btn {
@@ -192,10 +189,11 @@
       font-family: var(--font-mono);
       font-size: 11px;
       font-weight: 700;
-      letter-spacing: 0.05em;
+      letter-spacing: 0.04em;
       text-transform: uppercase;
       cursor: pointer;
-      transition: all 100ms ease;
+      text-decoration: none;
+      white-space: nowrap;
     }
     .panel-menu-btn:hover, .panel-menu-btn.active {
       background: var(--bg-grey-200);
@@ -205,13 +203,13 @@
     .panel-status-pill {
       display: inline-flex;
       align-items: center;
-      gap: 6px;
+      gap: 5px;
       height: 24px;
       padding: 0 8px;
       background: #1C1C1A;
       color: #E6E6E0;
       border: 1px solid #4A4A44;
-      font-size: 11px;
+      font-size: 10.5px;
       font-weight: 500;
       white-space: nowrap;
     }
@@ -220,48 +218,76 @@
       font-weight: 700;
     }
 
-    .panel-panic-btn {
-      display: inline-flex;
-      align-items: center;
-      gap: 5px;
-      height: 26px;
-      padding: 0 10px;
+    /* Applications Dropdown Menu from Top Bar */
+    .apps-dropdown-menu {
+      position: absolute;
+      top: 38px;
+      left: 10px;
+      width: 290px;
       background: var(--bg-pure-white);
-      color: var(--pure-black);
-      border: 1px solid var(--bg-pure-white);
+      color: var(--fill-black);
+      border: 2px solid var(--fill-black);
+      box-shadow: 6px 6px 0px var(--fill-black);
+      z-index: 900;
+      display: none;
+      flex-direction: column;
+    }
+    .apps-dropdown-menu.open {
+      display: flex;
+    }
+    .apps-dropdown-header {
+      padding: 6px 10px;
+      background: var(--fill-black);
+      color: var(--bg-pure-white);
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+    .apps-dropdown-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 10px;
+      background: var(--bg-pure-white);
+      color: var(--fill-black);
+      border: none;
+      border-bottom: 1px solid var(--bg-grey-100);
       font-family: var(--font-mono);
       font-size: 11px;
       font-weight: 700;
-      text-transform: uppercase;
+      text-align: left;
       cursor: pointer;
     }
-    .panel-panic-btn:hover {
-      background: #D4D4CE;
+    .apps-dropdown-item:hover {
+      background: var(--fill-black);
+      color: var(--bg-pure-white);
     }
 
     /* =========================================================================
-       2. DESKTOP WORKSPACE AREA (ICONS RAIL + WINDOW MANAGER STAGE)
+       2. NON-SCROLLING DESKTOP WORKSPACE AREA (ICONS + FLOATING WINDOW STAGE)
        ========================================================================= */
     .desktop-workspace {
       position: relative;
       z-index: 10;
-      flex: 1;
-      display: grid;
-      grid-template-columns: 118px 1fr;
-      gap: 14px;
-      padding: 14px 16px 64px 14px;
-      max-width: 1760px;
       width: 100%;
-      margin: 0 auto;
-      align-items: start;
+      height: calc(100vh - 80px);
+      overflow: hidden;
+      display: grid;
+      grid-template-columns: 112px 1fr;
     }
 
-    /* Left Desktop Shortcut Icons Rail (Tails / Classic Monotone Workstation) */
+    /* Left Desktop Shortcut Icons Rail */
     .desktop-icons-rail {
+      height: 100%;
+      padding: 10px 8px;
       display: flex;
       flex-direction: column;
-      gap: 8px;
-      z-index: 20;
+      gap: 7px;
+      z-index: 30;
+      overflow-y: auto;
+      border-right: 1px dashed rgba(10, 10, 10, 0.22);
+      background: rgba(247, 247, 244, 0.65);
     }
 
     .desktop-icon-btn {
@@ -270,109 +296,135 @@
       align-items: center;
       justify-content: center;
       text-align: center;
-      gap: 4px;
-      padding: 8px 6px;
-      min-height: 68px;
-      background: rgba(255, 255, 255, 0.92);
+      gap: 3px;
+      padding: 6px 4px;
+      min-height: 58px;
+      background: var(--bg-pure-white);
       color: var(--fill-black);
       border: 1.5px solid var(--fill-black);
       box-shadow: 3px 3px 0px var(--fill-black);
       font-family: var(--font-mono);
       cursor: pointer;
-      transition: transform 90ms ease, background 90ms ease, color 90ms ease;
+      transition: transform 80ms ease, background 80ms ease;
     }
     .desktop-icon-btn:hover {
       background: var(--bg-grey-100);
       transform: translate(-1px, -1px);
-      box-shadow: 4px 4px 0px var(--fill-black);
     }
-    .desktop-icon-btn.active {
+    .desktop-icon-btn.focused {
       background: var(--fill-black);
       color: var(--bg-pure-white);
-      box-shadow: 3px 3px 0px var(--fg-grey-600);
     }
     .desktop-icon-glyph {
-      font-size: 16px;
+      font-size: 13px;
       font-weight: 700;
-      letter-spacing: -0.03em;
-      line-height: 1.1;
-      padding: 2px 6px;
+      padding: 1px 5px;
       border: 1px dashed currentColor;
     }
     .desktop-icon-label {
-      font-size: 10px;
+      font-size: 9.5px;
       font-weight: 700;
-      line-height: 1.2;
-      letter-spacing: 0.02em;
+      line-height: 1.15;
       text-transform: uppercase;
     }
 
     /* =========================================================================
-       3. OS WINDOW STAGE & MONOTONE WINDOW CARDS (WHITE BG + BLACK FILL)
+       3. FLOATING / TILEABLE / MINIMIZABLE / CLOSABLE OS WINDOWS STAGE
        ========================================================================= */
     .os-window-stage {
-      display: flex;
-      flex-direction: column;
-      gap: 14px;
+      position: relative;
       width: 100%;
+      height: 100%;
+      overflow: hidden;
+      padding: 10px;
     }
 
-    /* Animated ASCII + Braille Status Banner inside Desktop */
-    .desktop-braille-ribbon {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      flex-wrap: wrap;
-      gap: 10px;
-      padding: 8px 12px;
-      background: var(--bg-pure-white);
+    /* Desktop Background Watermark Widget (Visible when windows are minimized/closed) */
+    .desktop-watermark-hud {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      text-align: center;
+      pointer-events: none;
+      z-index: 1;
+      padding: 18px 26px;
+      background: rgba(255, 255, 255, 0.88);
       border: 1.5px solid var(--fill-black);
-      box-shadow: 3px 3px 0px var(--fill-black);
+      box-shadow: 4px 4px 0px rgba(10, 10, 10, 0.18);
     }
 
-    /* High-Craft Monotone OS Window */
+    /* Floating OS Window */
     .os-window {
+      position: absolute;
       background: var(--bg-pure-white);
       color: var(--fill-black);
       border: 2px solid var(--fill-black);
-      box-shadow: 5px 5px 0px var(--fill-black);
+      box-shadow: 4px 4px 0px rgba(10, 10, 10, 0.35);
       display: flex;
       flex-direction: column;
       overflow: hidden;
-      transition: box-shadow 120ms ease;
+      transition: opacity 110ms ease, transform 110ms ease;
     }
 
+    .os-window.focused-window {
+      box-shadow: 6px 6px 0px var(--fill-black);
+      border-color: var(--pure-black);
+    }
+
+    .os-window.win-minimized {
+      opacity: 0;
+      pointer-events: none;
+      transform: translateY(24px) scale(0.95);
+    }
+
+    .os-window.win-closed {
+      display: none !important;
+    }
+
+    .os-window.win-maximized {
+      top: 8px !important;
+      left: 8px !important;
+      width: calc(100% - 16px) !important;
+      height: calc(100% - 16px) !important;
+    }
+
+    /* Window Titlebar (Draggable Handle) */
     .os-window-titlebar {
-      height: 32px;
-      background: var(--fill-black);
-      color: var(--bg-pure-white);
+      height: 30px;
+      min-height: 30px;
+      background-color: var(--bg-grey-100);
+      background-image: var(--bayer-dots-med);
+      background-size: 4px 4px;
+      color: var(--fill-black);
       border-bottom: 2px solid var(--fill-black);
-      padding: 0 10px;
+      padding: 0 8px;
       display: flex;
       align-items: center;
       justify-content: space-between;
       gap: 8px;
       font-size: 11px;
       font-weight: 700;
-      letter-spacing: 0.06em;
+      letter-spacing: 0.05em;
       text-transform: uppercase;
+      cursor: move;
     }
 
-    /* Monotone Grey Dithered Titlebar Variant for Secondary Windows */
-    .os-window-titlebar.grey-dither-bar {
-      background-color: var(--bg-grey-100);
-      background-image: var(--bayer-dots-med);
-      background-size: 4px 4px;
-      color: var(--fill-black);
+    /* Active Focused Window gets Solid Ink-Black Titlebar with White Text */
+    .os-window.focused-window .os-window-titlebar {
+      background-color: var(--fill-black);
+      background-image: none;
+      color: var(--bg-pure-white);
     }
 
     .win-title-left {
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 6px;
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
+      pointer-events: none;
     }
 
     .win-controls {
@@ -381,62 +433,51 @@
       gap: 4px;
     }
 
-    .win-ctrl-box {
+    .win-ctrl-btn {
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      width: 20px;
+      width: 21px;
       height: 20px;
       background: var(--bg-pure-white);
       color: var(--fill-black);
-      border: 1px solid var(--fill-black);
-      font-size: 10px;
+      border: 1.5px solid var(--fill-black);
+      font-family: var(--font-mono);
+      font-size: 10.5px;
       font-weight: 700;
+      line-height: 1;
       cursor: pointer;
     }
-    .win-ctrl-box:hover {
+    .win-ctrl-btn:hover {
       background: var(--bg-grey-200);
     }
+    .win-ctrl-btn.close-btn:hover {
+      background: var(--fill-black);
+      color: var(--bg-pure-white);
+      border-color: var(--bg-pure-white);
+    }
 
+    /* Window Body scrolls internally so the OS desktop never scrolls */
     .os-window-body {
-      padding: 14px;
+      flex: 1;
+      padding: 12px;
       background: var(--bg-pure-white);
+      overflow-y: auto;
+      overflow-x: hidden;
     }
 
     /* =========================================================================
-       4. TAILS GREETER + TOR CONNECTION + SYSTEM MONITOR GRID
+       4. UI COMPONENTS INSIDE WINDOWS (MONOTONE WHITE / BLACK FILL / GREYS)
        ========================================================================= */
-    .desktop-main-grid {
-      display: grid;
-      grid-template-columns: 1.15fr 0.85fr;
-      gap: 14px;
-      align-items: stretch;
-    }
-
-    .desktop-3col-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 14px;
-      align-items: stretch;
-    }
-
-    .desktop-2col-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 14px;
-      align-items: stretch;
-    }
-
-    /* Monotone Buttons (Black Fill vs White Outline vs Grey Shade) */
     .mono-btn {
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      gap: 6px;
-      min-height: 36px;
-      padding: 6px 12px;
+      gap: 5px;
+      min-height: 30px;
+      padding: 4px 10px;
       font-family: var(--font-mono);
-      font-size: 11px;
+      font-size: 10.5px;
       font-weight: 700;
       letter-spacing: 0.04em;
       text-transform: uppercase;
@@ -446,12 +487,11 @@
       box-shadow: 2px 2px 0px var(--fill-black);
       cursor: pointer;
       text-decoration: none;
-      transition: all 90ms ease;
+      transition: all 80ms ease;
     }
     .mono-btn:hover {
       background: var(--bg-grey-100);
       transform: translate(-1px, -1px);
-      box-shadow: 3px 3px 0px var(--fill-black);
     }
     .mono-btn-black {
       background: var(--fill-black);
@@ -461,32 +501,24 @@
       background: var(--fg-grey-800);
       color: var(--bg-pure-white);
     }
-    .mono-btn-grey {
-      background: var(--bg-grey-100);
-      color: var(--fill-black);
-    }
 
-    /* Tails Greeter Setting Row (White Card with Black Fill Toggle) */
     .tails-greeter-row {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 10px;
-      padding: 9px 11px;
+      gap: 8px;
+      padding: 7px 10px;
       background: var(--bg-grey-50);
       border: 1px solid var(--fill-black);
-      margin-bottom: 8px;
-    }
-    .tails-greeter-row:last-child {
-      margin-bottom: 0;
+      margin-bottom: 6px;
     }
 
     .tails-toggle-pill {
-      min-width: 78px;
-      min-height: 30px;
-      padding: 4px 10px;
+      min-width: 74px;
+      min-height: 28px;
+      padding: 3px 8px;
       font-family: var(--font-mono);
-      font-size: 11px;
+      font-size: 10.5px;
       font-weight: 700;
       border: 1.5px solid var(--fill-black);
       cursor: pointer;
@@ -501,42 +533,29 @@
       color: var(--fg-grey-600);
     }
 
-    /* Animated Braille + Bayer Dither Viewport Box (White BG with Black Ink Fill) */
     .dither-stage-box {
       background: var(--bg-pure-white);
       border: 1.5px solid var(--fill-black);
-      padding: 8px;
-      position: relative;
+      padding: 6px;
     }
 
     .braille-wave-strip {
       background: var(--bg-grey-50);
       border: 1px solid var(--fill-black);
-      padding: 6px 10px;
+      padding: 5px 8px;
       font-family: var(--font-mono);
-      font-size: 12px;
-      letter-spacing: 0.08em;
+      font-size: 11.5px;
+      letter-spacing: 0.06em;
       color: var(--fill-black);
-      overflow-x: auto;
+      overflow-x: hidden;
       white-space: pre;
     }
 
-    /* Package / Tool Cards */
-    .pkg-list-scroll {
-      max-height: 350px;
-      overflow-y: auto;
-      padding-right: 4px;
-    }
-
     .pkg-card-mono {
-      padding: 10px;
+      padding: 9px;
       background: var(--bg-pure-white);
       border: 1.5px solid var(--fill-black);
-      margin-bottom: 8px;
-      transition: background 90ms ease;
-    }
-    .pkg-card-mono:hover {
-      background: var(--bg-grey-50);
+      margin-bottom: 7px;
     }
     .pkg-card-mono.pulled-active {
       background-color: var(--bg-grey-50);
@@ -550,7 +569,7 @@
       padding: 2px 6px;
       background: var(--fill-black);
       color: var(--bg-pure-white);
-      font-size: 10px;
+      font-size: 9.5px;
       font-weight: 700;
       letter-spacing: 0.05em;
       text-transform: uppercase;
@@ -561,136 +580,136 @@
       background: var(--bg-grey-100);
       color: var(--fill-black);
       border: 1px solid var(--fill-black);
-      font-size: 10px;
+      font-size: 9.5px;
       font-weight: 700;
       letter-spacing: 0.05em;
       text-transform: uppercase;
     }
 
-    /* Monotone Inputs & Terminal Outputs */
     .mono-input {
       width: 100%;
-      min-height: 34px;
-      padding: 6px 10px;
+      min-height: 30px;
+      padding: 5px 8px;
       background: var(--bg-pure-white);
       color: var(--fill-black);
       border: 1.5px solid var(--fill-black);
       font-family: var(--font-mono);
-      font-size: 12px;
+      font-size: 11.5px;
       outline: none;
-    }
-    .mono-input:focus {
-      background: var(--bg-grey-50);
-      box-shadow: 2px 2px 0px var(--fill-black);
     }
 
     .mono-console-output {
       background: var(--fill-black);
       color: var(--bg-pure-white);
       border: 1.5px solid var(--fill-black);
-      padding: 10px;
+      padding: 8px;
       font-family: var(--font-mono);
-      font-size: 11.5px;
-      line-height: 1.48;
+      font-size: 11px;
+      line-height: 1.45;
       white-space: pre-wrap;
       word-break: break-word;
       overflow-y: auto;
     }
 
-    /* Monotone Footprint Segmented Progress Bar */
     .footprint-bar-wrap {
-      height: 20px;
+      height: 16px;
       background: var(--bg-grey-50);
       border: 1.5px solid var(--fill-black);
       display: flex;
       overflow: hidden;
     }
-    .fp-seg-kernel {
-      background: var(--fill-black);
-      height: 100%;
-      transition: width 220ms ease;
-    }
-    .fp-seg-core {
-      background: var(--fg-grey-600);
-      height: 100%;
-      transition: width 220ms ease;
-    }
+    .fp-seg-kernel { background: var(--fill-black); height: 100%; }
+    .fp-seg-core { background: var(--fg-grey-600); height: 100%; }
     .fp-seg-pulled {
       background-color: var(--bg-grey-200);
       background-image: var(--bayer-dots-med);
       background-size: 4px 4px;
       height: 100%;
-      transition: width 220ms ease;
     }
 
     /* =========================================================================
-       5. BOTTOM TAILS / ZOTHOS-LITE TASKBAR & DOCK
+       5. BOTTOM TAILS / ZOTHOS-LITE TASKBAR & WINDOW MANAGER DOCK (42px FIXED)
        ========================================================================= */
     .tails-bottom-dock {
-      position: fixed;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      z-index: 200;
-      height: 44px;
+      position: relative;
+      z-index: 500;
+      height: 42px;
       background: var(--bg-pure-white);
       border-top: 2px solid var(--fill-black);
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 0 12px;
+      padding: 0 10px;
       gap: 8px;
-      box-shadow: 0 -2px 0 rgba(10, 10, 10, 0.08);
     }
 
     .dock-tasks {
       display: flex;
       align-items: center;
-      gap: 6px;
+      gap: 5px;
       overflow-x: auto;
+      flex: 1;
     }
 
     .dock-task-btn {
       display: inline-flex;
       align-items: center;
-      gap: 6px;
-      height: 30px;
-      padding: 0 10px;
+      gap: 5px;
+      height: 28px;
+      padding: 0 9px;
       background: var(--bg-grey-50);
       color: var(--fill-black);
       border: 1.5px solid var(--fill-black);
       font-family: var(--font-mono);
-      font-size: 11px;
+      font-size: 10.5px;
       font-weight: 700;
       white-space: nowrap;
       cursor: pointer;
     }
-    .dock-task-btn.active, .dock-task-btn:hover {
+    .dock-task-btn.win-open {
+      background: var(--bg-grey-100);
+      box-shadow: 2px 2px 0px var(--fill-black);
+    }
+    .dock-task-btn.win-focused {
       background: var(--fill-black);
       color: var(--bg-pure-white);
+      box-shadow: 2px 2px 0px var(--fg-grey-600);
+    }
+    .dock-task-btn.win-is-minimized {
+      border-style: dashed;
+      color: var(--fg-grey-600);
     }
 
-    @media (max-width: 1180px) {
-      .desktop-main-grid, .desktop-3col-grid {
-        grid-template-columns: 1fr 1fr;
-      }
+    .dock-wm-controls {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      white-space: nowrap;
     }
-    @media (max-width: 860px) {
+
+    @media (max-width: 900px) {
       .desktop-workspace {
         grid-template-columns: 1fr;
-        padding: 10px 10px 64px 10px;
+        grid-template-rows: 64px 1fr;
       }
       .desktop-icons-rail {
         flex-direction: row;
+        height: 64px;
         overflow-x: auto;
-        padding-bottom: 4px;
+        overflow-y: hidden;
+        border-right: none;
+        border-bottom: 1px dashed rgba(10, 10, 10, 0.25);
+        padding: 4px 6px;
       }
       .desktop-icon-btn {
-        min-width: 96px;
-        min-height: 58px;
+        min-width: 86px;
+        min-height: 50px;
       }
-      .desktop-main-grid, .desktop-3col-grid, .desktop-2col-grid {
-        grid-template-columns: 1fr;
+      .os-window {
+        top: 6px !important;
+        left: 6px !important;
+        width: calc(100% - 12px) !important;
+        height: calc(100% - 12px) !important;
       }
       .panel-center {
         display: none;
@@ -705,18 +724,18 @@
     <canvas id="desktopWallpaperCanvas" width="1440" height="820" aria-label="Animated Monotone Braille and Ordered Bayer Dither Desktop Wallpaper"></canvas>
 
     <!-- =======================================================================
-         TOP SYSTEM PANEL (TAILS-STYLE AMNESIC STATUS & SYSTEM MENU)
+         TOP SYSTEM PANEL (TAILS-STYLE APPLICATIONS MENU, TOR & AMNESIC TELEMETRY)
          ======================================================================= -->
     <header class="tails-top-panel" role="banner">
       <div class="panel-left">
-        <button type="button" class="panel-menu-btn active" id="focusGreeterBtn" title="Open ZothOS-Lite Applications & Greeter">
-          <span>◈ ZOTHOS-LITE v1.0</span>
+        <button type="button" class="panel-menu-btn" id="appsMenuToggleBtn" title="Open ZothOS-Lite Applications Menu">
+          <span>◈ Applications ▾</span>
         </button>
         <span class="panel-status-pill" id="topAmnesicBadge" title="Volatile RAM-Only Root Filesystem">
-          ⣿ <b>TORAM NOSWAP:</b> ACTIVE
+          ⣿ <b>TORAM NOSWAP</b>
         </span>
         <span class="panel-status-pill" id="topTorBadge" title="Tor Transparent Proxy & nftables Kill-Switch">
-          ▓▒░ <b>TOR CIRCUIT:</b> GUARDED (9050)
+          ▓▒░ <b>TOR:</b> GUARDED (9050)
         </span>
         <span class="panel-status-pill" id="topMacBadge" title="Randomized Ephemeral NIC MAC Address">
           <b>MAC:</b> <span id="topMacValue">02:42:ac:11:00:7f</span>
@@ -725,423 +744,494 @@
 
       <div class="panel-center">
         <span class="panel-status-pill">
-          <b>GUI:</b> WHITE / BLACK FILL / MONOTONE GREY • <span id="topClockUtc">UTC --:--:--</span>
+          <b>ACTIVE:</b> <span id="topFocusedWinTitle">ZOTHOS-LITE GREETER</span> • <span id="topClockUtc">UTC --:--:--</span>
         </span>
       </div>
 
       <div class="panel-right">
+        <a href="http://localhost:8140" target="_blank" rel="noopener noreferrer" class="panel-menu-btn" title="Open Vaelor L1 Node (:8140)">
+          ⛓️ Vaelor (:8140)
+        </a>
         <a href="https://buy.stripe.com/3cIfZg27PdKo2D64Ocfw40X" target="_blank" rel="noopener noreferrer" class="panel-menu-btn" title="100% Free & Open-Access — Optional Coffee Support">
-          ☕ Buy Us a Coffee
+          ☕ Coffee
         </a>
         <button type="button" class="panel-menu-btn" id="copySolanaTopBtn" title="Copy Solana Tip Address: GG2eQbVh8ut1BK6j1A2tz7pSySdLpD38BgyEhGcxdXoK">
-          ◎ Tip SOL
+          ◎ SOL
         </button>
-        <button type="button" class="panel-panic-btn" id="panicWipeRamBtn" title="Trigger Emergency sdmem RAM Wipe & Reset Optional Modules">
-          ☢ Panic Wipe RAM
+        <button type="button" class="panel-menu-btn" id="panicWipeRamBtn" title="Trigger Emergency sdmem RAM Wipe & Reset Optional Modules">
+          ☢ Panic Wipe
+        </button>
+      </div>
+
+      <!-- Applications Launcher Dropdown -->
+      <div class="apps-dropdown-menu" id="appsDropdownMenu" role="menu">
+        <div class="apps-dropdown-header">▓▒░ ZOTHOS-LITE v1.0 APPLICATIONS</div>
+        <button type="button" class="apps-dropdown-item" data-open-win="winGreeter">
+          <span>[◈] Amnesic Greeter & Tor Routing</span><span>OPEN</span>
+        </button>
+        <button type="button" class="apps-dropdown-item" data-open-win="winDitherEngine">
+          <span>[⣿] Braille & Bayer 4×4 Dither Shield</span><span>OPEN</span>
+        </button>
+        <button type="button" class="apps-dropdown-item" data-open-win="winCoreTools">
+          <span>[01] 6 Locked Core Zoth Security Tools</span><span>LOCKED</span>
+        </button>
+        <button type="button" class="apps-dropdown-item" data-open-win="winPkgPuller">
+          <span>[02] zoth-lite-pkg On-Demand Puller</span><span>PULL</span>
+        </button>
+        <button type="button" class="apps-dropdown-item" data-open-win="winEnvGuard">
+          <span>[03] EnvGuard Secrets Vault & Shell</span><span>VAULT</span>
+        </button>
+        <button type="button" class="apps-dropdown-item" data-open-win="winColdSigner">
+          <span>[04] Vaelor L1 Ed25519 Cold Signer</span><span>SIGN</span>
+        </button>
+        <button type="button" class="apps-dropdown-item" data-open-win="winGhostByte">
+          <span>[05] GhostByte Metadata Cleaner (mat2)</span><span>MAT2</span>
+        </button>
+        <button type="button" class="apps-dropdown-item" data-open-win="winQemuVm">
+          <span>[06] Live QEMU/KVM VM Serial & VGA</span><span>KVM</span>
         </button>
       </div>
     </header>
 
     <!-- =======================================================================
-         MAIN DESKTOP WORKSPACE (LEFT DESKTOP ICONS + MULTI-WINDOW STAGE)
+         MAIN NON-SCROLLING DESKTOP WORKSPACE (ICONS + FLOATING WINDOWS STAGE)
          ======================================================================= -->
     <main class="desktop-workspace" role="main">
 
-      <!-- Left Desktop Icons Rail (Tails / Classic Workstation Style) -->
+      <!-- Left Desktop Shortcut Icons Rail -->
       <nav class="desktop-icons-rail" aria-label="ZothOS-Lite Desktop Shortcuts">
-        <button type="button" class="desktop-icon-btn active" data-scroll-win="winGreeter">
+        <button type="button" class="desktop-icon-btn focused" data-open-win="winGreeter">
           <span class="desktop-icon-glyph">⣿◈⣿</span>
           <span class="desktop-icon-label">Amnesic Greeter</span>
         </button>
-        <button type="button" class="desktop-icon-btn" data-scroll-win="winDitherEngine">
+        <button type="button" class="desktop-icon-btn" data-open-win="winDitherEngine">
           <span class="desktop-icon-glyph">▓▒░</span>
           <span class="desktop-icon-label">Braille & Dither</span>
         </button>
-        <button type="button" class="desktop-icon-btn" data-scroll-win="winCoreTools">
+        <button type="button" class="desktop-icon-btn" data-open-win="winCoreTools">
           <span class="desktop-icon-glyph">[06]</span>
           <span class="desktop-icon-label">Core Sec Locked</span>
         </button>
-        <button type="button" class="desktop-icon-btn" data-scroll-win="winPkgPuller">
+        <button type="button" class="desktop-icon-btn" data-open-win="winPkgPuller">
           <span class="desktop-icon-glyph">⬇PKG</span>
           <span class="desktop-icon-label">Pull Tools</span>
         </button>
-        <button type="button" class="desktop-icon-btn" data-scroll-win="winColdSigner">
+        <button type="button" class="desktop-icon-btn" data-open-win="winColdSigner">
           <span class="desktop-icon-glyph">ꝞL1</span>
           <span class="desktop-icon-label">Cold Signer</span>
         </button>
-        <button type="button" class="desktop-icon-btn" data-scroll-win="winGhostByte">
+        <button type="button" class="desktop-icon-btn" data-open-win="winGhostByte">
           <span class="desktop-icon-glyph">MAT2</span>
           <span class="desktop-icon-label">GhostByte</span>
         </button>
-        <button type="button" class="desktop-icon-btn" data-scroll-win="winQemuVm">
+        <button type="button" class="desktop-icon-btn" data-open-win="winEnvGuard">
+          <span class="desktop-icon-glyph">[>_]</span>
+          <span class="desktop-icon-label">EnvGuard Shell</span>
+        </button>
+        <button type="button" class="desktop-icon-btn" data-open-win="winQemuVm">
           <span class="desktop-icon-glyph">KVM</span>
           <span class="desktop-icon-label">Live VM TTY</span>
         </button>
       </nav>
 
-      <!-- Right OS Window Manager Stage -->
-      <div class="os-window-stage">
+      <!-- Floating / Tileable Window Manager Stage -->
+      <div class="os-window-stage" id="osWindowStage">
 
-        <!-- Live Animated Braille + ASCII Telemetry Ribbon -->
-        <div class="desktop-braille-ribbon">
-          <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
-            <span class="badge-black">▓▒░ TAILS-STYLE AMNESIC GUI WORKSTATION ░▒▓</span>
-            <span style="font-size:11.5px;font-weight:700;">
-              WHITE BG (#FFFFFF) • BLACK FILL (#0A0A0A) • MONOTONE GREYS • 100% OPEN ACCESS
-            </span>
+        <!-- Desktop Background Watermark (Revealed when windows are minimized or closed) -->
+        <div class="desktop-watermark-hud">
+          <div style="font-size:10px;font-weight:700;letter-spacing:0.12em;margin-bottom:4px;">
+            ░░▒▒▓▓██ ZOTHOS-LITE v1.0 // AMNESIC RAM WORKSTATION ██▓▓▒▒░░
           </div>
-          <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;font-size:11px;color:var(--fg-grey-600);">
-            <span id="bridgeVaelorStat">⛓️ VAELOR L1 (:8140): SYNCING…</span>
-            <span>•</span>
-            <span id="bridgeCivStat">🏛️ PANTHEON (:9393): 23 AGENTS</span>
-            <a href="http://localhost:8140" target="_blank" rel="noopener noreferrer" class="mono-btn" style="min-height:26px;padding:2px 8px;font-size:10px;">
-              Open Vaelor L1 (:8140) ↗
-            </a>
+          <div style="font-family:var(--font-sans);font-size:18px;font-weight:700;margin-bottom:4px;">
+            Tails-Style RAM-Only Desktop (toram noswap)
+          </div>
+          <div style="font-size:11px;color:var(--fg-grey-600);">
+            Click any Desktop Icon on the left or Taskbar button below to open a window.
           </div>
         </div>
 
         <!-- ===================================================================
-             ROW 1: TAILS GREETER & FOOTPRINT WINDOW + ANIMATED BRAILLE/DITHER ENGINE
+             WINDOW 01: TAILS-STYLE AMNESIC GREETER & FOOTPRINT MANAGER
+             (Open by default on Left Half of Desktop)
              =================================================================== -->
-        <section class="desktop-main-grid">
-
-          <!-- WINDOW 01: TAILS-STYLE AMNESIC GREETER & FOOTPRINT MANAGER -->
-          <article class="os-window" id="winGreeter">
-            <div class="os-window-titlebar">
-              <div class="win-title-left">
-                <span>[◈] ZOTHOS-LITE GREETER // TAILS-STYLE AMNESIC SESSION & TOR ROUTING</span>
-              </div>
-              <div class="win-controls">
-                <span class="win-ctrl-box" title="Minimize">_</span>
-                <span class="win-ctrl-box" title="Maximize">□</span>
-              </div>
+        <article class="os-window focused-window" id="winGreeter" data-win-title="Amnesic Greeter & Tor" style="top:10px;left:10px;width:calc(52% - 14px);height:calc(100% - 20px);z-index:120;">
+          <div class="os-window-titlebar" data-drag-handle="winGreeter">
+            <div class="win-title-left">
+              <span>[◈] ZOTHOS-LITE GREETER // TAILS-STYLE AMNESIC SESSION & TOR ROUTING</span>
             </div>
-            <div class="os-window-body">
-              <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap;margin-bottom:12px;padding-bottom:10px;border-bottom:1.5px solid var(--fill-black);">
-                <div style="flex:1;min-width:260px;">
-                  <div style="font-family:var(--font-sans);font-size:20px;font-weight:700;letter-spacing:-0.02em;line-height:1.15;margin-bottom:4px;">
-                    Welcome to ZothOS-Lite v1.0 (Amnesic Desktop GUI)
-                  </div>
-                  <p style="font-size:11.5px;color:var(--fg-grey-600);line-height:1.45;">
-                    Boots strictly into volatile RAM (<code>toram noswap</code>), enforces an <code>nftables</code> Tor kill-switch, locks in the <b>6 Core Zoth Security/Dev Tools</b>, and lets you pull extra tools on demand via <code>zoth-lite-pkg</code>.
-                  </p>
+            <div class="win-controls">
+              <button type="button" class="win-ctrl-btn" data-win-action="minimize" data-win-id="winGreeter" title="Minimize Window">_</button>
+              <button type="button" class="win-ctrl-btn" data-win-action="maximize" data-win-id="winGreeter" title="Maximize / Restore Window">□</button>
+              <button type="button" class="win-ctrl-btn close-btn" data-win-action="close" data-win-id="winGreeter" title="Close Window">✕</button>
+            </div>
+          </div>
+          <div class="os-window-body">
+            <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:10px;flex-wrap:wrap;margin-bottom:10px;padding-bottom:8px;border-bottom:1.5px solid var(--fill-black);">
+              <div style="flex:1;min-width:220px;">
+                <div style="font-family:var(--font-sans);font-size:17px;font-weight:700;letter-spacing:-0.02em;line-height:1.15;margin-bottom:3px;">
+                  Welcome to ZothOS-Lite v1.0 (Amnesic Desktop GUI)
                 </div>
-                <pre style="font-size:9.5px;line-height:1.1;background:var(--fill-black);color:var(--bg-pure-white);padding:6px 8px;border:1px solid var(--fill-black);">┌──────────────────┐
+                <p style="font-size:11px;color:var(--fg-grey-600);line-height:1.4;">
+                  Boots strictly into volatile RAM (<code>toram noswap</code>), enforces an <code>nftables</code> Tor kill-switch, locks in the <b>6 Core Zoth Security/Dev Tools</b>, and pulls extra tools on demand via <code>zoth-lite-pkg</code>.
+                </p>
+              </div>
+              <pre style="font-size:9px;line-height:1.1;background:var(--fill-black);color:var(--bg-pure-white);padding:5px 7px;">┌──────────────────┐
 │ ⣿ ZOTHOS-LITE ⣿  │
 │ ▓▓▒▒░░ 1.0 ░░▒▒▓▓│
 │ [TORAM // NOSWAP]│
 └──────────────────┘</pre>
-              </div>
+            </div>
 
-              <!-- Live RAM Image Footprint Meter -->
-              <div style="margin-bottom:12px;padding:10px;background:var(--bg-grey-50);border:1.5px solid var(--fill-black);">
-                <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:6px;margin-bottom:6px;font-size:11px;font-weight:700;">
-                  <span>▓▒░ LIVE RAM IMAGE FOOTPRINT: <b id="totalImageMbLabel">931 MB</b></span>
-                  <span class="badge-black" id="footprintSavingBadge">90% SMALLER THAN FULL ZOTHOS (9,365 MB)</span>
-                </div>
-                <div class="footprint-bar-wrap" aria-label="ZothOS-Lite RAM Allocation Bar">
-                  <div id="segKernel" class="fp-seg-kernel" style="width:38%;" title="Amnesic Kernel & X11 GUI (599 MB)"></div>
-                  <div id="segCore" class="fp-seg-core" style="width:18%;" title="6 Core Locked Zoth Security/Dev Tools (241 MB)"></div>
-                  <div id="segPulled" class="fp-seg-pulled" style="width:10%;" title="On-Demand Pulled Modules"></div>
-                </div>
-                <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:8px;font-size:10.5px;">
-                  <div style="padding:4px 6px;background:var(--bg-pure-white);border:1px solid var(--fill-black);">
-                    <div style="color:var(--fg-grey-600);">KERNEL + X11</div>
-                    <b id="statKernelMb">599 MB</b>
-                  </div>
-                  <div style="padding:4px 6px;background:var(--bg-pure-white);border:1px solid var(--fill-black);">
-                    <div style="color:var(--fg-grey-600);">CORE SEC (6)</div>
-                    <b id="statCoreMb">241 MB</b>
-                  </div>
-                  <div style="padding:4px 6px;background:var(--bg-pure-white);border:1px solid var(--fill-black);">
-                    <div style="color:var(--fg-grey-600);">PULLED (RAM)</div>
-                    <b id="statPulledRamMb">91 MB</b>
-                  </div>
-                  <div style="padding:4px 6px;background:var(--bg-pure-white);border:1px solid var(--fill-black);">
-                    <div style="color:var(--fg-grey-600);">LUKS VAULT</div>
-                    <b id="statPulledLuksMb">0 MB</b>
-                  </div>
-                </div>
+            <!-- Live RAM Image Footprint Meter -->
+            <div style="margin-bottom:10px;padding:9px;background:var(--bg-grey-50);border:1.5px solid var(--fill-black);">
+              <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:6px;margin-bottom:5px;font-size:10.5px;font-weight:700;">
+                <span>▓▒░ LIVE RAM IMAGE FOOTPRINT: <b id="totalImageMbLabel">931 MB</b></span>
+                <span class="badge-black" id="footprintSavingBadge">90% SMALLER THAN FULL ZOTHOS (9365 MB)</span>
               </div>
-
-              <!-- Tails Greeter Interactive Toggles -->
-              <div class="tails-greeter-row">
-                <div>
-                  <div style="font-weight:700;font-size:11.5px;">[1] RAM-Only Amnesic Root (toram noswap)</div>
-                  <div style="font-size:10.5px;color:var(--fg-grey-600);">Entire SquashFS copied to volatile RAM; zero hard-disk writes.</div>
-                </div>
-                <button type="button" class="tails-toggle-pill on" data-amnesia-key="ramOnlyBoot" id="toggleToramBtn">█ ON</button>
+              <div class="footprint-bar-wrap" aria-label="ZothOS-Lite RAM Allocation Bar">
+                <div id="segKernel" class="fp-seg-kernel" style="width:38%;" title="Amnesic Kernel & X11 GUI (599 MB)"></div>
+                <div id="segCore" class="fp-seg-core" style="width:18%;" title="6 Core Locked Zoth Security/Dev Tools (241 MB)"></div>
+                <div id="segPulled" class="fp-seg-pulled" style="width:10%;" title="On-Demand Pulled Modules"></div>
               </div>
-
-              <div class="tails-greeter-row">
-                <div>
-                  <div style="font-weight:700;font-size:11.5px;">[2] Strict Tor Transparent Proxy & Kill-Switch (nftables)</div>
-                  <div style="font-size:10.5px;color:var(--fg-grey-600);">Drops all non-tunnel clearnet packets automatically at kernel level.</div>
+              <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:5px;margin-top:6px;font-size:10px;">
+                <div style="padding:3px 5px;background:var(--bg-pure-white);border:1px solid var(--fill-black);">
+                  <div style="color:var(--fg-grey-600);">KERNEL + X11</div>
+                  <b id="statKernelMb">599 MB</b>
                 </div>
-                <button type="button" class="tails-toggle-pill on" data-amnesia-key="torKillswitch" id="toggleTorBtn">█ ON</button>
-              </div>
-
-              <div class="tails-greeter-row">
-                <div>
-                  <div style="font-weight:700;font-size:11.5px;">[3] Ephemeral MAC Address Spoofing (<span id="cardMacLabel">02:42:ac:11:00:7f</span>)</div>
-                  <div style="font-size:10.5px;color:var(--fg-grey-600);">Randomizes NIC hardware MAC address on every network link-up.</div>
+                <div style="padding:3px 5px;background:var(--bg-pure-white);border:1px solid var(--fill-black);">
+                  <div style="color:var(--fg-grey-600);">CORE SEC (6)</div>
+                  <b id="statCoreMb">241 MB</b>
                 </div>
-                <div style="display:flex;gap:5px;">
-                  <button type="button" class="mono-btn" id="rerollMacBtn" style="min-height:30px;padding:3px 8px;font-size:10px;">⟳ New MAC</button>
-                  <button type="button" class="tails-toggle-pill on" data-amnesia-key="macSpoofing" id="toggleMacBtn">█ ON</button>
+                <div style="padding:3px 5px;background:var(--bg-pure-white);border:1px solid var(--fill-black);">
+                  <div style="color:var(--fg-grey-600);">PULLED (RAM)</div>
+                  <b id="statPulledRamMb">91 MB</b>
                 </div>
-              </div>
-
-              <div class="tails-greeter-row">
-                <div>
-                  <div style="font-weight:700;font-size:11.5px;">[4] LUKS2 Encrypted Persistent Vault (/dev/mapper/zoth_crypt)</div>
-                  <div style="font-size:10.5px;color:var(--fg-grey-600);">Optional Argon2id encrypted partition for persistent dev toolchains.</div>
+                <div style="padding:3px 5px;background:var(--bg-pure-white);border:1px solid var(--fill-black);">
+                  <div style="color:var(--fg-grey-600);">LUKS VAULT</div>
+                  <b id="statPulledLuksMb">0 MB</b>
                 </div>
-                <button type="button" class="tails-toggle-pill off" data-amnesia-key="luksPersistence" id="toggleLuksBtn">░ LOCKED</button>
               </div>
             </div>
-          </article>
 
-          <!-- WINDOW 02: ANIMATED BRAILLE, BAYER 4x4 DITHER & TOR CIRCUIT ENGINE -->
-          <article class="os-window" id="winDitherEngine">
-            <div class="os-window-titlebar grey-dither-bar">
-              <div class="win-title-left">
-                <span>[⣿] ANIMATED BRAILLE, BAYER 4×4 DITHER & TOR CIRCUIT VISUALIZER</span>
-              </div>
-              <div class="win-controls">
-                <span class="badge-black" id="shaderFpsLabel">60 FPS // MONOTONE</span>
-              </div>
-            </div>
-            <div class="os-window-body">
-              <div style="display:flex;justify-content:space-between;align-items:center;gap:6px;flex-wrap:wrap;margin-bottom:8px;">
-                <div style="display:flex;gap:5px;flex-wrap:wrap;">
-                  <button type="button" class="mono-btn mono-btn-black" data-lite-shader="bayer-1bit" style="min-height:30px;padding:4px 8px;font-size:10.5px;">▓▒░ Bayer 4×4 + ASCII</button>
-                  <button type="button" class="mono-btn" data-lite-shader="braille-2x4" style="min-height:30px;padding:4px 8px;font-size:10.5px;">⣿ U+2800 2×4 Braille</button>
-                  <button type="button" class="mono-btn" data-lite-shader="halftone-bw" style="min-height:30px;padding:4px 8px;font-size:10.5px;">█ Ink Black Invert</button>
-                </div>
-                <button type="button" class="mono-btn" id="exportCustomIsoBtn" style="min-height:30px;padding:4px 8px;font-size:10.5px;">
-                  ⬇ Export ISO (.sh)
-                </button>
-              </div>
-
-              <!-- High-Contrast White-BG / Black-Ink Animated Braille + Bayer Dither Canvas -->
-              <div class="dither-stage-box">
-                <canvas id="liteDitherCanvas" width="560" height="205" aria-label="Animated White Background and Black Fill Braille and Ordered Bayer 4x4 Dither Shield" style="width:100%;height:205px;display:block;cursor:crosshair;"></canvas>
-              </div>
-
-              <!-- Animated Tor Relay Circuit + Braille Entropy Oscilloscope -->
-              <div style="margin-top:10px;">
-                <div style="display:flex;justify-content:space-between;align-items:center;font-size:10.5px;font-weight:700;margin-bottom:4px;">
-                  <span>⣿ LIVE UNICODE U+2800 BRAILLE ENTROPY & TOR CIRCUIT STREAM</span>
-                  <span id="brailleLiveStatus" style="color:var(--fg-grey-600);">⠋ 3-HOP GUARD CIRCUIT ACTIVE</span>
-                </div>
-                <pre id="liteBrailleScope" class="braille-wave-strip">⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿</pre>
-              </div>
-
-              <!-- Tails-Style 3-Hop Tor Relay Map in Monotone ASCII/Braille -->
-              <div style="margin-top:8px;padding:8px 10px;background:var(--bg-grey-50);border:1px solid var(--fill-black);font-size:10.5px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:6px;">
-                <span><b>[VM: 02:42:ac:11:00:7f]</b></span>
-                <span>══⣿══▶</span>
-                <span>[GUARD: 185.220.101.4]</span>
-                <span>══⣿══▶</span>
-                <span>[RELAY: 91.219.236.12]</span>
-                <span>══⣿══▶</span>
-                <span class="badge-black">[ZOTH ENCLAVE]</span>
-              </div>
-            </div>
-          </article>
-        </section>
-
-        <!-- ===================================================================
-             ROW 2: 6 LOCKED CORE ZOTH SECURITY TOOLS + ON-DEMAND TOOL PULLER + ENVGUARD
-             =================================================================== -->
-        <section class="desktop-3col-grid">
-
-          <!-- WINDOW 03: 6 MUST-HAVE ZOTH SECURITY & DEV CORE TOOLS (LOCKED IN RAM) -->
-          <article class="os-window" id="winCoreTools">
-            <div class="os-window-titlebar">
-              <div class="win-title-left">
-                <span>[01] MUST-HAVE ZOTH SECURITY & DEV CORE (LOCKED)</span>
-              </div>
-              <span class="badge-grey">6 CORE // 241 MB</span>
-            </div>
-            <div class="os-window-body">
-              <p style="font-size:11px;color:var(--fg-grey-600);margin-bottom:10px;">
-                Permanently compiled into the base ZothOS-Lite SquashFS image so you always stay secure on boot:
-              </p>
-              <div id="coreToolsList" class="pkg-list-scroll"></div>
-            </div>
-          </article>
-
-          <!-- WINDOW 04: ON-DEMAND MODULAR TOOL PULLER (zoth-lite-pkg) -->
-          <article class="os-window" id="winPkgPuller">
-            <div class="os-window-titlebar grey-dither-bar">
-              <div class="win-title-left">
-                <span>[02] ON-DEMAND TOOL PULLER (zoth-lite-pkg)</span>
-              </div>
-              <span class="badge-black" id="pulledCountBadge">3/12 PULLED</span>
-            </div>
-            <div class="os-window-body">
-              <p style="font-size:11px;color:var(--fg-grey-600);margin-bottom:8px;">
-                Keep your OS minimal. Pull in only the extra Zoth tools you need into volatile <code>RAM_TMPFS</code> or <code>LUKS_PERSIST</code>:
-              </p>
-              <div style="display:flex;gap:5px;flex-wrap:wrap;margin-bottom:10px;" id="categoryFilterBar">
-                <button type="button" class="mono-btn mono-btn-black" data-cat-filter="ALL" style="min-height:28px;padding:3px 8px;font-size:10px;">ALL (12)</button>
-                <button type="button" class="mono-btn" data-cat-filter="PULLED" style="min-height:28px;padding:3px 8px;font-size:10px;">⣿ PULLED</button>
-                <button type="button" class="mono-btn" data-cat-filter="Security & Red-Team" style="min-height:28px;padding:3px 8px;font-size:10px;">SECURITY</button>
-                <button type="button" class="mono-btn" data-cat-filter="Local AI & Memory" style="min-height:28px;padding:3px 8px;font-size:10px;">AI & MEMORY</button>
-                <button type="button" class="mono-btn" data-cat-filter="Dev & Builders" style="min-height:28px;padding:3px 8px;font-size:10px;">DEV</button>
-              </div>
-              <div id="optionalToolsList" class="pkg-list-scroll"></div>
-            </div>
-          </article>
-
-          <!-- WINDOW 05: ENVGUARD SECRETS VAULT + INTERACTIVE ZOTH-LITE SHELL -->
-          <article class="os-window" id="winEnvGuard">
-            <div class="os-window-titlebar">
-              <div class="win-title-left">
-                <span>[03] ENVGUARD SECRETS VAULT & PACKAGE SHELL</span>
-              </div>
-              <span class="badge-grey">AES-256-GCM</span>
-            </div>
-            <div class="os-window-body">
-              <div style="margin-bottom:12px;padding-bottom:12px;border-bottom:1.5px dashed var(--fill-black);">
-                <div style="font-weight:700;font-size:11.5px;margin-bottom:4px;">▓▒░ EnvGuard Zero-Leakage Secret Scanner</div>
-                <textarea id="envguardInput" class="mono-input" rows="2" aria-label="EnvGuard Secret Scanner Input" style="margin-bottom:6px;">AWS_SECRET_ACCESS_KEY=wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY
-VAELOR_NODE_MODE=amnesic_toram</textarea>
-                <div style="display:flex;gap:6px;margin-bottom:6px;">
-                  <button type="button" class="mono-btn mono-btn-black" id="runEnvguardScanBtn" style="flex:1;min-height:30px;">Scan & Seal in RAM</button>
-                  <button type="button" class="mono-btn" id="loadCleanEnvSampleBtn" style="min-height:30px;">Clean Sample</button>
-                </div>
-                <pre id="envguardResultBox" class="mono-console-output" style="max-height:92px;">[::] EnvGuard Ready — Zero Disk Persistence.</pre>
-              </div>
-
+            <!-- Tails Greeter Interactive Toggles -->
+            <div class="tails-greeter-row">
               <div>
-                <div style="font-weight:700;font-size:11.5px;margin-bottom:4px;">[>_] zoth-lite-pkg Interactive Terminal</div>
-                <div style="display:flex;gap:6px;margin-bottom:6px;">
-                  <input type="text" id="terminalCmdInput" class="mono-input" value="zoth-lite-pkg status" aria-label="ZothOS-Lite Terminal Command Input" style="min-height:30px;" />
-                  <button type="button" class="mono-btn mono-btn-black" id="runTerminalCmdBtn" style="min-height:30px;">EXEC ↵</button>
-                </div>
-                <pre id="terminalScreen" class="mono-console-output" style="height:130px;">Loading ZothOS-Lite v1.0 amnesic shell...</pre>
+                <div style="font-weight:700;font-size:11px;">[1] RAM-Only Amnesic Root (toram noswap)</div>
+                <div style="font-size:10px;color:var(--fg-grey-600);">Entire SquashFS copied to volatile RAM; zero hard-disk writes.</div>
+              </div>
+              <button type="button" class="tails-toggle-pill on" data-amnesia-key="ramOnlyBoot" id="toggleToramBtn">█ ON</button>
+            </div>
+
+            <div class="tails-greeter-row">
+              <div>
+                <div style="font-weight:700;font-size:11px;">[2] Strict Tor Transparent Proxy & Kill-Switch (nftables)</div>
+                <div style="font-size:10px;color:var(--fg-grey-600);">Drops all non-tunnel clearnet packets automatically at kernel level.</div>
+              </div>
+              <button type="button" class="tails-toggle-pill on" data-amnesia-key="torKillswitch" id="toggleTorBtn">█ ON</button>
+            </div>
+
+            <div class="tails-greeter-row">
+              <div>
+                <div style="font-weight:700;font-size:11px;">[3] Ephemeral MAC Address Spoofing (<span id="cardMacLabel">02:42:ac:11:00:7f</span>)</div>
+                <div style="font-size:10px;color:var(--fg-grey-600);">Randomizes NIC hardware MAC address on every network link-up.</div>
+              </div>
+              <div style="display:flex;gap:5px;">
+                <button type="button" class="mono-btn" id="rerollMacBtn" style="min-height:28px;padding:2px 7px;font-size:9.5px;">⟳ New MAC</button>
+                <button type="button" class="tails-toggle-pill on" data-amnesia-key="macSpoofing" id="toggleMacBtn">█ ON</button>
               </div>
             </div>
-          </article>
-        </section>
+
+            <div class="tails-greeter-row">
+              <div>
+                <div style="font-weight:700;font-size:11px;">[4] LUKS2 Encrypted Persistent Vault (/dev/mapper/zoth_crypt)</div>
+                <div style="font-size:10px;color:var(--fg-grey-600);">Optional Argon2id encrypted partition for persistent dev toolchains.</div>
+              </div>
+              <button type="button" class="tails-toggle-pill off" data-amnesia-key="luksPersistence" id="toggleLuksBtn">░ LOCKED</button>
+            </div>
+
+            <!-- Quick Launch Strip inside Greeter -->
+            <div style="margin-top:10px;padding-top:8px;border-top:1px dashed var(--fill-black);display:flex;gap:6px;flex-wrap:wrap;">
+              <button type="button" class="mono-btn mono-btn-black" data-open-win="winCoreTools">[01] Open 6 Locked Core Tools</button>
+              <button type="button" class="mono-btn" data-open-win="winPkgPuller">[02] Pull Optional Tools (zoth-lite-pkg)</button>
+              <button type="button" class="mono-btn" data-open-win="winColdSigner">[04] Vaelor Cold Signer</button>
+              <button type="button" class="mono-btn" data-open-win="winGhostByte">[05] GhostByte mat2</button>
+            </div>
+          </div>
+        </article>
 
         <!-- ===================================================================
-             ROW 3: VAELOR L1 AIR-GAPPED COLD SIGNER + GHOSTBYTE MAT2 + LIVE QEMU VM
+             WINDOW 02: ANIMATED BRAILLE, BAYER 4x4 DITHER & TOR CIRCUIT ENGINE
+             (Open by default on Right Half of Desktop)
              =================================================================== -->
-        <section class="desktop-3col-grid">
+        <article class="os-window" id="winDitherEngine" data-win-title="Braille & Dither Shield" style="top:10px;left:calc(52% + 6px);width:calc(48% - 16px);height:calc(100% - 20px);z-index:115;">
+          <div class="os-window-titlebar" data-drag-handle="winDitherEngine">
+            <div class="win-title-left">
+              <span>[⣿] ANIMATED BRAILLE, BAYER 4×4 DITHER & TOR CIRCUIT SHIELD</span>
+            </div>
+            <div class="win-controls">
+              <button type="button" class="win-ctrl-btn" data-win-action="minimize" data-win-id="winDitherEngine" title="Minimize Window">_</button>
+              <button type="button" class="win-ctrl-btn" data-win-action="maximize" data-win-id="winDitherEngine" title="Maximize / Restore Window">□</button>
+              <button type="button" class="win-ctrl-btn close-btn" data-win-action="close" data-win-id="winDitherEngine" title="Close Window">✕</button>
+            </div>
+          </div>
+          <div class="os-window-body">
+            <div style="display:flex;justify-content:space-between;align-items:center;gap:5px;flex-wrap:wrap;margin-bottom:8px;">
+              <div style="display:flex;gap:4px;flex-wrap:wrap;">
+                <button type="button" class="mono-btn mono-btn-black" data-lite-shader="bayer-1bit" style="min-height:28px;padding:3px 7px;font-size:10px;">▓▒░ Bayer 4×4 + ASCII</button>
+                <button type="button" class="mono-btn" data-lite-shader="braille-2x4" style="min-height:28px;padding:3px 7px;font-size:10px;">⣿ U+2800 2×4 Braille</button>
+                <button type="button" class="mono-btn" data-lite-shader="halftone-bw" style="min-height:28px;padding:3px 7px;font-size:10px;">█ Ink Black Invert</button>
+              </div>
+              <button type="button" class="mono-btn" id="exportCustomIsoBtn" style="min-height:28px;padding:3px 8px;font-size:10px;">
+                ⬇ Export ISO (.sh)
+              </button>
+            </div>
 
-          <!-- WINDOW 06: VAELOR L1 AIR-GAPPED ED25519 COLD SIGNER -->
-          <article class="os-window" id="winColdSigner">
-            <div class="os-window-titlebar">
-              <div class="win-title-left">
-                <span>[04] VAELOR L1 AIR-GAPPED ED25519 COLD SIGNER</span>
-              </div>
-              <span class="badge-grey">RFC-8032 BFT</span>
+            <div class="dither-stage-box">
+              <canvas id="liteDitherCanvas" width="540" height="215" aria-label="Animated White Background and Black Fill Braille and Ordered Bayer 4x4 Dither Shield" style="width:100%;height:215px;display:block;cursor:crosshair;"></canvas>
             </div>
-            <div class="os-window-body">
-              <p style="font-size:11px;color:var(--fg-grey-600);margin-bottom:8px;">
-                Sign Vaelor L1 DAG blocks offline in volatile RAM with a Unicode <code>U+2800</code> Braille RandomArt seal:
-              </p>
-              <div style="display:grid;grid-template-columns:1fr 1fr 85px;gap:6px;margin-bottom:6px;">
-                <input type="text" id="coldFromInput" class="mono-input" value="@neal" aria-label="Cold Signer Sender" />
-                <input type="text" id="coldToInput" class="mono-input" value="@zoth" aria-label="Cold Signer Recipient" />
-                <input type="number" id="coldAmountInput" class="mono-input" value="25" aria-label="Cold Signer Amount VLR" />
-              </div>
-              <input type="text" id="coldMemoInput" class="mono-input" value="Air-gapped ZothOS-Lite cold-signed transfer" aria-label="Cold Signer Memo" style="margin-bottom:6px;" />
-              <div style="display:flex;gap:6px;margin-bottom:8px;">
-                <button type="button" class="mono-btn mono-btn-black" id="coldSignOnlyBtn" style="flex:1;min-height:32px;">▓▒░ Cold-Sign (Offline)</button>
-                <button type="button" class="mono-btn" id="coldSignBroadcastBtn" style="flex:1;min-height:32px;">⛓️ Sign & Relay (:8140)</button>
-              </div>
-              <pre id="coldSignOutput" class="mono-console-output" style="height:135px;">[::] Ed25519 Cold Signer Ready in Volatile RAM.</pre>
-            </div>
-          </article>
 
-          <!-- WINDOW 07: GHOSTBYTE METADATA STRIPPER (mat2) -->
-          <article class="os-window" id="winGhostByte">
-            <div class="os-window-titlebar grey-dither-bar">
-              <div class="win-title-left">
-                <span>[05] GHOSTBYTE METADATA CLEANER (mat2)</span>
+            <div style="margin-top:9px;">
+              <div style="display:flex;justify-content:space-between;align-items:center;font-size:10px;font-weight:700;margin-bottom:3px;">
+                <span>⣿ LIVE UNICODE U+2800 BRAILLE ENTROPY & TOR CIRCUIT STREAM</span>
+                <span id="brailleLiveStatus" style="color:var(--fg-grey-600);">⠋ 3-HOP GUARD CIRCUIT ACTIVE</span>
               </div>
-              <span class="badge-black">EXIF / GPS SCRUB</span>
+              <pre id="liteBrailleScope" class="braille-wave-strip">⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿</pre>
             </div>
-            <div class="os-window-body">
-              <p style="font-size:11px;color:var(--fg-grey-600);margin-bottom:8px;">
-                Tails-style <code>mat2</code> metadata sanitizer: strips EXIF/GPS, author tags, and tracking headers in RAM:
-              </p>
-              <textarea id="ghostbyteInput" class="mono-input" rows="3" aria-label="GhostByte Metadata Sanitizer Input" style="margin-bottom:6px;">{
+
+            <div style="margin-top:8px;padding:7px 9px;background:var(--bg-grey-50);border:1px solid var(--fill-black);font-size:10px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:4px;">
+              <span><b>[VM: 02:42:ac:11:00:7f]</b></span>
+              <span>══⣿══▶</span>
+              <span>[GUARD: 185.220.101.4]</span>
+              <span>══⣿══▶</span>
+              <span>[RELAY: 91.219.236.12]</span>
+              <span>══⣿══▶</span>
+              <span class="badge-black">[ZOTH ENCLAVE]</span>
+            </div>
+
+            <div style="margin-top:8px;padding:7px 9px;background:var(--bg-pure-white);border:1px solid var(--fill-black);font-size:10px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:6px;">
+              <span id="bridgeVaelorStat">⛓️ VAELOR L1 (:8140): SYNCING…</span>
+              <span id="bridgeCivStat">🏛️ PANTHEON (:9393): 23 AGENTS</span>
+            </div>
+          </div>
+        </article>
+
+        <!-- ===================================================================
+             WINDOW 03: 6 MUST-HAVE ZOTH SECURITY & DEV CORE TOOLS (LOCKED)
+             =================================================================== -->
+        <article class="os-window win-closed" id="winCoreTools" data-win-title="[01] 6 Core Security Tools" style="top:24px;left:40px;width:540px;height:calc(100% - 48px);z-index:110;">
+          <div class="os-window-titlebar" data-drag-handle="winCoreTools">
+            <div class="win-title-left">
+              <span>[01] MUST-HAVE ZOTH SECURITY & DEV CORE (6 LOCKED IN RAM)</span>
+            </div>
+            <div class="win-controls">
+              <button type="button" class="win-ctrl-btn" data-win-action="minimize" data-win-id="winCoreTools" title="Minimize Window">_</button>
+              <button type="button" class="win-ctrl-btn" data-win-action="maximize" data-win-id="winCoreTools" title="Maximize / Restore Window">□</button>
+              <button type="button" class="win-ctrl-btn close-btn" data-win-action="close" data-win-id="winCoreTools" title="Close Window">✕</button>
+            </div>
+          </div>
+          <div class="os-window-body">
+            <p style="font-size:11px;color:var(--fg-grey-600);margin-bottom:8px;">
+              Permanently compiled into the base ZothOS-Lite SquashFS image (241 MB) so you always stay secure on boot:
+            </p>
+            <div id="coreToolsList"></div>
+          </div>
+        </article>
+
+        <!-- ===================================================================
+             WINDOW 04: ON-DEMAND MODULAR TOOL PULLER (zoth-lite-pkg)
+             =================================================================== -->
+        <article class="os-window win-closed" id="winPkgPuller" data-win-title="[02] Pull Tools (zoth-lite-pkg)" style="top:28px;left:90px;width:580px;height:calc(100% - 56px);z-index:109;">
+          <div class="os-window-titlebar" data-drag-handle="winPkgPuller">
+            <div class="win-title-left">
+              <span>[02] ON-DEMAND TOOL PULLER (zoth-lite-pkg) — <span id="pulledCountBadge">3/12 PULLED</span></span>
+            </div>
+            <div class="win-controls">
+              <button type="button" class="win-ctrl-btn" data-win-action="minimize" data-win-id="winPkgPuller" title="Minimize Window">_</button>
+              <button type="button" class="win-ctrl-btn" data-win-action="maximize" data-win-id="winPkgPuller" title="Maximize / Restore Window">□</button>
+              <button type="button" class="win-ctrl-btn close-btn" data-win-action="close" data-win-id="winPkgPuller" title="Close Window">✕</button>
+            </div>
+          </div>
+          <div class="os-window-body">
+            <p style="font-size:11px;color:var(--fg-grey-600);margin-bottom:8px;">
+              Keep your OS minimal. Pull in only the extra Zoth tools you need into volatile <code>RAM_TMPFS</code> or <code>LUKS_PERSIST</code>:
+            </p>
+            <div style="display:flex;gap:5px;flex-wrap:wrap;margin-bottom:10px;" id="categoryFilterBar">
+              <button type="button" class="mono-btn mono-btn-black" data-cat-filter="ALL" style="min-height:26px;padding:2px 8px;font-size:10px;">ALL (12)</button>
+              <button type="button" class="mono-btn" data-cat-filter="PULLED" style="min-height:26px;padding:2px 8px;font-size:10px;">⣿ PULLED</button>
+              <button type="button" class="mono-btn" data-cat-filter="Security & Red-Team" style="min-height:26px;padding:2px 8px;font-size:10px;">SECURITY</button>
+              <button type="button" class="mono-btn" data-cat-filter="Local AI & Memory" style="min-height:26px;padding:2px 8px;font-size:10px;">AI & MEMORY</button>
+              <button type="button" class="mono-btn" data-cat-filter="Dev & Builders" style="min-height:26px;padding:2px 8px;font-size:10px;">DEV</button>
+            </div>
+            <div id="optionalToolsList"></div>
+          </div>
+        </article>
+
+        <!-- ===================================================================
+             WINDOW 05: ENVGUARD SECRETS VAULT + PACKAGE SHELL
+             =================================================================== -->
+        <article class="os-window win-closed" id="winEnvGuard" data-win-title="[03] EnvGuard & Shell" style="top:32px;left:140px;width:540px;height:calc(100% - 64px);z-index:108;">
+          <div class="os-window-titlebar" data-drag-handle="winEnvGuard">
+            <div class="win-title-left">
+              <span>[03] ENVGUARD SECRETS VAULT & PACKAGE SHELL</span>
+            </div>
+            <div class="win-controls">
+              <button type="button" class="win-ctrl-btn" data-win-action="minimize" data-win-id="winEnvGuard" title="Minimize Window">_</button>
+              <button type="button" class="win-ctrl-btn" data-win-action="maximize" data-win-id="winEnvGuard" title="Maximize / Restore Window">□</button>
+              <button type="button" class="win-ctrl-btn close-btn" data-win-action="close" data-win-id="winEnvGuard" title="Close Window">✕</button>
+            </div>
+          </div>
+          <div class="os-window-body">
+            <div style="margin-bottom:10px;padding-bottom:10px;border-bottom:1.5px dashed var(--fill-black);">
+              <div style="font-weight:700;font-size:11px;margin-bottom:4px;">▓▒░ EnvGuard Zero-Leakage Secret Scanner</div>
+              <textarea id="envguardInput" class="mono-input" rows="2" aria-label="EnvGuard Secret Scanner Input" style="margin-bottom:6px;">AWS_SECRET_ACCESS_KEY=wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY
+VAELOR_NODE_MODE=amnesic_toram</textarea>
+              <div style="display:flex;gap:6px;margin-bottom:6px;">
+                <button type="button" class="mono-btn mono-btn-black" id="runEnvguardScanBtn" style="flex:1;">Scan & Seal in RAM</button>
+                <button type="button" class="mono-btn" id="loadCleanEnvSampleBtn">Clean Sample</button>
+              </div>
+              <pre id="envguardResultBox" class="mono-console-output" style="max-height:90px;">[::] EnvGuard Ready — Zero Disk Persistence.</pre>
+            </div>
+
+            <div>
+              <div style="font-weight:700;font-size:11px;margin-bottom:4px;">[>_] zoth-lite-pkg Interactive Terminal</div>
+              <div style="display:flex;gap:6px;margin-bottom:6px;">
+                <input type="text" id="terminalCmdInput" class="mono-input" value="zoth-lite-pkg status" aria-label="ZothOS-Lite Terminal Command Input" />
+                <button type="button" class="mono-btn mono-btn-black" id="runTerminalCmdBtn">EXEC ↵</button>
+              </div>
+              <pre id="terminalScreen" class="mono-console-output" style="height:140px;">Loading ZothOS-Lite v1.0 amnesic shell...</pre>
+            </div>
+          </div>
+        </article>
+
+        <!-- ===================================================================
+             WINDOW 06: VAELOR L1 AIR-GAPPED ED25519 COLD SIGNER
+             =================================================================== -->
+        <article class="os-window win-closed" id="winColdSigner" data-win-title="[04] Vaelor Cold Signer" style="top:36px;left:180px;width:520px;height:390px;z-index:107;">
+          <div class="os-window-titlebar" data-drag-handle="winColdSigner">
+            <div class="win-title-left">
+              <span>[04] VAELOR L1 AIR-GAPPED ED25519 COLD SIGNER</span>
+            </div>
+            <div class="win-controls">
+              <button type="button" class="win-ctrl-btn" data-win-action="minimize" data-win-id="winColdSigner" title="Minimize Window">_</button>
+              <button type="button" class="win-ctrl-btn" data-win-action="maximize" data-win-id="winColdSigner" title="Maximize / Restore Window">□</button>
+              <button type="button" class="win-ctrl-btn close-btn" data-win-action="close" data-win-id="winColdSigner" title="Close Window">✕</button>
+            </div>
+          </div>
+          <div class="os-window-body">
+            <p style="font-size:11px;color:var(--fg-grey-600);margin-bottom:8px;">
+              Sign Vaelor L1 DAG blocks offline in volatile RAM with a Unicode <code>U+2800</code> Braille RandomArt seal:
+            </p>
+            <div style="display:grid;grid-template-columns:1fr 1fr 85px;gap:6px;margin-bottom:6px;">
+              <input type="text" id="coldFromInput" class="mono-input" value="@neal" aria-label="Cold Signer Sender" />
+              <input type="text" id="coldToInput" class="mono-input" value="@zoth" aria-label="Cold Signer Recipient" />
+              <input type="number" id="coldAmountInput" class="mono-input" value="25" aria-label="Cold Signer Amount VLR" />
+            </div>
+            <input type="text" id="coldMemoInput" class="mono-input" value="Air-gapped ZothOS-Lite cold-signed transfer" aria-label="Cold Signer Memo" style="margin-bottom:6px;" />
+            <div style="display:flex;gap:6px;margin-bottom:8px;">
+              <button type="button" class="mono-btn mono-btn-black" id="coldSignOnlyBtn" style="flex:1;">▓▒░ Cold-Sign (Offline)</button>
+              <button type="button" class="mono-btn" id="coldSignBroadcastBtn" style="flex:1;">⛓️ Sign & Relay (:8140)</button>
+            </div>
+            <pre id="coldSignOutput" class="mono-console-output" style="height:145px;">[::] Ed25519 Cold Signer Ready in Volatile RAM.</pre>
+          </div>
+        </article>
+
+        <!-- ===================================================================
+             WINDOW 07: GHOSTBYTE METADATA CLEANER (mat2)
+             =================================================================== -->
+        <article class="os-window win-closed" id="winGhostByte" data-win-title="[05] GhostByte mat2" style="top:42px;left:220px;width:520px;height:380px;z-index:106;">
+          <div class="os-window-titlebar" data-drag-handle="winGhostByte">
+            <div class="win-title-left">
+              <span>[05] GHOSTBYTE METADATA CLEANER (mat2)</span>
+            </div>
+            <div class="win-controls">
+              <button type="button" class="win-ctrl-btn" data-win-action="minimize" data-win-id="winGhostByte" title="Minimize Window">_</button>
+              <button type="button" class="win-ctrl-btn" data-win-action="maximize" data-win-id="winGhostByte" title="Maximize / Restore Window">□</button>
+              <button type="button" class="win-ctrl-btn close-btn" data-win-action="close" data-win-id="winGhostByte" title="Close Window">✕</button>
+            </div>
+          </div>
+          <div class="os-window-body">
+            <p style="font-size:11px;color:var(--fg-grey-600);margin-bottom:8px;">
+              Tails-style <code>mat2</code> metadata sanitizer: strips EXIF/GPS, author tags, and tracking headers in RAM:
+            </p>
+            <textarea id="ghostbyteInput" class="mono-input" rows="3" aria-label="GhostByte Metadata Sanitizer Input" style="margin-bottom:6px;">{
   "document": "zoth_enclave_spec.pdf",
   "author": "Neal Frazier",
   "gps": "36.8508,-76.2859",
   "payload": "Sovereign Zero-Egress Spec v1.0"
 }</textarea>
-              <button type="button" class="mono-btn mono-btn-black" id="runGhostbyteBtn" style="width:100%;min-height:32px;margin-bottom:8px;">
-                🧹 Strip Metadata & Compute BLAKE2b Digest
-              </button>
-              <pre id="ghostbyteOutput" class="mono-console-output" style="height:125px;">[::] GhostByte mat2 Enclave Ready.</pre>
-            </div>
-          </article>
+            <button type="button" class="mono-btn mono-btn-black" id="runGhostbyteBtn" style="width:100%;margin-bottom:8px;">
+              🧹 Strip Metadata & Compute BLAKE2b Digest
+            </button>
+            <pre id="ghostbyteOutput" class="mono-console-output" style="height:135px;">[::] GhostByte mat2 Enclave Ready.</pre>
+          </div>
+        </article>
 
-          <!-- WINDOW 08: LIVE QEMU/KVM AMNESIC VIRTUAL MACHINE BRIDGE -->
-          <article class="os-window" id="winQemuVm">
-            <div class="os-window-titlebar">
-              <div class="win-title-left">
-                <span>[06] LIVE QEMU/KVM VM SERIAL & VGA BRIDGE</span>
-              </div>
-              <span class="badge-grey" id="vmRunningBadge">KVM ONLINE</span>
+        <!-- ===================================================================
+             WINDOW 08: LIVE QEMU/KVM AMNESIC VIRTUAL MACHINE BRIDGE
+             =================================================================== -->
+        <article class="os-window win-closed" id="winQemuVm" data-win-title="[06] Live KVM VM TTY" style="top:46px;left:260px;width:540px;height:390px;z-index:105;">
+          <div class="os-window-titlebar" data-drag-handle="winQemuVm">
+            <div class="win-title-left">
+              <span>[06] LIVE QEMU/KVM VM SERIAL & VGA BRIDGE (<span id="vmRunningBadge">KVM ONLINE</span>)</span>
             </div>
-            <div class="os-window-body">
-              <div style="display:flex;justify-content:space-between;align-items:center;gap:6px;margin-bottom:6px;font-size:11px;">
-                <span>PID: <b id="vmPidVal">ACTIVE</b> • <b>Linux 6.12 (toram)</b></span>
-                <div style="display:flex;gap:4px;">
-                  <button type="button" class="mono-btn" id="refreshVmScreenBtn" style="min-height:26px;padding:2px 6px;font-size:10px;">⟳ Sync</button>
-                  <button type="button" class="mono-btn" id="rebootVmBtn" style="min-height:26px;padding:2px 6px;font-size:10px;">⚡ Reboot VM</button>
-                </div>
-              </div>
-              <div style="display:flex;gap:4px;flex-wrap:wrap;margin-bottom:6px;">
-                <button type="button" class="mono-btn vm-quick-cmd" data-vm-cmd="zoth-lite-pkg status" style="min-height:26px;padding:2px 6px;font-size:9.5px;">▶ pkg status</button>
-                <button type="button" class="mono-btn vm-quick-cmd" data-vm-cmd="zoth-amnesia" style="min-height:26px;padding:2px 6px;font-size:9.5px;">▶ amnesia</button>
-                <button type="button" class="mono-btn vm-quick-cmd" data-vm-cmd="zoth-cold-sign @vaelor 250" style="min-height:26px;padding:2px 6px;font-size:9.5px;">▶ cold-sign</button>
-                <button type="button" class="mono-btn vm-quick-cmd" data-vm-cmd="zoth-hexstrike" style="min-height:26px;padding:2px 6px;font-size:9.5px;">▶ hexstrike</button>
-              </div>
-              <div style="display:flex;gap:5px;margin-bottom:6px;">
-                <input type="text" id="vmSerialInput" class="mono-input" value="zoth-lite-pkg status" aria-label="Command to execute inside live QEMU/KVM ZothOS-Lite VM" style="min-height:30px;" />
-                <button type="button" class="mono-btn mono-btn-black" id="sendVmSerialBtn" style="min-height:30px;">SEND ↵</button>
-              </div>
-              <pre id="vmSerialOutputBox" class="mono-console-output" style="height:130px;">Connecting to live QEMU/KVM serial socket (/tmp/zothos-lite-serial.sock)...</pre>
+            <div class="win-controls">
+              <button type="button" class="win-ctrl-btn" data-win-action="minimize" data-win-id="winQemuVm" title="Minimize Window">_</button>
+              <button type="button" class="win-ctrl-btn" data-win-action="maximize" data-win-id="winQemuVm" title="Maximize / Restore Window">□</button>
+              <button type="button" class="win-ctrl-btn close-btn" data-win-action="close" data-win-id="winQemuVm" title="Close Window">✕</button>
             </div>
-          </article>
-        </section>
+          </div>
+          <div class="os-window-body">
+            <div style="display:flex;justify-content:space-between;align-items:center;gap:6px;margin-bottom:6px;font-size:11px;">
+              <span>PID: <b id="vmPidVal">ACTIVE</b> • <b>Linux 6.12 (toram noswap)</b></span>
+              <div style="display:flex;gap:4px;">
+                <button type="button" class="mono-btn" id="refreshVmScreenBtn" style="min-height:24px;padding:2px 6px;font-size:9.5px;">⟳ Sync</button>
+                <button type="button" class="mono-btn" id="rebootVmBtn" style="min-height:24px;padding:2px 6px;font-size:9.5px;">⚡ Reboot VM</button>
+              </div>
+            </div>
+            <div style="display:flex;gap:4px;flex-wrap:wrap;margin-bottom:6px;">
+              <button type="button" class="mono-btn vm-quick-cmd" data-vm-cmd="zoth-lite-pkg status" style="min-height:24px;padding:2px 6px;font-size:9.5px;">▶ pkg status</button>
+              <button type="button" class="mono-btn vm-quick-cmd" data-vm-cmd="zoth-amnesia" style="min-height:24px;padding:2px 6px;font-size:9.5px;">▶ amnesia</button>
+              <button type="button" class="mono-btn vm-quick-cmd" data-vm-cmd="zoth-cold-sign @vaelor 250" style="min-height:24px;padding:2px 6px;font-size:9.5px;">▶ cold-sign</button>
+              <button type="button" class="mono-btn vm-quick-cmd" data-vm-cmd="zoth-hexstrike" style="min-height:24px;padding:2px 6px;font-size:9.5px;">▶ hexstrike</button>
+            </div>
+            <div style="display:flex;gap:5px;margin-bottom:6px;">
+              <input type="text" id="vmSerialInput" class="mono-input" value="zoth-lite-pkg status" aria-label="Command to execute inside live QEMU/KVM ZothOS-Lite VM" />
+              <button type="button" class="mono-btn mono-btn-black" id="sendVmSerialBtn">SEND ↵</button>
+            </div>
+            <pre id="vmSerialOutputBox" class="mono-console-output" style="height:155px;">Connecting to live QEMU/KVM serial socket (/tmp/zothos-lite-serial.sock)...</pre>
+          </div>
+        </article>
 
       </div>
     </main>
 
     <!-- =======================================================================
-         BOTTOM TAILS-STYLE TASKBAR / WINDOW DOCK & ATTRIBUTION
+         BOTTOM TAILS-STYLE TASKBAR / WINDOW MANAGER DOCK (42px FIXED)
          ======================================================================= -->
     <footer class="tails-bottom-dock" role="contentinfo">
-      <div class="dock-tasks">
-        <button type="button" class="dock-task-btn active" data-scroll-win="winGreeter">◈ Greeter & Tor</button>
-        <button type="button" class="dock-task-btn" data-scroll-win="winDitherEngine">⣿ Braille & Dither</button>
-        <button type="button" class="dock-task-btn" data-scroll-win="winCoreTools">[06] Core Locked</button>
-        <button type="button" class="dock-task-btn" data-scroll-win="winPkgPuller">⬇ zoth-lite-pkg</button>
-        <button type="button" class="dock-task-btn" data-scroll-win="winColdSigner">Ꝟ Cold Signer</button>
-        <button type="button" class="dock-task-btn" data-scroll-win="winGhostByte">🧹 GhostByte</button>
+      <div class="dock-tasks" id="bottomTaskbarList">
+        <button type="button" class="dock-task-btn win-open win-focused" data-task-win="winGreeter">● [◈] Greeter & Tor</button>
+        <button type="button" class="dock-task-btn win-open" data-task-win="winDitherEngine">● [⣿] Braille & Dither</button>
+        <button type="button" class="dock-task-btn" data-task-win="winCoreTools">○ [01] Core Locked (6)</button>
+        <button type="button" class="dock-task-btn" data-task-win="winPkgPuller">○ [02] Pull Tools</button>
+        <button type="button" class="dock-task-btn" data-task-win="winEnvGuard">○ [03] EnvGuard Shell</button>
+        <button type="button" class="dock-task-btn" data-task-win="winColdSigner">○ [04] Cold Signer</button>
+        <button type="button" class="dock-task-btn" data-task-win="winGhostByte">○ [05] GhostByte</button>
+        <button type="button" class="dock-task-btn" data-task-win="winQemuVm">○ [06] Live KVM</button>
       </div>
 
-      <div style="display:flex;align-items:center;gap:10px;font-size:11px;color:var(--fg-grey-600);white-space:nowrap;">
-        <span>Engineered by <b>Neal Frazier Tech (@1nc0gn30)</b> • <a href="https://nullai.tech" target="_blank" rel="noopener noreferrer" style="color:var(--fill-black);font-weight:700;">NullAI Platform</a></span>
+      <div class="dock-wm-controls">
+        <button type="button" class="mono-btn" id="tileWindowsBtn" style="min-height:28px;padding:2px 8px;font-size:10px;" title="Tile Open Windows Side-by-Side">⊞ Tile 2-Pane</button>
+        <button type="button" class="mono-btn" id="minimizeAllBtn" style="min-height:28px;padding:2px 8px;font-size:10px;" title="Show Desktop / Minimize All Windows">_ Desktop</button>
+        <span style="font-size:10.5px;color:var(--fg-grey-600);margin-left:4px;">
+          <b>Neal Frazier Tech (@1nc0gn30)</b> • <a href="https://nullai.tech" target="_blank" rel="noopener noreferrer" style="color:var(--fill-black);font-weight:700;">NullAI</a>
+        </span>
       </div>
     </footer>
   </div>
 
   <!-- =========================================================================
-       CLIENT-SIDE OS DESKTOP ENGINE:
-       1. White-BG / Black-Fill / Monotone-Grey Animated Braille & Bayer Dither Wallpaper
-       2. Interactive Window Dither Shield Canvas (Bayer 4x4 + U+2800 Braille + Halftone)
-       3. Live Package Puller, Amnesic Greeter, Cold Signer, GhostByte & QEMU VM Bridge
+       CLIENT-SIDE OS WINDOW MANAGER & AMNESIC DESKTOP ENGINE
        ========================================================================= -->
   <script>
     (function () {
@@ -1151,6 +1241,7 @@ VAELOR_NODE_MODE=amnesic_toram</textarea>
       let activeCategory = 'ALL';
       let shaderMode = 'bayer-1bit';
       let frameTick = 0;
+      let topZIndex = 130;
 
       const BAYER_4X4 = [
         [ 0,  8,  2, 10],
@@ -1164,31 +1255,217 @@ VAELOR_NODE_MODE=amnesic_toram</textarea>
       function updateClock() {
         const el = document.getElementById('topClockUtc');
         if (el) {
-          const now = new Date();
-          el.textContent = 'UTC ' + now.toISOString().slice(11, 19);
+          el.textContent = 'UTC ' + new Date().toISOString().slice(11, 19);
         }
       }
       setInterval(updateClock, 1000);
       updateClock();
 
-      // Desktop Icon & Dock Window Focus Navigation
-      document.querySelectorAll('[data-scroll-win]').forEach((btn) => {
-        btn.addEventListener('click', () => {
-          const targetId = btn.getAttribute('data-scroll-win');
-          const win = document.getElementById(targetId);
-          if (win) {
-            win.scrollIntoView({ behavior: 'smooth', block: 'center' });
-            win.style.boxShadow = '8px 8px 0px #000000';
-            setTimeout(() => { win.style.boxShadow = '5px 5px 0px #0A0A0A'; }, 700);
-          }
-          document.querySelectorAll('.desktop-icon-btn').forEach((b) => b.classList.remove('active'));
-          if (btn.classList.contains('desktop-icon-btn')) btn.classList.add('active');
+      // =======================================================================
+      // 1. OS WINDOW MANAGER: OPEN, FOCUS, MINIMIZE (_), MAXIMIZE (□), CLOSE (✕), DRAG
+      // =======================================================================
+      function focusWindow(winId) {
+        const win = document.getElementById(winId);
+        if (!win) return;
+        topZIndex++;
+        win.style.zIndex = String(topZIndex);
+        document.querySelectorAll('.os-window').forEach((w) => w.classList.remove('focused-window'));
+        win.classList.add('focused-window');
+
+        const title = win.getAttribute('data-win-title') || winId;
+        const topTitle = document.getElementById('topFocusedWinTitle');
+        if (topTitle) topTitle.textContent = title.toUpperCase();
+
+        document.querySelectorAll('.desktop-icon-btn').forEach((btn) => {
+          btn.classList.toggle('focused', btn.getAttribute('data-open-win') === winId);
+        });
+        syncTaskbarButtons();
+      }
+
+      function openOrRestoreWindow(winId) {
+        const win = document.getElementById(winId);
+        if (!win) return;
+        win.classList.remove('win-closed', 'win-minimized');
+        focusWindow(winId);
+      }
+
+      function minimizeWindow(winId) {
+        const win = document.getElementById(winId);
+        if (!win) return;
+        win.classList.add('win-minimized');
+        win.classList.remove('focused-window');
+        syncTaskbarButtons();
+      }
+
+      function toggleMaximizeWindow(winId) {
+        const win = document.getElementById(winId);
+        if (!win) return;
+        win.classList.toggle('win-maximized');
+        focusWindow(winId);
+      }
+
+      function closeWindow(winId) {
+        const win = document.getElementById(winId);
+        if (!win) return;
+        win.classList.add('win-closed');
+        win.classList.remove('win-minimized', 'win-maximized', 'focused-window');
+        syncTaskbarButtons();
+      }
+
+      function syncTaskbarButtons() {
+        document.querySelectorAll('[data-task-win]').forEach((btn) => {
+          const winId = btn.getAttribute('data-task-win');
+          const win = document.getElementById(winId);
+          if (!win) return;
+          const isClosed = win.classList.contains('win-closed');
+          const isMin = win.classList.contains('win-minimized');
+          const isFocused = win.classList.contains('focused-window') && !isClosed && !isMin;
+
+          btn.classList.toggle('win-open', !isClosed);
+          btn.classList.toggle('win-is-minimized', !isClosed && isMin);
+          btn.classList.toggle('win-focused', isFocused);
+
+          const baseLabel = btn.textContent.replace(/^[●○_]\s*/, '');
+          const prefix = isClosed ? '○ ' : (isMin ? '_ ' : '● ');
+          btn.textContent = prefix + baseLabel;
+        });
+      }
+
+      // Wire Window Control Buttons (_, □, ✕)
+      document.querySelectorAll('[data-win-action]').forEach((btn) => {
+        btn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const action = btn.getAttribute('data-win-action');
+          const winId = btn.getAttribute('data-win-id');
+          if (action === 'minimize') minimizeWindow(winId);
+          else if (action === 'maximize') toggleMaximizeWindow(winId);
+          else if (action === 'close') closeWindow(winId);
         });
       });
 
-      // -----------------------------------------------------------------------
-      // 1. Subtle Animated White-BG + Monotone Grey/Black Braille Wallpaper
-      // -----------------------------------------------------------------------
+      // Clicking anywhere inside a window focuses it
+      document.querySelectorAll('.os-window').forEach((win) => {
+        win.addEventListener('mousedown', () => {
+          if (!win.classList.contains('win-closed') && !win.classList.contains('win-minimized')) {
+            focusWindow(win.id);
+          }
+        });
+      });
+
+      // Wire Desktop Icons & Applications Menu Items
+      document.querySelectorAll('[data-open-win]').forEach((btn) => {
+        btn.addEventListener('click', () => {
+          const winId = btn.getAttribute('data-open-win');
+          openOrRestoreWindow(winId);
+          document.getElementById('appsDropdownMenu')?.classList.remove('open');
+        });
+      });
+
+      // Wire Bottom Taskbar Buttons (Toggle Minimize/Restore/Open)
+      document.querySelectorAll('[data-task-win]').forEach((btn) => {
+        btn.addEventListener('click', () => {
+          const winId = btn.getAttribute('data-task-win');
+          const win = document.getElementById(winId);
+          if (!win) return;
+          if (win.classList.contains('win-closed') || win.classList.contains('win-minimized')) {
+            openOrRestoreWindow(winId);
+          } else if (win.classList.contains('focused-window')) {
+            minimizeWindow(winId);
+          } else {
+            focusWindow(winId);
+          }
+        });
+      });
+
+      // Applications Dropdown Menu Toggle
+      document.getElementById('appsMenuToggleBtn')?.addEventListener('click', (e) => {
+        e.stopPropagation();
+        document.getElementById('appsDropdownMenu')?.classList.toggle('open');
+      });
+      document.addEventListener('click', () => {
+        document.getElementById('appsDropdownMenu')?.classList.remove('open');
+      });
+
+      // Tile 2-Pane & Minimize All Buttons
+      document.getElementById('minimizeAllBtn')?.addEventListener('click', () => {
+        document.querySelectorAll('.os-window').forEach((w) => {
+          if (!w.classList.contains('win-closed')) {
+            w.classList.add('win-minimized');
+            w.classList.remove('focused-window');
+          }
+        });
+        syncTaskbarButtons();
+      });
+
+      document.getElementById('tileWindowsBtn')?.addEventListener('click', () => {
+        const visible = Array.from(document.querySelectorAll('.os-window')).filter(
+          (w) => !w.classList.contains('win-closed') && !w.classList.contains('win-minimized')
+        );
+        if (visible.length === 0) {
+          openOrRestoreWindow('winGreeter');
+          openOrRestoreWindow('winDitherEngine');
+          return;
+        }
+        if (visible.length === 1) {
+          const w = visible[0];
+          w.classList.remove('win-maximized');
+          w.style.top = '10px';
+          w.style.left = '10px';
+          w.style.width = 'calc(100% - 20px)';
+          w.style.height = 'calc(100% - 20px)';
+        } else {
+          const leftWin = visible[visible.length - 2];
+          const rightWin = visible[visible.length - 1];
+          [leftWin, rightWin].forEach((w) => w.classList.remove('win-maximized'));
+          leftWin.style.top = '10px';
+          leftWin.style.left = '10px';
+          leftWin.style.width = 'calc(50% - 14px)';
+          leftWin.style.height = 'calc(100% - 20px)';
+
+          rightWin.style.top = '10px';
+          rightWin.style.left = 'calc(50% + 4px)';
+          rightWin.style.width = 'calc(50% - 14px)';
+          rightWin.style.height = 'calc(100% - 20px)';
+        }
+      });
+
+      // Draggable Window Titlebars
+      let dragState = null;
+      document.querySelectorAll('[data-drag-handle]').forEach((titlebar) => {
+        titlebar.addEventListener('mousedown', (e) => {
+          if (e.target.closest('.win-controls')) return;
+          const winId = titlebar.getAttribute('data-drag-handle');
+          const win = document.getElementById(winId);
+          const stage = document.getElementById('osWindowStage');
+          if (!win || !stage || win.classList.contains('win-maximized')) return;
+          focusWindow(winId);
+          const winRect = win.getBoundingClientRect();
+          const stageRect = stage.getBoundingClientRect();
+          dragState = {
+            win,
+            stageRect,
+            offsetX: e.clientX - winRect.left,
+            offsetY: e.clientY - winRect.top
+          };
+        });
+      });
+
+      window.addEventListener('mousemove', (e) => {
+        if (!dragState) return;
+        const { win, stageRect, offsetX, offsetY } = dragState;
+        const nextLeft = Math.max(4, Math.min(stageRect.width - 120, e.clientX - stageRect.left - offsetX));
+        const nextTop = Math.max(4, Math.min(stageRect.height - 42, e.clientY - stageRect.top - offsetY));
+        win.style.left = `${nextLeft}px`;
+        win.style.top = `${nextTop}px`;
+      });
+
+      window.addEventListener('mouseup', () => {
+        dragState = null;
+      });
+
+      // =======================================================================
+      // 2. ANIMATED MONOTONE BRAILLE + BAYER DITHER WALLPAPER & SHIELD
+      // =======================================================================
       const wpCanvas = document.getElementById('desktopWallpaperCanvas');
       const wpCtx = wpCanvas ? wpCanvas.getContext('2d') : null;
 
@@ -1212,8 +1489,7 @@ VAELOR_NODE_MODE=amnesic_toram</textarea>
             const wave = Math.sin(dist * 7.0 - t) * Math.cos(nx * 4.0 + t * 0.6);
             const bayer = BAYER_4X4[(y / stepY | 0) & 3][(x / stepX | 0) & 3] / 16.0;
             if (wave + 0.35 > bayer) {
-              const shade = wave > 0.45 ? 'rgba(10,10,10,0.18)' : 'rgba(82,82,76,0.11)';
-              wpCtx.fillStyle = shade;
+              wpCtx.fillStyle = wave > 0.45 ? 'rgba(10,10,10,0.18)' : 'rgba(82,82,76,0.11)';
               const charCode = 0x2800 + (((x + y + (frameTick >> 1)) * 17) & 0xff);
               wpCtx.fillText(String.fromCharCode(charCode), x, y);
             }
@@ -1221,9 +1497,6 @@ VAELOR_NODE_MODE=amnesic_toram</textarea>
         }
       }
 
-      // -----------------------------------------------------------------------
-      // 2. White-BG / Black-Ink Animated Braille & Bayer 4x4 Dither Shield Canvas
-      // -----------------------------------------------------------------------
       const ditherCanvas = document.getElementById('liteDitherCanvas');
       const dCtx = ditherCanvas ? ditherCanvas.getContext('2d') : null;
       let pointerX = 0.5;
@@ -1244,11 +1517,9 @@ VAELOR_NODE_MODE=amnesic_toram</textarea>
         const h = ditherCanvas.height;
 
         const isInverted = shaderMode === 'halftone-bw';
-        // Default: Crisp White Background (#FFFFFF) with Black Fill (#0A0A0A) and Monotone Grey Shades
         dCtx.fillStyle = isInverted ? '#0A0A0A' : '#FFFFFF';
         dCtx.fillRect(0, 0, w, h);
 
-        // Subtle Monotone Grey Grid Lines
         dCtx.strokeStyle = isInverted ? 'rgba(255,255,255,0.08)' : 'rgba(10,10,10,0.07)';
         dCtx.lineWidth = 1;
         for (let gx = 0; gx < w; gx += 28) {
@@ -1258,7 +1529,7 @@ VAELOR_NODE_MODE=amnesic_toram</textarea>
           dCtx.beginPath(); dCtx.moveTo(0, gy); dCtx.lineTo(w, gy); dCtx.stroke();
         }
 
-        const cols = 68;
+        const cols = 66;
         const rows = 21;
         const cellW = w / cols;
         const cellH = h / rows;
@@ -1277,7 +1548,6 @@ VAELOR_NODE_MODE=amnesic_toram</textarea>
             const dist = Math.sqrt(dx * dx + dy * dy);
             const angle = Math.atan2(dy, dx);
 
-            // Rotating Tails-Style Amnesic Torus Shield + Harmonics
             const outerRing = Math.exp(-Math.pow(dist - 0.64, 2) * 20.0);
             const innerCore = Math.exp(-Math.pow(dist - 0.23, 2) * 30.0);
             const spokes = 0.5 + 0.5 * Math.cos(angle * 6.0 - t * 2.1 + dist * 5.0);
@@ -1291,12 +1561,7 @@ VAELOR_NODE_MODE=amnesic_toram</textarea>
             if (shaderMode === 'bayer-1bit') {
               if (lum > bayerThreshold) {
                 const glyphIdx = Math.min(ASCII_RAMP.length - 1, Math.floor(lum * ASCII_RAMP.length));
-                // High-craft Black Ink Fill for primary density, Monotone Dark Grey for midtones
-                if (lum > 0.58) {
-                  dCtx.fillStyle = isInverted ? '#FFFFFF' : '#0A0A0A';
-                } else {
-                  dCtx.fillStyle = isInverted ? '#A8A8A0' : '#52524C';
-                }
+                dCtx.fillStyle = lum > 0.58 ? (isInverted ? '#FFFFFF' : '#0A0A0A') : (isInverted ? '#A8A8A0' : '#52524C');
                 dCtx.fillText(ASCII_RAMP[glyphIdx], c * cellW, r * cellH);
               } else if (lum > bayerThreshold * 0.55) {
                 dCtx.fillStyle = isInverted ? '#4A4A44' : '#C8C8C0';
@@ -1321,7 +1586,6 @@ VAELOR_NODE_MODE=amnesic_toram</textarea>
           }
         }
 
-        // Top-Left Label Badge inside Canvas (Black Fill Box with White Text)
         dCtx.fillStyle = '#0A0A0A';
         dCtx.fillRect(8, 8, 258, 20);
         dCtx.fillStyle = '#FFFFFF';
@@ -1329,13 +1593,10 @@ VAELOR_NODE_MODE=amnesic_toram</textarea>
         dCtx.fillText('▓▒░ TAILS AMNESIC SHIELD // ' + shaderMode.toUpperCase(), 14, 13);
       }
 
-      // -----------------------------------------------------------------------
-      // 3. Unicode U+2800 2x4 Sub-Pixel Braille Oscilloscope
-      // -----------------------------------------------------------------------
       function renderBrailleScope() {
         const el = document.getElementById('liteBrailleScope');
         if (!el) return;
-        const widthChars = 66;
+        const widthChars = 58;
         const rows = 2;
         const dotMap = [
           [0x01, 0x08],
@@ -1368,9 +1629,9 @@ VAELOR_NODE_MODE=amnesic_toram</textarea>
         el.textContent = lines.join('\n');
       }
 
-      // -----------------------------------------------------------------------
-      // 4. Render 6 Core Locked Tools & 12 On-Demand Optional Tools
-      // -----------------------------------------------------------------------
+      // =======================================================================
+      // 3. SYSTEM STATE, 6 CORE LOCKED TOOLS & 12 OPTIONAL TOOLS
+      // =======================================================================
       function renderSystemState(raw) {
         const data = raw && raw.snapshot ? raw.snapshot : raw;
         if (!data) return;
@@ -1400,7 +1661,6 @@ VAELOR_NODE_MODE=amnesic_toram</textarea>
         if (segC) segC.style.width = `${Math.round(((fp.coreSecurityDevMb || 241) / totalScale) * 100)}%`;
         if (segP) segP.style.width = `${Math.round((((fp.pulledRamMb || 0) + (fp.pulledLuksMb || 0)) / totalScale) * 100)}%`;
 
-        // Sync Greeter Toggle Pills
         const syncToggle = (id, val, onLabel, offLabel) => {
           const btn = document.getElementById(id);
           if (!btn) return;
@@ -1413,8 +1673,7 @@ VAELOR_NODE_MODE=amnesic_toram</textarea>
         syncToggle('toggleMacBtn', ac.macSpoofing !== false);
         syncToggle('toggleLuksBtn', Boolean(ac.luksPersistence), '█ UNLOCKED', '░ LOCKED');
 
-        // Render 6 Core Locked Tools
-        const coreList = data.coreTools || data.coreSecurityDevTools || [];
+        const coreList = data.coreTools || [];
         const coreBox = document.getElementById('coreToolsList');
         if (coreBox && Array.isArray(coreList)) {
           coreBox.innerHTML = coreList.map((t) => `
@@ -1423,7 +1682,7 @@ VAELOR_NODE_MODE=amnesic_toram</textarea>
                 <b style="font-size:11.5px;">■ ${t.name}</b>
                 <span class="badge-black">LOCKED • ${t.sizeMb} MB</span>
               </div>
-              <div style="font-size:10.5px;color:var(--fg-grey-600);margin-bottom:6px;">${t.description || t.purpose || ''}</div>
+              <div style="font-size:10.5px;color:var(--fg-grey-600);margin-bottom:6px;">${t.description || ''}</div>
               <div style="display:flex;justify-content:space-between;align-items:center;">
                 <code style="font-size:10px;color:var(--fg-grey-600);">${t.binary}</code>
                 <button type="button" class="mono-btn core-Verify-btn" data-bin="${t.binary}" style="min-height:24px;padding:2px 8px;font-size:9.5px;">
@@ -1436,13 +1695,13 @@ VAELOR_NODE_MODE=amnesic_toram</textarea>
           coreBox.querySelectorAll('.core-Verify-btn').forEach((b) => {
             b.addEventListener('click', () => {
               const binName = b.getAttribute('data-bin').split('/').pop();
+              openOrRestoreWindow('winEnvGuard');
               runTerminalCommand(`${binName} --verify-enclave`);
             });
           });
         }
 
-        // Render 12 Optional Pull-In Tools
-        renderOptionalCatalog(data.optionalTools || data.optionalCatalog || []);
+        renderOptionalCatalog(data.optionalTools || []);
       }
 
       function renderOptionalCatalog(catalog) {
@@ -1579,7 +1838,6 @@ VAELOR_NODE_MODE=amnesic_toram</textarea>
         apiPost('/api/amnesia/toggle', { key: 'panicWipe' });
       });
 
-      // Wire Shader Mode Buttons
       document.querySelectorAll('[data-lite-shader]').forEach((btn) => {
         btn.addEventListener('click', () => {
           document.querySelectorAll('[data-lite-shader]').forEach((b) => b.classList.remove('mono-btn-black'));
@@ -1588,7 +1846,6 @@ VAELOR_NODE_MODE=amnesic_toram</textarea>
         });
       });
 
-      // Wire Category Filter Buttons
       document.querySelectorAll('[data-cat-filter]').forEach((btn) => {
         btn.addEventListener('click', () => {
           document.querySelectorAll('[data-cat-filter]').forEach((b) => b.classList.remove('mono-btn-black'));
@@ -1598,13 +1855,11 @@ VAELOR_NODE_MODE=amnesic_toram</textarea>
         });
       });
 
-      // Wire Terminal Input
       document.getElementById('runTerminalCmdBtn')?.addEventListener('click', () => runTerminalCommand());
       document.getElementById('terminalCmdInput')?.addEventListener('keydown', (e) => {
         if (e.key === 'Enter') runTerminalCommand();
       });
 
-      // Wire EnvGuard Scanner
       async function executeEnvguardScan() {
         const inp = document.getElementById('envguardInput')?.value || '';
         const box = document.getElementById('envguardResultBox');
@@ -1632,10 +1887,9 @@ VAELOR_NODE_MODE=amnesic_toram</textarea>
         }
       });
 
-      // Wire Export ISO Script
       document.getElementById('exportCustomIsoBtn')?.addEventListener('click', () => {
         if (!currentState) return;
-        const pulledIds = (currentState.optionalCatalog || []).filter((p) => p.pulled).map((p) => p.id);
+        const pulledIds = (currentState.optionalTools || []).filter((p) => p.pulled).map((p) => p.id);
         const script = [
           '#!/usr/bin/env bash',
           '# ZothOS-Lite v1.0 Custom Amnesic ISO Build Profile',
@@ -1653,16 +1907,14 @@ VAELOR_NODE_MODE=amnesic_toram</textarea>
         a.remove();
       });
 
-      // Copy Solana Tip Wallet
       document.getElementById('copySolanaTopBtn')?.addEventListener('click', (e) => {
         const btn = e.currentTarget;
         navigator.clipboard?.writeText('GG2eQbVh8ut1BK6j1A2tz7pSySdLpD38BgyEhGcxdXoK');
         const orig = btn.textContent;
-        btn.textContent = '✓ Copied SOL';
+        btn.textContent = '✓ SOL';
         setTimeout(() => { btn.textContent = orig; }, 1600);
       });
 
-      // Wire Air-Gapped Vaelor L1 Cold Signer
       async function executeColdSign(broadcastToL1) {
         const from = document.getElementById('coldFromInput')?.value || '@neal';
         const to = document.getElementById('coldToInput')?.value || '@zoth';
@@ -1692,7 +1944,6 @@ VAELOR_NODE_MODE=amnesic_toram</textarea>
       document.getElementById('coldSignOnlyBtn')?.addEventListener('click', () => executeColdSign(false));
       document.getElementById('coldSignBroadcastBtn')?.addEventListener('click', () => executeColdSign(true));
 
-      // Wire GhostByte Metadata Stripper
       document.getElementById('runGhostbyteBtn')?.addEventListener('click', async () => {
         const inp = document.getElementById('ghostbyteInput')?.value || '';
         const outBox = document.getElementById('ghostbyteOutput');
@@ -1713,7 +1964,6 @@ VAELOR_NODE_MODE=amnesic_toram</textarea>
         } catch (_e) {}
       });
 
-      // Wire Live QEMU/KVM VM Bridge
       async function pollVmStatus() {
         try {
           const res = await fetch('/api/vm/status');
@@ -1767,7 +2017,6 @@ VAELOR_NODE_MODE=amnesic_toram</textarea>
         setTimeout(pollVmStatus, 3500);
       });
 
-      // Poll Sovereign Fleet Bridge (:8140 + :9393)
       async function pollBridgeTelemetry() {
         try {
           const res = await fetch('/api/bridge/telemetry');
@@ -1795,6 +2044,7 @@ VAELOR_NODE_MODE=amnesic_toram</textarea>
       renderDitherCanvas();
       renderDesktopWallpaper();
       renderBrailleScope();
+      syncTaskbarButtons();
 
       setInterval(() => {
         renderDitherCanvas();
