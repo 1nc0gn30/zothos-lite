@@ -1,0 +1,3 @@
+vm/rootfs/
+vm/iso_root/
+vm/*.iso

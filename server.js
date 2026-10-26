@@ -8,6 +8,8 @@ const fs = require('fs');
 const path = require('path');
 const crypto = require('crypto');
 const os = require('os');
+const net = require('net');
+const { execFileSync, spawn } = require('child_process');
 
 const PORT = Number(process.env.PORT || 8145);
 const PUBLIC_DIR = path.join(__dirname, 'public');
@@ -630,6 +632,121 @@ const server = http.createServer(async (req, res) => {
     } catch (_e) {}
 
     return sendJson(res, 200, { ok: true, vaelor, civ });
+  }
+
+  // ---------------------------------------------------------------------------
+  // Live QEMU/KVM Virtual Machine Controller & Serial/QMP Bridge
+  // ---------------------------------------------------------------------------
+  if (pathname === '/api/vm/status' && req.method === 'GET') {
+    const pidFile = '/tmp/zothos-lite-vm.pid';
+    const serialLog = '/tmp/zothos-lite-vm-console.log';
+    const isoPath = path.join(__dirname, 'vm', 'zothos-lite-1.0-amd64.iso');
+    const initrdPath = path.join(__dirname, 'vm', 'initrd-zothos-lite.img');
+    let running = false;
+    let pid = null;
+    if (fs.existsSync(pidFile)) {
+      const p = Number(fs.readFileSync(pidFile, 'utf8').trim());
+      if (p > 0) {
+        try {
+          process.kill(p, 0);
+          running = true;
+          pid = p;
+        } catch (_e) {}
+      }
+    }
+    let consoleTail = '';
+    if (fs.existsSync(serialLog)) {
+      try {
+        const raw = fs.readFileSync(serialLog, 'utf8');
+        consoleTail = raw.slice(-3200);
+      } catch (_e) {}
+    }
+    return sendJson(res, 200, {
+      ok: true,
+      running,
+      pid,
+      hypervisor: 'QEMU/KVM x86_64 (-enable-kvm)',
+      kernel: 'Linux 6.12.107+deb13-amd64 (toram noswap)',
+      ramMb: 2048,
+      vcpus: 2,
+      spoofedMac: '02:42:ac:11:00:7f',
+      vncEndpoint: '127.0.0.1:5905',
+      isoSizeMb: fs.existsSync(isoPath) ? Number((fs.statSync(isoPath).size / (1024 * 1024)).toFixed(1)) : 35.0,
+      initrdSizeMb: fs.existsSync(initrdPath) ? Number((fs.statSync(initrdPath).size / (1024 * 1024)).toFixed(2)) : 1.5,
+      consoleTail
+    });
+  }
+
+  if (pathname === '/api/vm/exec' && req.method === 'POST') {
+    const body = await readJsonBody(req);
+    const cmd = String(body.command || 'zoth-lite-pkg status').trim();
+    const serialSock = '/tmp/zothos-lite-serial.sock';
+    if (!fs.existsSync(serialSock)) {
+      return sendJson(res, 503, { ok: false, error: 'QEMU/KVM VM serial socket is offline.' });
+    }
+    const output = await new Promise((resolve) => {
+      let buf = '';
+      const client = net.createConnection(serialSock, () => {
+        // Run command and echo output to both serial console and VGA /dev/tty0
+        client.write(`${cmd} | tee /dev/tty0\n`);
+      });
+      client.on('data', (chunk) => {
+        buf += chunk.toString('utf8');
+      });
+      client.on('error', () => resolve(''));
+      setTimeout(() => {
+        try { client.end(); client.destroy(); } catch (_e) {}
+        resolve(buf);
+      }, 650);
+    });
+    return sendJson(res, 200, {
+      ok: true,
+      command: cmd,
+      output: output.replace(/\r/g, '').trim()
+    });
+  }
+
+  if (pathname === '/api/vm/reboot' && req.method === 'POST') {
+    const launchScript = path.join(__dirname, 'vm', 'launch-vm.sh');
+    try {
+      spawn('bash', [launchScript], { detached: true, stdio: 'ignore' }).unref();
+      return sendJson(res, 200, { ok: true, message: 'Re-launching fresh amnesic QEMU/KVM VM instance...' });
+    } catch (err) {
+      return sendJson(res, 500, { ok: false, error: err.message });
+    }
+  }
+
+  if (pathname === '/api/vm/screen.png' && req.method === 'GET') {
+    const qmpSock = '/tmp/zothos-lite-qmp.sock';
+    const ppmPath = '/tmp/zothos-lite-vm-screen.ppm';
+    const pngPath = '/tmp/zothos-lite-vm-screen.png';
+    if (fs.existsSync(qmpSock)) {
+      await new Promise((resolve) => {
+        const q = net.createConnection(qmpSock, () => {
+          setTimeout(() => {
+            try { q.write(JSON.stringify({ execute: 'qmp_capabilities' }) + '\n'); } catch (_e) {}
+          }, 40);
+          setTimeout(() => {
+            try { q.write(JSON.stringify({ execute: 'screendump', arguments: { filename: ppmPath } }) + '\n'); } catch (_e) {}
+          }, 90);
+          setTimeout(() => {
+            try { q.end(); q.destroy(); } catch (_e) {}
+            resolve();
+          }, 220);
+        });
+        q.on('error', () => resolve());
+      });
+      try {
+        execFileSync('ffmpeg', ['-y', '-i', ppmPath, pngPath], { stdio: 'ignore' });
+      } catch (_e) {}
+    }
+    if (fs.existsSync(pngPath)) {
+      const img = fs.readFileSync(pngPath);
+      res.writeHead(200, { 'Content-Type': 'image/png', 'Cache-Control': 'no-store' });
+      return res.end(img);
+    }
+    res.writeHead(404);
+    return res.end('VM Screen Unavailable');
   }
 
   // Serve static files from public/

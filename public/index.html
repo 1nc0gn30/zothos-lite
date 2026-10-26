@@ -656,6 +656,57 @@
       </div>
     </section>
 
+    <!-- Row 1.5: Live QEMU/KVM Virtual Machine Monitor & Interactive VGA/Serial Bridge -->
+    <section class="ascii-window" id="liveQemuVmPanel" style="margin-bottom:16px;">
+      <div class="ascii-window-titlebar">
+        <span>┌── [00] LIVE QEMU/KVM AMNESIC VIRTUAL MACHINE // zothos-lite-1.0-amd64.iso (2048 MB RAM • 2 vCPU • ZERO DISK)</span>
+        <span id="vmRunningBadge">[VM ONLINE // KVM ACCELERATED]</span>
+      </div>
+      <div class="ascii-window-body">
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:14px;align-items:start;">
+          <!-- Left: Live QEMU VGA Framebuffer Mirror -->
+          <div style="border:1px solid rgba(255,255,255,0.45);background:#000000;padding:10px;">
+            <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:8px;border-bottom:1px dashed rgba(255,255,255,0.3);padding-bottom:6px;">
+              <span style="font-size:0.72rem;font-weight:700;letter-spacing:0.06em;">▓▒░ LIVE QEMU VGA FRAMEBUFFER (QMP SCREENDUMP + DISPLAY=:0)</span>
+              <div style="display:flex;gap:6px;">
+                <button type="button" class="bw-btn" id="refreshVmScreenBtn" style="min-height:28px;padding:3px 8px;font-size:0.66rem;">⟳ Refresh VGA</button>
+                <button type="button" class="bw-btn" id="rebootVmBtn" style="min-height:28px;padding:3px 8px;font-size:0.66rem;">⚡ Cold Reboot VM</button>
+              </div>
+            </div>
+            <img id="liveVmVgaImg" src="/api/vm/screen.png" alt="Live ZothOS-Lite QEMU/KVM Virtual Machine VGA Console" style="width:100%;height:auto;display:block;border:1px solid #ffffff;background:#000000;image-rendering:pixelated;" />
+            <div id="vmMetaTelemetry" style="margin-top:8px;font-size:0.69rem;color:#cfcfcf;display:flex;justify-content:space-between;flex-wrap:wrap;gap:6px;">
+              <span>PID: <b id="vmPidVal">LOADING</b> • KERNEL: <b>Linux 6.12.107+deb13-amd64</b></span>
+              <span>VNC: <b>127.0.0.1:5905</b> • ISO: <b>35.0 MB</b></span>
+            </div>
+          </div>
+
+          <!-- Right: Live Serial Socket (/tmp/zothos-lite-serial.sock) Interactive Executor -->
+          <div style="border:1px solid rgba(255,255,255,0.45);background:#000000;padding:10px;">
+            <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:8px;border-bottom:1px dashed rgba(255,255,255,0.3);padding-bottom:6px;">
+              <span style="font-size:0.72rem;font-weight:700;letter-spacing:0.06em;">[⣿] LIVE QEMU SERIAL CONSOLE (/dev/ttyS0 ↔ /dev/tty0)</span>
+              <span style="font-size:0.66rem;color:#bdbdbd;">MAC: 02:42:ac:11:00:7f • toram noswap</span>
+            </div>
+
+            <div style="display:flex;gap:5px;flex-wrap:wrap;margin-bottom:8px;">
+              <button type="button" class="filter-pill vm-quick-cmd" data-vm-cmd="zoth-lite-pkg status" style="min-height:28px;padding:3px 7px;font-size:0.66rem;">▶ zoth-lite-pkg status</button>
+              <button type="button" class="filter-pill vm-quick-cmd" data-vm-cmd="zoth-amnesia" style="min-height:28px;padding:3px 7px;font-size:0.66rem;">▶ zoth-amnesia</button>
+              <button type="button" class="filter-pill vm-quick-cmd" data-vm-cmd="zoth-cold-sign @vaelor 250" style="min-height:28px;padding:3px 7px;font-size:0.66rem;">▶ zoth-cold-sign @vaelor 250</button>
+              <button type="button" class="filter-pill vm-quick-cmd" data-vm-cmd="zoth-envguard 'AWS_SECRET_ACCESS_KEY=wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY'" style="min-height:28px;padding:3px 7px;font-size:0.66rem;">▶ zoth-envguard</button>
+              <button type="button" class="filter-pill vm-quick-cmd" data-vm-cmd="zoth-hexstrike" style="min-height:28px;padding:3px 7px;font-size:0.66rem;">▶ zoth-hexstrike</button>
+              <button type="button" class="filter-pill vm-quick-cmd" data-vm-cmd="uname -a && free -m && df -h /" style="min-height:28px;padding:3px 7px;font-size:0.66rem;">▶ uname & RAM</button>
+            </div>
+
+            <div style="display:flex;gap:6px;margin-bottom:8px;">
+              <input type="text" id="vmSerialInput" class="term-input" value="zoth-lite-pkg status" aria-label="Command to execute inside live QEMU/KVM ZothOS-Lite VM" style="min-height:34px;font-size:0.74rem;" />
+              <button type="button" class="bw-btn bw-btn-solid" id="sendVmSerialBtn" style="min-height:34px;padding:4px 12px;font-size:0.72rem;">SEND TO VM ↵</button>
+            </div>
+
+            <pre id="vmSerialOutputBox" class="terminal-screen" style="height:215px;font-size:0.7rem;line-height:1.42;margin:0;">Connecting to live QEMU/KVM serial socket (/tmp/zothos-lite-serial.sock)...</pre>
+          </div>
+        </div>
+      </div>
+    </section>
+
     <!-- Row 2: 3-Column OS Desktop (Left: Tails Amnesic Controls, Center: Core Security/Dev Tools + Runner, Right: Modular Tool Puller) -->
     <section class="workstation-3col">
 
@@ -1583,13 +1634,91 @@ Click "Sign Offline Ed25519 Block" to compute SHA-256 micro-work and RFC-8032 si
         } catch (_e) {}
       }
 
+      async function pollVmStatus() {
+        try {
+          const res = await fetch('/api/vm/status');
+          const d = await res.json();
+          if (d && d.ok) {
+            const badge = document.getElementById('vmRunningBadge');
+            const pidEl = document.getElementById('vmPidVal');
+            const outBox = document.getElementById('vmSerialOutputBox');
+            if (badge) {
+              badge.textContent = d.running
+                ? `[VM ONLINE // PID ${d.pid} // KVM ACCELERATED]`
+                : '[VM OFFLINE // CLICK COLD REBOOT]';
+            }
+            if (pidEl) pidEl.textContent = d.running ? String(d.pid) : 'OFFLINE';
+            if (outBox && outBox.textContent.includes('Connecting to live QEMU/KVM') && d.consoleTail) {
+              outBox.textContent = d.consoleTail;
+              outBox.scrollTop = outBox.scrollHeight;
+            }
+          }
+        } catch (_e) {}
+      }
+
+      function refreshVmVgaScreen() {
+        const img = document.getElementById('liveVmVgaImg');
+        if (img) {
+          img.src = '/api/vm/screen.png?t=' + Date.now();
+        }
+      }
+
+      async function execInLiveVm(cmdStr) {
+        const outBox = document.getElementById('vmSerialOutputBox');
+        const inpEl = document.getElementById('vmSerialInput');
+        const cmd = String(cmdStr || (inpEl ? inpEl.value : '') || 'zoth-lite-pkg status').trim();
+        if (inpEl) inpEl.value = cmd;
+        if (outBox) {
+          outBox.textContent += `\n[zoth@zothos-lite-vm /]# ${cmd}\nExecuting in QEMU/KVM RAM enclave...`;
+          outBox.scrollTop = outBox.scrollHeight;
+        }
+        try {
+          const res = await fetch('/api/vm/exec', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ command: cmd })
+          });
+          const data = await res.json();
+          if (data && data.ok && outBox) {
+            outBox.textContent = (outBox.textContent.replace('\nExecuting in QEMU/KVM RAM enclave...', '') + '\n' + (data.output || '[OK]')).slice(-4500);
+            outBox.scrollTop = outBox.scrollHeight;
+          }
+          setTimeout(refreshVmVgaScreen, 250);
+        } catch (_e) {}
+      }
+
+      document.getElementById('sendVmSerialBtn')?.addEventListener('click', () => execInLiveVm());
+      document.getElementById('vmSerialInput')?.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') execInLiveVm();
+      });
+      document.querySelectorAll('.vm-quick-cmd').forEach((btn) => {
+        btn.addEventListener('click', () => {
+          const cmd = btn.getAttribute('data-vm-cmd');
+          if (cmd) execInLiveVm(cmd);
+        });
+      });
+      document.getElementById('refreshVmScreenBtn')?.addEventListener('click', refreshVmVgaScreen);
+      document.getElementById('rebootVmBtn')?.addEventListener('click', async () => {
+        const outBox = document.getElementById('vmSerialOutputBox');
+        if (outBox) outBox.textContent = '[::] Wiping volatile RAM & cold-rebooting QEMU/KVM ZothOS-Lite VM...';
+        try {
+          await fetch('/api/vm/reboot', { method: 'POST' });
+          setTimeout(() => {
+            pollVmStatus();
+            refreshVmVgaScreen();
+          }, 3500);
+        } catch (_e) {}
+      });
+
       fetchSnapshot();
       pollBridgeTelemetry();
+      pollVmStatus();
       renderDitherCanvas();
       renderBrailleScope();
       setInterval(renderDitherCanvas, 48);
       setInterval(renderBrailleScope, 115);
       setInterval(pollBridgeTelemetry, 6000);
+      setInterval(pollVmStatus, 5000);
     })();
   </script>
 </body>
