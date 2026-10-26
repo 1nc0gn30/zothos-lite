@@ -298,7 +298,7 @@ ip addr add 10.0.2.15/24 dev eth0 2>/dev/null || true
 ip route add default via 10.0.2.2 2>/dev/null || true
 
 # Mount read-only 9p hostfs + volatile RAM tmpfs overlay for full graphical X11 desktop in RAM
-if mount -t 9p -o trans=virtio,version=9p2000.L,msize=524288,ro hostfs /mnt/lower 2>/dev/null; then
+if mount -t 9p -o trans=virtio,version=9p2000.L,msize=524288,cache=none,ro hostfs /mnt/lower 2>/dev/null; then
   mount -t tmpfs -o size=1024M tmpfs /mnt/ram
   mkdir -p /mnt/ram/upper /mnt/ram/work /mnt/newroot
   if mount -t overlay overlay -o lowerdir=/mnt/lower,upperdir=/mnt/ram/upper,workdir=/mnt/ram/work /mnt/newroot 2>/dev/null; then
