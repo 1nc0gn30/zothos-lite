@@ -21,5 +21,8 @@
     "luksPersistenceUnlocked": false,
     "usbKillswitchArmed": true,
     "baseIsoSizeMb": 840
+  },
+  "daemonStates": {
+    "swarm-conductor-daemon": true
   }
 }
