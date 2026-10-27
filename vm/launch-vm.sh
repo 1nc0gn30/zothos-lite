@@ -54,6 +54,7 @@ qemu-system-x86_64 \
   -usb \
   -device usb-ehci,id=ehci \
   -device usb-tablet,bus=ehci.0 \
+  -device usb-kbd,bus=ehci.0 \
   -display gtk,zoom-to-fit=on \
   -vnc 127.0.0.1:5 \
   -chardev socket,id=charserial0,path="$SERIAL_SOCK",server=on,wait=off,logfile="$SERIAL_LOG",logappend=on \

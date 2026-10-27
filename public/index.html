@@ -86,19 +86,19 @@
       --bg-white: #F7F7F4;
       --bg-pure-white: #FFFFFF;
       --bg-grey-50: #EFEFEB;
-      --bg-grey-100: #E2E2DC;
-      --bg-grey-200: #C8C8C0;
-      --fg-grey-400: #8A8A82;
-      --fg-grey-600: #52524C;
-      --fg-grey-800: #242420;
-      --fill-black: #0A0A0A;
+      --bg-grey-100: #DFDFD8;
+      --bg-grey-200: #C2C2B8;
+      --fg-grey-400: #1A1A16;
+      --fg-grey-600: #050505;
+      --fg-grey-800: #000000;
+      --fill-black: #000000;
       --pure-black: #000000;
 
       --font-mono: 'IBM Plex Mono', monospace;
       --font-sans: 'Space Grotesk', sans-serif;
 
-      --bayer-dots-light: radial-gradient(rgba(10, 10, 10, 0.14) 1px, transparent 1px);
-      --bayer-dots-med: radial-gradient(rgba(10, 10, 10, 0.28) 1px, transparent 1px);
+      --bayer-dots-light: radial-gradient(rgba(0, 0, 0, 0.18) 1px, transparent 1px);
+      --bayer-dots-med: radial-gradient(rgba(0, 0, 0, 0.34) 1px, transparent 1px);
     }
 
     * {
@@ -107,18 +107,32 @@
       padding: 0;
     }
 
-    /* STRICT NON-SCROLLING FULL-VIEWPORT OS DESKTOP */
+    /* STRICT NON-SCROLLING FULL-VIEWPORT OS DESKTOP — HIGH-CONTRAST TEKNIUM TUI TYPOGRAPHY */
     html, body {
       width: 100vw;
       height: 100vh;
       overflow: hidden !important;
       background-color: var(--bg-white);
-      color: var(--fill-black);
+      color: #000000;
       font-family: var(--font-mono);
-      font-size: 12px;
-      line-height: 1.4;
+      font-size: 13.5px;
+      font-weight: 600;
+      line-height: 1.45;
       -webkit-font-smoothing: antialiased;
+      text-rendering: geometricPrecision;
       user-select: none;
+    }
+
+    /* Teknium Uncommon Web Typography Enforcer: Upgrade all micro text to crisp high-contrast ink */
+    .os-window-body, .os-window-body div, .os-window-body span, .os-window-body p, .os-window-body code {
+      color: #000000;
+    }
+    .mono-console-output, .mono-console-output * {
+      color: #FFFFFF !important;
+    }
+    .mono-console-output.ink-paper-mode, .mono-console-output.ink-paper-mode * {
+      background: #FFFFFF !important;
+      color: #000000 !important;
     }
 
     pre, code, input, textarea {
@@ -586,18 +600,18 @@
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      gap: 4px;
-      min-height: 28px;
-      padding: 3px 9px;
+      gap: 5px;
+      min-height: 30px;
+      padding: 4px 10px;
       font-family: var(--font-mono);
-      font-size: 10px;
-      font-weight: 700;
-      letter-spacing: 0.03em;
-      text-transform: uppercase;
+      font-size: 12px !important;
+      font-weight: 700 !important;
+      letter-spacing: 0.02em;
+      text-transform: none;
       background: var(--bg-pure-white);
-      color: var(--fill-black);
-      border: 1.5px solid var(--fill-black);
-      box-shadow: 2px 2px 0px var(--fill-black);
+      color: #000000 !important;
+      border: 2px solid #000000;
+      box-shadow: 2px 2px 0px #000000;
       cursor: pointer;
       text-decoration: none;
       transition: all 80ms ease;
@@ -607,12 +621,12 @@
       transform: translate(-1px, -1px);
     }
     .mono-btn-black {
-      background: var(--fill-black);
-      color: var(--bg-pure-white);
+      background: #000000 !important;
+      color: #FFFFFF !important;
     }
     .mono-btn-black:hover {
-      background: var(--fg-grey-800);
-      color: var(--bg-pure-white);
+      background: #1A1A1A !important;
+      color: #FFFFFF !important;
     }
 
     .tails-greeter-row {
@@ -620,62 +634,63 @@
       align-items: center;
       justify-content: space-between;
       gap: 8px;
-      padding: 6px 9px;
+      padding: 8px 10px;
       background: var(--bg-grey-50);
-      border: 1px solid var(--fill-black);
-      margin-bottom: 5px;
+      border: 1.5px solid #000000;
+      margin-bottom: 6px;
     }
 
     .tails-toggle-pill {
-      min-width: 70px;
-      min-height: 26px;
-      padding: 2px 7px;
+      min-width: 74px;
+      min-height: 28px;
+      padding: 3px 8px;
       font-family: var(--font-mono);
-      font-size: 10px;
+      font-size: 11.5px;
       font-weight: 700;
-      border: 1.5px solid var(--fill-black);
+      border: 2px solid #000000;
       cursor: pointer;
       text-transform: uppercase;
     }
     .tails-toggle-pill.on {
-      background: var(--fill-black);
-      color: var(--bg-pure-white);
+      background: #000000;
+      color: #FFFFFF !important;
     }
     .tails-toggle-pill.off {
       background: var(--bg-pure-white);
-      color: var(--fg-grey-600);
+      color: #000000 !important;
     }
 
     .pkg-card-mono {
-      padding: 8px;
+      padding: 10px;
       background: var(--bg-pure-white);
-      border: 1.5px solid var(--fill-black);
-      margin-bottom: 6px;
+      border: 2px solid #000000;
+      margin-bottom: 8px;
+      font-size: 12.5px;
     }
     .pkg-card-mono.pulled-active {
       background-color: var(--bg-grey-50);
       background-image: var(--bayer-dots-light);
       background-size: 5px 5px;
-      border-left: 4px solid var(--fill-black);
+      border-left: 5px solid #000000;
     }
 
     .badge-black {
       display: inline-block;
-      padding: 1.5px 5px;
-      background: var(--fill-black);
-      color: var(--bg-pure-white);
-      font-size: 9px;
+      padding: 2px 7px;
+      background: #000000 !important;
+      color: #FFFFFF !important;
+      font-size: 11px !important;
       font-weight: 700;
       letter-spacing: 0.04em;
       text-transform: uppercase;
     }
     .badge-grey {
       display: inline-block;
-      padding: 1.5px 5px;
+      padding: 2px 7px;
       background: var(--bg-grey-100);
-      color: var(--fill-black);
-      border: 1px solid var(--fill-black);
-      font-size: 9px;
+      color: #000000 !important;
+      border: 1.5px solid #000000;
+      font-size: 11px !important;
       font-weight: 700;
       letter-spacing: 0.04em;
       text-transform: uppercase;
@@ -683,27 +698,34 @@
 
     .mono-input {
       width: 100%;
-      min-height: 28px;
-      padding: 4px 7px;
-      background: var(--bg-pure-white);
-      color: var(--fill-black);
-      border: 1.5px solid var(--fill-black);
+      min-height: 34px;
+      padding: 6px 10px;
+      background: #FFFFFF;
+      color: #000000 !important;
+      border: 2px solid #000000;
       font-family: var(--font-mono);
-      font-size: 11px;
+      font-size: 13.5px !important;
+      font-weight: 700 !important;
       outline: none;
+    }
+    .mono-input:focus {
+      background: #FFFFF8;
+      box-shadow: 0 0 0 2px #000000;
     }
 
     .mono-console-output {
-      background: var(--fill-black);
-      color: var(--bg-pure-white);
-      border: 1.5px solid var(--fill-black);
-      padding: 7px;
+      background: #000000;
+      color: #FFFFFF !important;
+      border: 2px solid #000000;
+      padding: 10px 12px;
       font-family: var(--font-mono);
-      font-size: 10.5px;
-      line-height: 1.42;
+      font-size: 13px !important;
+      font-weight: 600;
+      line-height: 1.5;
       white-space: pre-wrap;
       word-break: break-word;
       overflow-y: auto;
+      cursor: text;
     }
 
     .braille-wave-strip {
@@ -1213,64 +1235,132 @@
 
         <!-- ===================================================================
              MINI-APP WINDOW 03 (BOTTOM-LEFT — POPPED OPEN & ARMED BY DEFAULT!):
-             LIVE ARMED ZOTHOS-LITE ROOT TERMINAL & INTERACTIVE COMMAND ARSENAL
+             LIVE ARMED ZOTHOS-LITE ROOT TERMINAL & KALI / PARROT / UNIX SHELL
              =================================================================== -->
-        <article class="os-window focused-window" id="winEnvGuard" data-win-title="Live Armed Terminal" style="top:410px;left:10px;width:412px;height:392px;z-index:135;">
+        <article class="os-window focused-window" id="winEnvGuard" data-win-title="Live Armed Terminal" style="top:380px;left:10px;width:440px;height:422px;z-index:165;">
           <div class="os-window-titlebar" data-drag-handle="winEnvGuard">
             <div class="win-title-left">
-              <span>[>_] ARMED ROOT TERMINAL & COMMAND ARSENAL (<span id="vmRunningBadge">KVM ONLINE</span>)</span>
+              <span id="tekniumTermHeaderTitle" style="font-size:12px;font-weight:700;">[>_] BASH + KALI + PARROT + PYTHON SHELL (<span id="vmRunningBadge">ARMED</span>)</span>
             </div>
             <div class="win-controls">
+              <button type="button" class="win-ctrl-btn" id="termZoomOutBtn" title="Decrease Terminal Font Size" style="width:26px;">A-</button>
+              <button type="button" class="win-ctrl-btn" id="termZoomInBtn" title="Increase Terminal Font Size" style="width:26px;">A+</button>
+              <button type="button" class="win-ctrl-btn" id="termContrastToggleBtn" title="Toggle CRT Black vs Paper White" style="width:26px;">◐</button>
               <button type="button" class="win-ctrl-btn" data-win-action="minimize" data-win-id="winEnvGuard" title="Minimize Window">_</button>
-              <button type="button" class="win-ctrl-btn" data-win-action="maximize" data-win-id="winEnvGuard" title="Maximize / Restore Window">□</button>
+              <button type="button" class="win-ctrl-btn" data-win-action="maximize" data-win-id="winEnvGuard" title="Maximize Fullscreen Terminal">□</button>
               <button type="button" class="win-ctrl-btn close-btn" data-win-action="close" data-win-id="winEnvGuard" title="Close Window">✕</button>
             </div>
           </div>
-          <div class="os-window-body" style="display:flex;flex-direction:column;gap:5px;padding:8px;">
-            <!-- Click-to-Run Command Arsenal Header & Category Filter -->
-            <div style="display:flex;justify-content:space-between;align-items:center;gap:4px;">
-              <span style="font-size:9.5px;font-weight:700;">⚡ CLICK ANY COMMAND TO EXECUTE IN RAM / KVM:</span>
-              <button type="button" class="mono-btn" data-open-win="winDocs" style="min-height:19px;padding:1px 5px;font-size:8.5px;">📖 Full Manual</button>
+          <div class="os-window-body" style="display:flex;flex-direction:column;gap:6px;padding:10px;">
+            <!-- Teknium Uncommon Web Tool Shelf Tabs -->
+            <div style="display:flex;justify-content:space-between;align-items:center;gap:4px;flex-wrap:wrap;">
+              <div style="display:flex;gap:3px;flex-wrap:wrap;" id="termShelfTabs">
+                <button type="button" class="mono-btn mono-btn-black term-shelf-tab" data-shelf="TOP" style="min-height:24px;padding:2px 7px;font-size:11px !important;">🔥 TOP</button>
+                <button type="button" class="mono-btn term-shelf-tab" data-shelf="KALI" style="min-height:24px;padding:2px 7px;font-size:11px !important;">🐉 KALI</button>
+                <button type="button" class="mono-btn term-shelf-tab" data-shelf="PARROT" style="min-height:24px;padding:2px 7px;font-size:11px !important;">🦜 PARROT</button>
+                <button type="button" class="mono-btn term-shelf-tab" data-shelf="REV" style="min-height:24px;padding:2px 7px;font-size:11px !important;">⚙ REV/PWN</button>
+                <button type="button" class="mono-btn term-shelf-tab" data-shelf="UNIX" style="min-height:24px;padding:2px 7px;font-size:11px !important;">🐍 UNIX/PY</button>
+                <button type="button" class="mono-btn term-shelf-tab" data-shelf="ZOTH" style="min-height:24px;padding:2px 7px;font-size:11px !important;">🕶 ZOTH</button>
+              </div>
+              <button type="button" class="mono-btn mono-btn-black" data-win-action="maximize" data-win-id="winEnvGuard" style="min-height:24px;padding:2px 7px;font-size:11px !important;">⛶ FULLSCREEN</button>
             </div>
 
-            <!-- Interactive Command Arsenal Pills (Ready to click & run!) -->
-            <div style="display:flex;gap:3px;flex-wrap:wrap;padding:5px;background:var(--bg-grey-50);border:1px solid var(--fill-black);max-height:74px;overflow-y:auto;">
-              <button type="button" class="mono-btn mono-btn-black vm-quick-cmd" data-vm-cmd="help" style="min-height:20px;padding:1px 5px;font-size:8.5px;">help</button>
-              <button type="button" class="mono-btn vm-quick-cmd" data-vm-cmd="zoth-envguard --scan" style="min-height:20px;padding:1px 5px;font-size:8.5px;">zoth-envguard --scan</button>
-              <button type="button" class="mono-btn vm-quick-cmd" data-vm-cmd="zoth-ghostbyte --scrub" style="min-height:20px;padding:1px 5px;font-size:8.5px;">zoth-ghostbyte --scrub</button>
-              <button type="button" class="mono-btn vm-quick-cmd" data-vm-cmd="zoth-hexstrike --audit-elf" style="min-height:20px;padding:1px 5px;font-size:8.5px;">zoth-hexstrike --audit-elf</button>
-              <button type="button" class="mono-btn vm-quick-cmd" data-vm-cmd="zoth-promptmaster --audit" style="min-height:20px;padding:1px 5px;font-size:8.5px;">zoth-promptmaster --audit</button>
-              <button type="button" class="mono-btn vm-quick-cmd" data-vm-cmd="zoth-vaelor-coldsign --sign" style="min-height:20px;padding:1px 5px;font-size:8.5px;">zoth-vaelor-coldsign</button>
-              <button type="button" class="mono-btn vm-quick-cmd" data-vm-cmd="zoth-neuro-stdp --query amnesic" style="min-height:20px;padding:1px 5px;font-size:8.5px;">zoth-neuro-stdp</button>
-              <button type="button" class="mono-btn vm-quick-cmd" data-vm-cmd="zoth-webmcp-audit --inspect" style="min-height:20px;padding:1px 5px;font-size:8.5px;">zoth-webmcp-audit</button>
-              <button type="button" class="mono-btn vm-quick-cmd" data-vm-cmd="zoth-tor-guard --verify" style="min-height:20px;padding:1px 5px;font-size:8.5px;">zoth-tor-guard</button>
-              <button type="button" class="mono-btn vm-quick-cmd" data-vm-cmd="zoth-lite-pkg status" style="min-height:20px;padding:1px 5px;font-size:8.5px;">zoth-lite-pkg status</button>
-              <button type="button" class="mono-btn vm-quick-cmd" data-vm-cmd="zoth-lite-pkg list" style="min-height:20px;padding:1px 5px;font-size:8.5px;">zoth-lite-pkg list</button>
-              <button type="button" class="mono-btn vm-quick-cmd" data-vm-cmd="systemctl status" style="min-height:20px;padding:1px 5px;font-size:8.5px;">systemctl status</button>
-              <button type="button" class="mono-btn vm-quick-cmd" data-vm-cmd="vm uname -a" style="min-height:20px;padding:1px 5px;font-size:8.5px;">vm uname -a</button>
-              <button type="button" class="mono-btn vm-quick-cmd" data-vm-cmd="vm df -hT" style="min-height:20px;padding:1px 5px;font-size:8.5px;">vm df -hT</button>
-              <button type="button" class="mono-btn vm-quick-cmd" data-vm-cmd="man zoth-envguard" style="min-height:20px;padding:1px 5px;font-size:8.5px;">man zoth-envguard</button>
+            <!-- Interactive Command Arsenal Pills (60+ Real Kali / Parrot / Unix / Python / Zoth Tools) -->
+            <div id="termQuickPillsBox" style="display:flex;gap:4px;flex-wrap:wrap;padding:5px;background:var(--bg-grey-50);border:2px solid #000000;min-height:58px;max-height:64px;flex-shrink:0;overflow-y:auto;">
+              <!-- TOP -->
+              <button type="button" class="mono-btn mono-btn-black vm-quick-cmd" data-shelf-item="TOP" data-vm-cmd="help">help</button>
+              <button type="button" class="mono-btn vm-quick-cmd" data-shelf-item="TOP" data-vm-cmd="nmap -sV 127.0.0.1">nmap -sV 127.0.0.1</button>
+              <button type="button" class="mono-btn vm-quick-cmd" data-shelf-item="TOP" data-vm-cmd="anonsurf status">anonsurf status</button>
+              <button type="button" class="mono-btn vm-quick-cmd" data-shelf-item="TOP" data-vm-cmd="checksec --file=/bin/bash">checksec /bin/bash</button>
+              <button type="button" class="mono-btn vm-quick-cmd" data-shelf-item="TOP" data-vm-cmd="whatweb http://127.0.0.1:8145">whatweb :8145</button>
+              <button type="button" class="mono-btn vm-quick-cmd" data-shelf-item="TOP" data-vm-cmd="linpeas">linpeas</button>
+              <button type="button" class="mono-btn vm-quick-cmd" data-shelf-item="TOP" data-vm-cmd="zoth-rayban --status">🕶 zoth-rayban</button>
+              <button type="button" class="mono-btn vm-quick-cmd" data-shelf-item="TOP" data-vm-cmd="ls -la">ls -la</button>
+              <button type="button" class="mono-btn vm-quick-cmd" data-shelf-item="TOP" data-vm-cmd="ss -tulpn | head -n 15">ss -tulpn</button>
+              <button type="button" class="mono-btn vm-quick-cmd" data-shelf-item="TOP" data-vm-cmd="python3 -c 'import sys,hashlib; print(sys.version.split()[0], hashlib.sha256(b&quot;zothos&quot;).hexdigest()[:24])'">python3 sha256</button>
+
+              <!-- KALI -->
+              <button type="button" class="mono-btn vm-quick-cmd" data-shelf-item="KALI" data-vm-cmd="nmap -sV -T4 127.0.0.1" style="display:none;">nmap -sV -T4 127.0.0.1</button>
+              <button type="button" class="mono-btn vm-quick-cmd" data-shelf-item="KALI" data-vm-cmd="whatweb http://127.0.0.1:8145" style="display:none;">whatweb</button>
+              <button type="button" class="mono-btn vm-quick-cmd" data-shelf-item="KALI" data-vm-cmd="wafw00f http://127.0.0.1:8145" style="display:none;">wafw00f</button>
+              <button type="button" class="mono-btn vm-quick-cmd" data-shelf-item="KALI" data-vm-cmd="searchsploit linux kernel" style="display:none;">searchsploit kernel</button>
+              <button type="button" class="mono-btn vm-quick-cmd" data-shelf-item="KALI" data-vm-cmd="nuclei -version" style="display:none;">nuclei</button>
+              <button type="button" class="mono-btn vm-quick-cmd" data-shelf-item="KALI" data-vm-cmd="subfinder -version" style="display:none;">subfinder</button>
+              <button type="button" class="mono-btn vm-quick-cmd" data-shelf-item="KALI" data-vm-cmd="sqlmap --version" style="display:none;">sqlmap</button>
+              <button type="button" class="mono-btn vm-quick-cmd" data-shelf-item="KALI" data-vm-cmd="nikto -Version" style="display:none;">nikto</button>
+              <button type="button" class="mono-btn vm-quick-cmd" data-shelf-item="KALI" data-vm-cmd="ffuf -V" style="display:none;">ffuf</button>
+              <button type="button" class="mono-btn vm-quick-cmd" data-shelf-item="KALI" data-vm-cmd="gobuster version" style="display:none;">gobuster</button>
+              <button type="button" class="mono-btn vm-quick-cmd" data-shelf-item="KALI" data-vm-cmd="msfconsole -v" style="display:none;">msfconsole -v</button>
+              <button type="button" class="mono-btn vm-quick-cmd" data-shelf-item="KALI" data-vm-cmd="masscan --version" style="display:none;">masscan</button>
+              <button type="button" class="mono-btn vm-quick-cmd" data-shelf-item="KALI" data-vm-cmd="dig localhost" style="display:none;">dig localhost</button>
+
+              <!-- PARROT -->
+              <button type="button" class="mono-btn vm-quick-cmd" data-shelf-item="PARROT" data-vm-cmd="anonsurf status" style="display:none;">anonsurf status</button>
+              <button type="button" class="mono-btn vm-quick-cmd" data-shelf-item="PARROT" data-vm-cmd="anonsurf myip" style="display:none;">anonsurf myip</button>
+              <button type="button" class="mono-btn vm-quick-cmd" data-shelf-item="PARROT" data-vm-cmd="anonsurf changeid" style="display:none;">anonsurf changeid</button>
+              <button type="button" class="mono-btn vm-quick-cmd" data-shelf-item="PARROT" data-vm-cmd="macchanger -s lo" style="display:none;">macchanger -s lo</button>
+              <button type="button" class="mono-btn vm-quick-cmd" data-shelf-item="PARROT" data-vm-cmd="mat2 --version" style="display:none;">mat2 --version</button>
+              <button type="button" class="mono-btn vm-quick-cmd" data-shelf-item="PARROT" data-vm-cmd="exiftool -ver" style="display:none;">exiftool -ver</button>
+              <button type="button" class="mono-btn vm-quick-cmd" data-shelf-item="PARROT" data-vm-cmd="torsocks --version" style="display:none;">torsocks</button>
+              <button type="button" class="mono-btn vm-quick-cmd" data-shelf-item="PARROT" data-vm-cmd="firejail --version | head -n 2" style="display:none;">firejail</button>
+              <button type="button" class="mono-btn vm-quick-cmd" data-shelf-item="PARROT" data-vm-cmd="tcpdump --version" style="display:none;">tcpdump</button>
+              <button type="button" class="mono-btn vm-quick-cmd" data-shelf-item="PARROT" data-vm-cmd="tshark -v | head -n 4" style="display:none;">tshark</button>
+
+              <!-- REV/PWN -->
+              <button type="button" class="mono-btn vm-quick-cmd" data-shelf-item="REV" data-vm-cmd="checksec --file=/bin/bash" style="display:none;">checksec /bin/bash</button>
+              <button type="button" class="mono-btn vm-quick-cmd" data-shelf-item="REV" data-vm-cmd="ropper --file /bin/ls" style="display:none;">ropper /bin/ls</button>
+              <button type="button" class="mono-btn vm-quick-cmd" data-shelf-item="REV" data-vm-cmd="r2 -v" style="display:none;">radare2 (r2 -v)</button>
+              <button type="button" class="mono-btn vm-quick-cmd" data-shelf-item="REV" data-vm-cmd="objdump -f /bin/ls" style="display:none;">objdump -f /bin/ls</button>
+              <button type="button" class="mono-btn vm-quick-cmd" data-shelf-item="REV" data-vm-cmd="readelf -h /bin/ls" style="display:none;">readelf -h /bin/ls</button>
+              <button type="button" class="mono-btn vm-quick-cmd" data-shelf-item="REV" data-vm-cmd="gdb --version | head -n 2" style="display:none;">gdb --version</button>
+              <button type="button" class="mono-btn vm-quick-cmd" data-shelf-item="REV" data-vm-cmd="john --list=build-info | head -n 10" style="display:none;">john (ripper)</button>
+              <button type="button" class="mono-btn vm-quick-cmd" data-shelf-item="REV" data-vm-cmd="hashcat --version" style="display:none;">hashcat</button>
+              <button type="button" class="mono-btn vm-quick-cmd" data-shelf-item="REV" data-vm-cmd="hydra -h | head -n 10" style="display:none;">hydra</button>
+              <button type="button" class="mono-btn vm-quick-cmd" data-shelf-item="REV" data-vm-cmd="aircrack-ng --help | head -n 12" style="display:none;">aircrack-ng</button>
+              <button type="button" class="mono-btn vm-quick-cmd" data-shelf-item="REV" data-vm-cmd="linpeas" style="display:none;">linpeas</button>
+
+              <!-- UNIX / BASH / PYTHON -->
+              <button type="button" class="mono-btn vm-quick-cmd" data-shelf-item="UNIX" data-vm-cmd="uname -a && uptime" style="display:none;">uname -a</button>
+              <button type="button" class="mono-btn vm-quick-cmd" data-shelf-item="UNIX" data-vm-cmd="pwd && ls -la" style="display:none;">pwd && ls -la</button>
+              <button type="button" class="mono-btn vm-quick-cmd" data-shelf-item="UNIX" data-vm-cmd="ps aux | head -n 15" style="display:none;">ps aux</button>
+              <button type="button" class="mono-btn vm-quick-cmd" data-shelf-item="UNIX" data-vm-cmd="df -hT && free -h" style="display:none;">df -hT && free -h</button>
+              <button type="button" class="mono-btn vm-quick-cmd" data-shelf-item="UNIX" data-vm-cmd="ip -br a && ss -tulpn | head -n 12" style="display:none;">ip a & ports</button>
+              <button type="button" class="mono-btn vm-quick-cmd" data-shelf-item="UNIX" data-vm-cmd="python3 --version && node -v && rustc --version && go version" style="display:none;">python/node/rust/go</button>
+              <button type="button" class="mono-btn vm-quick-cmd" data-shelf-item="UNIX" data-vm-cmd="git status -s" style="display:none;">git status</button>
+              <button type="button" class="mono-btn vm-quick-cmd" data-shelf-item="UNIX" data-vm-cmd="openssl version -a | head -n 4" style="display:none;">openssl</button>
+
+              <!-- ZOTH & GLASSES -->
+              <button type="button" class="mono-btn vm-quick-cmd" data-shelf-item="ZOTH" data-vm-cmd="zoth-rayban --status" style="display:none;">🕶 zoth-rayban</button>
+              <button type="button" class="mono-btn vm-quick-cmd" data-shelf-item="ZOTH" data-vm-cmd="zoth-rayban --voice-bridge" style="display:none;">rayban --voice-bridge</button>
+              <button type="button" class="mono-btn vm-quick-cmd" data-shelf-item="ZOTH" data-vm-cmd="zoth-rayban --scrub" style="display:none;">rayban --scrub</button>
+              <button type="button" class="mono-btn vm-quick-cmd" data-shelf-item="ZOTH" data-vm-cmd="zoth-rayban --dither-cam" style="display:none;">rayban --dither-cam</button>
+              <button type="button" class="mono-btn vm-quick-cmd" data-shelf-item="ZOTH" data-vm-cmd="zoth-envguard --scan" style="display:none;">zoth-envguard</button>
+              <button type="button" class="mono-btn vm-quick-cmd" data-shelf-item="ZOTH" data-vm-cmd="zoth-ghostbyte --scrub" style="display:none;">zoth-ghostbyte</button>
+              <button type="button" class="mono-btn vm-quick-cmd" data-shelf-item="ZOTH" data-vm-cmd="zoth-hexstrike --audit-elf" style="display:none;">zoth-hexstrike</button>
+              <button type="button" class="mono-btn vm-quick-cmd" data-shelf-item="ZOTH" data-vm-cmd="zoth-vaelor-coldsign --sign" style="display:none;">zoth-vaelor-coldsign</button>
+              <button type="button" class="mono-btn vm-quick-cmd" data-shelf-item="ZOTH" data-vm-cmd="zoth-lite-pkg list" style="display:none;">zoth-lite-pkg list</button>
+              <button type="button" class="mono-btn vm-quick-cmd" data-shelf-item="ZOTH" data-vm-cmd="systemctl status" style="display:none;">systemctl status</button>
             </div>
 
-            <!-- Live Command Input Line -->
-            <div style="display:flex;gap:4px;align-items:center;">
-              <span style="font-size:10px;font-weight:700;background:var(--fill-black);color:#fff;padding:4px 6px;border:1.5px solid var(--fill-black);white-space:nowrap;">root@zothos:~#</span>
-              <input type="text" id="terminalCmdInput" class="mono-input" value="help" placeholder="Type command (help, man <tool>, zoth-envguard, vm uname -a)..." aria-label="ZothOS-Lite Terminal Command Input" style="min-height:26px;font-size:10.5px;" />
-              <button type="button" class="mono-btn mono-btn-black" id="runTerminalCmdBtn" style="min-height:26px;padding:2px 8px;">EXEC ↵</button>
-              <button type="button" class="mono-btn" id="clearTerminalBtn" style="min-height:26px;padding:2px 6px;">CLR</button>
+            <!-- Live Interactive Command Input Line (Click Anywhere or Type Directly!) -->
+            <div style="display:flex;gap:4px;align-items:center;flex-shrink:0;">
+              <span id="termPromptBadge" style="font-size:12px;font-weight:700;background:#000000;color:#FFFFFF !important;padding:6px 7px;border:2px solid #000000;white-space:nowrap;">root#</span>
+              <input type="text" id="terminalCmdInput" class="mono-input" value="" autofocus autocomplete="off" spellcheck="false" placeholder="Type bash, nmap, anonsurf, r2, checksec, python3, sqlmap, zoth-rayban..." aria-label="ZothOS-Lite Terminal Command Input" style="flex:1;min-width:140px;min-height:34px;font-size:13.5px !important;font-weight:700 !important;" />
+              <button type="button" class="mono-btn mono-btn-black" id="runTerminalCmdBtn" style="min-height:34px;padding:4px 9px;flex-shrink:0;">RUN ↵</button>
+              <button type="button" class="mono-btn" id="clearTerminalBtn" style="min-height:34px;padding:4px 7px;flex-shrink:0;">CLR</button>
             </div>
 
-            <!-- Live Monotone Terminal Output Screen -->
-            <pre id="terminalScreen" class="mono-console-output" style="flex:1;min-height:145px;font-size:9.5px;line-height:1.32;">╔══════════════════════════════════════════════════════════════════════╗
-║ ⣿ ZOTHOS-LITE v1.0 ARMED ROOT SHELL (PID: ACTIVE // TORAM NOSWAP)  ⣿ ║
-╚══════════════════════════════════════════════════════════════════════╝
-Type 'help' or click any command pill above to execute tools in RAM.</pre>
+            <!-- Live Monotone Terminal Output Screen (Click to Focus Input!) -->
+            <pre id="terminalScreen" class="mono-console-output" title="Click anywhere here and start typing commands" style="flex:1;min-height:110px;font-size:13px !important;line-height:1.45;">╔══════════════════════════════════════════════════════════════════════════════╗
+║ ⣿ ZOTHOS-LITE v1.0 // BASH + KALI + PARROT + PYTHON + ZOTH SHELL (ARMED)   ⣿ ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+Type ANY Unix, Bash, Python, Kali Linux, Parrot OS, or Zoth command above and press Enter.</pre>
 
             <!-- Compact EnvGuard Secret Scanner Strip -->
-            <div style="display:flex;gap:4px;align-items:center;padding-top:3px;border-top:1px dashed var(--fill-black);">
-              <input type="text" id="envguardInput" class="mono-input" value="AWS_SECRET_ACCESS_KEY=wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY" aria-label="EnvGuard Secret Scanner Input" style="min-height:22px;font-size:9.5px;flex:1;" />
-              <button type="button" class="mono-btn mono-btn-black" id="runEnvguardScanBtn" style="min-height:22px;padding:1px 6px;font-size:8.5px;">🔒 EnvGuard Scan</button>
-              <span id="envguardResultBox" style="font-size:8.5px;font-weight:700;white-space:nowrap;">[ARMED]</span>
+            <div style="display:flex;gap:5px;align-items:center;padding-top:4px;border-top:1.5px dashed #000000;">
+              <input type="text" id="envguardInput" class="mono-input" value="AWS_SECRET_ACCESS_KEY=wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY" aria-label="EnvGuard Secret Scanner Input" style="min-height:28px;font-size:12px !important;flex:1;" />
+              <button type="button" class="mono-btn mono-btn-black" id="runEnvguardScanBtn" style="min-height:28px;padding:2px 8px;">🔒 EnvGuard Scan</button>
+              <span id="envguardResultBox" style="font-size:11.5px;font-weight:700;white-space:nowrap;">[ARMED]</span>
             </div>
           </div>
         </article>
@@ -1302,6 +1392,21 @@ Type 'help' or click any command pill above to execute tools in RAM.</pre>
             </div>
 
             <div id="operatorManualList" style="display:flex;flex-direction:column;gap:6px;">
+              <!-- Doc Card 0: Meta Ray-Ban Smart Glasses Suite -->
+              <div class="pkg-card-mono pulled-active" data-doc-cat="CORE">
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:2px;">
+                  <b style="font-size:10.5px;">[🕶] Meta Ray-Ban Tactical Suite (zoth-rayban)</b>
+                  <span class="badge-black">GLASSES • AMNESIC</span>
+                </div>
+                <div style="font-size:9.5px;color:var(--fg-grey-600);margin-bottom:4px;">
+                  <b>How to Use:</b> Pair via BlueZ HFP/A2DP to route glasses mic/speakers directly to local <b>Azoth Voice (:8114)</b> while blocking Meta cloud telemetry, scrub GPS/serial EXIF from 12MP POV captures in RAM, or apply 1-Bit Bayer 8×8 / Braille face anonymization.
+                </div>
+                <div style="display:flex;justify-content:space-between;align-items:center;background:var(--bg-pure-white);padding:3px 6px;border:1px solid var(--fill-black);">
+                  <code style="font-size:9px;">$ zoth-rayban --voice-bridge | --scrub | --dither-cam</code>
+                  <button type="button" class="mono-btn mono-btn-black vm-quick-cmd" data-vm-cmd="zoth-rayban --status" style="min-height:19px;padding:1px 6px;font-size:8.5px;">▶ Run in Terminal</button>
+                </div>
+              </div>
+
               <!-- Doc Card 1: EnvGuard Secrets Vault -->
               <div class="pkg-card-mono pulled-active" data-doc-cat="CORE">
                 <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:2px;">
@@ -2398,14 +2503,80 @@ Type 'help' or click any command pill above to execute tools in RAM.</pre>
         } catch (_e) {}
       }
 
+      const cmdHistory = [
+        'help',
+        'nmap -sV 127.0.0.1',
+        'anonsurf status',
+        'checksec --file=/bin/bash',
+        'whatweb http://127.0.0.1:8145',
+        'linpeas',
+        'zoth-rayban --status',
+        'ls -la',
+        'python3 --version && node -v && rustc --version && go version'
+      ];
+      let historyIdx = cmdHistory.length;
+      let termFontSizePx = 13.5;
+
+      const AUTOCOMPLETE_CMDS = [
+        'help', 'nmap -sV 127.0.0.1', 'anonsurf status', 'anonsurf myip', 'anonsurf changeid',
+        'checksec --file=/bin/bash', 'ropper --file /bin/ls', 'whatweb http://127.0.0.1:8145',
+        'wafw00f http://127.0.0.1:8145', 'searchsploit linux kernel', 'linpeas', 'dig localhost',
+        'nuclei -version', 'subfinder -version', 'httpx -version', 'sqlmap --version', 'nikto -Version',
+        'ffuf -V', 'gobuster version', 'msfconsole -v', 'masscan --version', 'amass -version',
+        'macchanger -s lo', 'mat2 --version', 'exiftool -ver', 'torsocks --version', 'firejail --version',
+        'tcpdump --version', 'tshark -v', 'r2 -v', 'radare2 -v', 'binwalk --help', 'objdump -f /bin/ls',
+        'readelf -h /bin/ls', 'gdb --version', 'john --list=build-info', 'hashcat --version',
+        'hydra -h', 'aircrack-ng --help', 'steghide --version', 'ls -la', 'pwd', 'ps aux',
+        'ss -tulpn', 'ip -br a', 'df -hT', 'free -h', 'uname -a', 'python3 -c ', 'git status',
+        'zoth-rayban --status', 'zoth-rayban --voice-bridge', 'zoth-rayban --scrub', 'zoth-rayban --dither-cam',
+        'zoth-envguard --scan', 'zoth-ghostbyte --scrub', 'zoth-hexstrike --audit-elf',
+        'zoth-vaelor-coldsign --sign', 'zoth-lite-pkg list', 'zoth-lite-pkg status', 'systemctl status'
+      ];
+
+      // Teknium Uncommon Web Glyph Scramble Helper
+      function scrambleTextElement(el, finalStr) {
+        if (!el) return;
+        const glyphs = '⣿⣾⣽⣻⢿⡿⣟⣯⣷▓▒░█▄▀■□◆◇01';
+        let step = 0;
+        const total = 8;
+        const timer = setInterval(() => {
+          step++;
+          if (step >= total) {
+            el.textContent = finalStr;
+            clearInterval(timer);
+            return;
+          }
+          const reveal = Math.floor((step / total) * finalStr.length);
+          let out = finalStr.slice(0, reveal);
+          for (let i = reveal; i < finalStr.length; i++) {
+            out += finalStr[i] === ' ' ? ' ' : glyphs[(i + step) % glyphs.length];
+          }
+          el.textContent = out;
+        }, 28);
+      }
+
       async function runTerminalCommand(cmdStr) {
         const inputEl = document.getElementById('terminalCmdInput');
-        if (inputEl && cmdStr) inputEl.value = cmdStr;
-        const cmd = (cmdStr || (inputEl ? inputEl.value : '') || 'help').trim();
+        const cmd = (cmdStr !== undefined ? cmdStr : (inputEl ? inputEl.value : '')).trim() || 'help';
         const term = document.getElementById('terminalScreen');
         if (!term) return;
 
+        if (cmd && cmdHistory[cmdHistory.length - 1] !== cmd) {
+          cmdHistory.push(cmd);
+        }
+        historyIdx = cmdHistory.length;
+        if (inputEl) {
+          inputEl.value = '';
+          inputEl.focus();
+        }
+
         openOrRestoreWindow('winEnvGuard');
+        if (cmd === 'clear' || cmd === 'cls') {
+          term.textContent = 'root@zothos:~# _ (Terminal cleared — type any command and press Enter)';
+          return;
+        }
+
+        term.textContent = `root@zothos:~# ${cmd}\n[⏳ Executing in live Bash / Kali / Parrot / Zoth shell...]`;
 
         try {
           const res = await fetch('/api/terminal/exec', {
@@ -2416,17 +2587,63 @@ Type 'help' or click any command pill above to execute tools in RAM.</pre>
           const data = await res.json();
           if (data && data.ok) {
             if (data.snapshot) renderSystemState(data.snapshot);
-            term.textContent = `root@zothos-lite-ram:~# ${cmd}\n${data.output}`;
+            const shortCwd = data.cwd ? data.cwd.replace('/home/zoth/NullAITech/zothos-lite', '~') : '~';
+            const badge = document.getElementById('termPromptBadge');
+            if (badge) badge.textContent = `root@zothos:${shortCwd}#`;
+            term.textContent = `root@zothos:${shortCwd}# ${cmd}\n${data.output}`;
+            term.scrollTop = 0;
             return;
           }
         } catch (_e) {}
 
-        term.textContent = `root@zothos-lite-ram:~# ${cmd}\n[OK] Executed in volatile RAM overlayfs (toram noswap).`;
+        term.textContent = `root@zothos:~# ${cmd}\n[OK] Executed in volatile RAM overlayfs (toram noswap).`;
       }
 
       document.getElementById('clearTerminalBtn')?.addEventListener('click', () => {
         const term = document.getElementById('terminalScreen');
-        if (term) term.textContent = 'root@zothos-lite-ram:~# _ (Terminal cleared — click any command pill above)';
+        if (term) term.textContent = 'root@zothos:~# _ (Terminal cleared — type any command or click a tool pill above)';
+        document.getElementById('terminalCmdInput')?.focus();
+      });
+
+      // Clicking anywhere on the black terminal output immediately focuses the command input!
+      document.getElementById('terminalScreen')?.addEventListener('click', () => {
+        document.getElementById('terminalCmdInput')?.focus();
+      });
+
+      // Terminal Font Zoom (A- / A+) & Contrast Toggle (CRT Black vs Ink-on-Paper)
+      document.getElementById('termZoomInBtn')?.addEventListener('click', (e) => {
+        e.stopPropagation();
+        termFontSizePx = Math.min(20, termFontSizePx + 1.5);
+        const term = document.getElementById('terminalScreen');
+        if (term) term.style.setProperty('font-size', `${termFontSizePx}px`, 'important');
+      });
+      document.getElementById('termZoomOutBtn')?.addEventListener('click', (e) => {
+        e.stopPropagation();
+        termFontSizePx = Math.max(11.5, termFontSizePx - 1.5);
+        const term = document.getElementById('terminalScreen');
+        if (term) term.style.setProperty('font-size', `${termFontSizePx}px`, 'important');
+      });
+      document.getElementById('termContrastToggleBtn')?.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const term = document.getElementById('terminalScreen');
+        if (term) term.classList.toggle('ink-paper-mode');
+      });
+
+      // Terminal Shelf Tabs (TOP, KALI, PARROT, REV, UNIX, ZOTH)
+      document.querySelectorAll('.term-shelf-tab').forEach((tab) => {
+        tab.addEventListener('click', () => {
+          const shelf = tab.getAttribute('data-shelf') || 'TOP';
+          document.querySelectorAll('.term-shelf-tab').forEach((t) => t.classList.remove('mono-btn-black'));
+          tab.classList.add('mono-btn-black');
+          document.querySelectorAll('[data-shelf-item]').forEach((item) => {
+            item.style.display = item.getAttribute('data-shelf-item') === shelf ? 'inline-flex' : 'none';
+          });
+          scrambleTextElement(
+            document.getElementById('tekniumTermHeaderTitle'),
+            `[>_] ${shelf} ARSENAL // BASH + KALI + PARROT + PYTHON SHELL`
+          );
+          document.getElementById('terminalCmdInput')?.focus();
+        });
       });
 
       // Wire Greeter Toggles
@@ -2479,8 +2696,70 @@ Type 'help' or click any command pill above to execute tools in RAM.</pre>
 
       document.getElementById('runTerminalCmdBtn')?.addEventListener('click', () => runTerminalCommand());
       document.getElementById('terminalCmdInput')?.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter') runTerminalCommand();
+        const inp = e.currentTarget;
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          runTerminalCommand();
+        } else if (e.key === 'ArrowUp') {
+          e.preventDefault();
+          if (cmdHistory.length > 0) {
+            historyIdx = Math.max(0, historyIdx - 1);
+            inp.value = cmdHistory[historyIdx] || '';
+          }
+        } else if (e.key === 'ArrowDown') {
+          e.preventDefault();
+          if (historyIdx < cmdHistory.length - 1) {
+            historyIdx++;
+            inp.value = cmdHistory[historyIdx] || '';
+          } else {
+            historyIdx = cmdHistory.length;
+            inp.value = '';
+          }
+        } else if (e.key === 'Tab') {
+          e.preventDefault();
+          const cur = inp.value.trim().toLowerCase();
+          if (cur) {
+            const match = AUTOCOMPLETE_CMDS.find((c) => c.toLowerCase().startsWith(cur));
+            if (match) inp.value = match;
+          }
+        } else if (e.ctrlKey && (e.key === 'l' || e.key === 'L')) {
+          e.preventDefault();
+          const term = document.getElementById('terminalScreen');
+          if (term) term.textContent = 'root@zothos:~# _ (Terminal cleared)';
+        }
       });
+
+      // Global Keyboard Capture: Typing anywhere on the desktop focuses the Root Terminal Input automatically!
+      window.addEventListener('keydown', (e) => {
+        const active = document.activeElement;
+        const isInput = active && (active.tagName === 'INPUT' || active.tagName === 'TEXTAREA' || active.isContentEditable);
+        if (!isInput && !e.ctrlKey && !e.metaKey && !e.altKey && e.key.length === 1) {
+          const termInp = document.getElementById('terminalCmdInput');
+          if (termInp) {
+            openOrRestoreWindow('winEnvGuard');
+            termInp.focus();
+          }
+        }
+      });
+
+      // Teknium Uncommon Web Typography Enforcer: Boost all small inline text (8px-11px -> 12.5px-14px bold ink)
+      function enforceTekniumTypography() {
+        document.querySelectorAll('[style*="font-size"]').forEach((el) => {
+          if (el.id === 'terminalScreen' || el.id === 'desktopAsciiWallPre' || el.id === 'brailleSealPre') return;
+          const st = el.getAttribute('style') || '';
+          const m = st.match(/font-size:\s*([0-9.]+)px/i);
+          if (m) {
+            const px = parseFloat(m[1]);
+            if (px < 12) {
+              const boosted = Math.max(12, Math.round((px + 2.8) * 10) / 10);
+              el.style.fontSize = `${boosted}px`;
+              el.style.fontWeight = '700';
+            }
+          }
+        });
+      }
+      enforceTekniumTypography();
+      setTimeout(enforceTekniumTypography, 600);
 
       async function executeEnvguardScan() {
         const inp = document.getElementById('envguardInput')?.value || '';
@@ -2655,7 +2934,10 @@ Type 'help' or click any command pill above to execute tools in RAM.</pre>
 
         const availW = Math.max(520, stageW - wallW - 28);
         const colW = Math.floor((availW - 10) / 2);
-        const rowH = Math.floor((stageH - 28) / 2);
+        const topRowH = Math.floor((stageH - 28) * 0.44);
+        const botRowH = Math.floor((stageH - 28) * 0.56);
+        const termW = Math.floor((availW - 10) * 0.57);
+        const docsW = availW - 10 - termW;
 
         const setBox = (id, top, left, w, h) => {
           const el = document.getElementById(id);
@@ -2665,10 +2947,10 @@ Type 'help' or click any command pill above to execute tools in RAM.</pre>
           el.style.width = `${w}px`;
           el.style.height = `${h}px`;
         };
-        setBox('winGreeter', 10, 10, colW, rowH);
-        setBox('winDaemons', 10, 18 + colW, colW, rowH);
-        setBox('winEnvGuard', 18 + rowH, 10, colW, rowH);
-        setBox('winDocs', 18 + rowH, 18 + colW, colW, rowH);
+        setBox('winGreeter', 10, 10, colW, topRowH);
+        setBox('winDaemons', 10, 18 + colW, colW, topRowH);
+        setBox('winEnvGuard', 18 + topRowH, 10, termW, botRowH);
+        setBox('winDocs', 18 + topRowH, 18 + termW, docsW, botRowH);
       }
 
       layoutInitialWindowsForViewport();

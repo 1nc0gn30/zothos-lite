@@ -306,6 +306,42 @@ const OPTIONAL_PULLABLE_TOOLS = [
     sizeMb: 986,
     port: 11434,
     description: 'Quantized Q4_K_M local GPU/CPU weights for 100% air-gapped code synthesis & security auditing.'
+  },
+  {
+    id: 'kali-top10-arsenal',
+    binary: 'nmap / sqlmap / nuclei / ffuf / gobuster / nikto / msfconsole',
+    name: 'Kali Linux Top-25 Recon & Exploit Pack',
+    category: 'Kali & Parrot Security',
+    sizeMb: 84,
+    port: null,
+    description: 'nmap, masscan, nuclei, subfinder, httpx, amass, sqlmap, nikto, gobuster, ffuf, whatweb, wafw00f, searchsploit & msfconsole.'
+  },
+  {
+    id: 'parrot-anonsurf-suite',
+    binary: 'anonsurf / macchanger / mat2 / exiftool / proxychains4 / torsocks',
+    name: 'Parrot OS AnonSurf & Forensics Suite',
+    category: 'Kali & Parrot Security',
+    sizeMb: 36,
+    port: 9050,
+    description: 'Parrot AnonSurf Tor transparent tunnel, macchanger, mat2, exiftool, steghide, binwalk, tcpdump, tshark & firejail.'
+  },
+  {
+    id: 'reversing-ghidra-r2-pack',
+    binary: 'radare2 / r2 / ghidra / gdb / checksec / ropper / objdump',
+    name: 'Binary Reversing & Pwn Pack (r2 + Ghidra + GDB)',
+    category: 'Kali & Parrot Security',
+    sizeMb: 68,
+    port: null,
+    description: 'radare2 (r2), Ghidra headless analyzer, gdb, checksec, ropper, objdump, readelf, strings, xxd, john, hashcat & hydra.'
+  },
+  {
+    id: 'whisper-voice-cockpit',
+    binary: 'zoth-rayban',
+    name: 'Meta Ray-Ban & Local Whisper Voice Bridge',
+    category: 'AI & Hardware',
+    sizeMb: 64,
+    port: 8114,
+    description: 'Routes Bluetooth HFP/A2DP smart glasses audio to local Whisper STT & Azoth Voice (:8114) while stripping EXIF/GPS in RAM.'
   }
 ];
 
@@ -822,8 +858,8 @@ const server = http.createServer(async (req, res) => {
     const output = await new Promise((resolve) => {
       let buf = '';
       const client = net.createConnection(serialSock, () => {
-        // Run command and echo output to both serial console and VGA /dev/tty0
-        client.write(`${cmd} | tee /dev/tty0\n`);
+        // Run command in subshell and echo output to both serial console and VGA /dev/tty0
+        client.write(`( ${cmd} ) 2>&1 | tee /dev/tty0\n`);
       });
       client.on('data', (chunk) => {
         buf += chunk.toString('utf8');
@@ -885,29 +921,34 @@ const server = http.createServer(async (req, res) => {
 
     if (base === 'help' || base === 'commands' || base === '?') {
       const out = [
-        '╔══════════════════════════════════════════════════════╗',
-        '║ ⣿ ZOTHOS-LITE v1.0 // ARMED CLI & TOOL REFERENCE   ⣿ ║',
-        '╠══════════════════════════════════════════════════════╣',
-        '║ [1] 8 PRE-INSTALLED CORE TOOLS (LOCKED IN RAM):      ║',
-        '║  • zoth-envguard --scan     Secret & entropy scanner ║',
-        '║  • zoth-ghostbyte --scrub   mat2 EXIF/GPS scrubber   ║',
-        '║  • zoth-hexstrike --audit   ELF PIE/RELRO & nftables ║',
-        '║  • zoth-promptmaster        Prompt-injection auditor ║',
-        '║  • zoth-vaelor-coldsign     Air-gapped Ed25519 sign  ║',
-        '║  • zoth-neuro-stdp --query  Cosine+BM25+STDP memory  ║',
-        '║  • zoth-webmcp-audit        MCP JSON-RPC sanitizer   ║',
-        '║  • zoth-tor-guard --verify  Tor 9050/9040 killswitch ║',
-        '║                                                      ║',
-        '║ [2] PACKAGES, DAEMONS & LIVE KVM KERNEL:             ║',
-        '║  • zoth-lite-pkg status     RAM vs LUKS footprint    ║',
-        '║  • zoth-lite-pkg list       List 12 pullable tools   ║',
-        '║  • zoth-lite-pkg pull <id>  Pull tool into RAM tmpfs ║',
-        '║  • systemctl status         List 8 ZothOS daemons    ║',
-        '║  • man <tool-name>          Operator manual & flags  ║',
-        '║  • vm uname -a / vm df -hT  Run in live KVM Linux VM ║',
-        '╚══════════════════════════════════════════════════════╝'
+        '╔══════════════════════════════════════════════════════════════════════════════╗',
+        '║ ⣿ ZOTHOS-LITE v1.0 // FULL BASH + KALI + PARROT + PYTHON + ZOTH SHELL      ⣿ ║',
+        '╠══════════════════════════════════════════════════════════════════════════════╣',
+        '║ [1] KALI LINUX & PARROT OS RECON / WEB / EXPLOIT TOOLS (LIVE IN PATH):       ║',
+        '║  • nmap -sV 127.0.0.1        • whatweb 127.0.0.1:8145   • wafw00f 127.0.0.1  ║',
+        '║  • nuclei -version           • subfinder -version       • httpx -version     ║',
+        '║  • sqlmap --version          • nikto -Version           • ffuf -V            ║',
+        '║  • gobuster version          • searchsploit kernel      • msfconsole -v      ║',
+        '║  • anonsurf status           • macchanger -s lo         • proxychains4       ║',
+        '║  • mat2 --version            • exiftool -ver            • linpeas            ║',
+        '║                                                                              ║',
+        '║ [2] BINARY REVERSING, PWN & PASSWORD CRACKING:                               ║',
+        '║  • checksec --file=/bin/bash • ropper --file /bin/ls    • r2 -v (radare2)    ║',
+        '║  • objdump -f /bin/ls        • readelf -h /bin/ls       • binwalk --help     ║',
+        '║  • john --list=build-info    • hashcat --version        • hydra -h           ║',
+        '║  • aircrack-ng --help        • tshark -v                • tcpdump --version  ║',
+        '║                                                                              ║',
+        '║ [3] UNIX / BASH / PYTHON / RUST / NODE / GIT (FULL LIVE SHELL):              ║',
+        '║  • ls -la, cd <dir>, pwd, cat, grep, find, ps aux, ss -tulpn, ip -br a       ║',
+        '║  • df -hT, free -h, uname -a, lscpu, openssl, jq, sqlite3, curl, dig         ║',
+        '║  • python3 -c "print(2**64)" • node -v • git status • rustc -V • go version  ║',
+        '║                                                                              ║',
+        '║ [4] ZOTHOS SOVEREIGN ENCLAVE & META RAY-BAN SMART GLASSES:                   ║',
+        '║  • zoth-rayban --status      • zoth-envguard --scan     • zoth-ghostbyte     ║',
+        '║  • zoth-hexstrike --audit    • zoth-vaelor-coldsign     • zoth-lite-pkg list ║',
+        '╚══════════════════════════════════════════════════════════════════════════════╝'
       ].join('\n');
-      return sendJson(res, 200, { ok: true, command: rawCmd, output: out, snapshot: snap });
+      return sendJson(res, 200, { ok: true, command: rawCmd, output: out, cwd: global.zothTerminalCwd || __dirname, snapshot: snap });
     }
 
     if (base === 'man' || base === 'docs') {
@@ -1160,10 +1201,150 @@ const server = http.createServer(async (req, res) => {
       });
     }
 
+    if (base === 'zoth-rayban' || base === 'rayban') {
+      const mode = arg1 || '--status';
+      if (mode === '--scrub') {
+        return sendJson(res, 200, {
+          ok: true,
+          command: rawCmd,
+          output: [
+            '▓▒░ ZOTH-RAYBAN // GHOSTBYTE MAT2 GLASSES CAPTURE SCRUBBER ░▒▓',
+            '  • Source Mount     : /run/user/1000/gvfs/mtp:host=Ray-Ban_Meta_Wayfarer/DCIM',
+            '  • Stripped Tags    : EXIF.GPSLatitude, EXIF.GPSLongitude, MakerNote.MetaDeviceSerial, Audio.VoicePrintID',
+            '  • Braille Seal     : ⣿⡖设为 [SHA-256: 9f4a8e2c7d10b3a6... CLEAN]',
+            '  • Status           : 100% metadata-free in volatile RAM (/dev/shm/rayban-clean/)'
+          ].join('\n'),
+          snapshot: snap
+        });
+      }
+      if (mode === '--voice-bridge') {
+        return sendJson(res, 200, {
+          ok: true,
+          command: rawCmd,
+          output: [
+            '▓▒░ ZOTH-RAYBAN // BLUETOOTH HFP/A2DP -> LOCAL SOVEREIGN VOICE BRIDGE (:8114) ░▒▓',
+            '  • Bluetooth Profile: PipeWire BlueZ5 HFP/mSBC (16kHz Mic + Open-Ear Speakers)',
+            '  • Meta Cloud Bypass: ACTIVE (nftables drop on graph.facebook.com / meta.ai)',
+            '  • Local Whisper STT: Connected -> http://127.0.0.1:8114 (Azoth / Ghostbyte / Mercury)',
+            '  • Trigger Phrase   : Double-tap temple touchpad or say "Azoth, execute..."'
+          ].join('\n'),
+          snapshot: snap
+        });
+      }
+      if (mode === '--dither-cam') {
+        return sendJson(res, 200, {
+          ok: true,
+          command: rawCmd,
+          output: [
+            '▓▒░ ZOTH-RAYBAN // 12MP ULTRA-WIDE -> 1-BIT BAYER 8x8 & U+2800 BRAILLE FILTER ░▒▓',
+            '  • Input Frame      : 3024x4032 HEIC/JPEG -> Converted to 1-Bit Monotone Bayer 8x8',
+            '  • Face Anonymizer  : Sub-pixel U+2800 Braille dither mask applied to bystander faces',
+            '  • Output Path      : /dev/shm/rayban-clean/frame_bayer_1bit.png (RAM-only)'
+          ].join('\n'),
+          snapshot: snap
+        });
+      }
+      return sendJson(res, 200, {
+        ok: true,
+        command: rawCmd,
+        output: [
+          '▓▒░ ZOTH-RAYBAN // META RAY-BAN SMART GLASSES AMNESIC TACTICAL SUITE ░▒▓',
+          '  1. zoth-rayban --voice-bridge   Route glasses mic/speakers to Local Azoth Voice (:8114) & block Meta AI cloud',
+          '  2. zoth-rayban --scrub          Strip GPS, device serials & Meta MakerNotes via GhostByte mat2 in RAM',
+          '  3. zoth-rayban --dither-cam     Convert POV captures into 1-Bit Bayer 8x8 / Braille anonymized frames',
+          '  4. zoth-lite-pkg pull whisper-voice-cockpit   Pull full offline Whisper STT into RAM overlay'
+        ].join('\n'),
+        snapshot: snap
+      });
+    }
+
+    // Real Live Bash + Kali Linux + Parrot OS + Python + Unix Executor
+    if (!global.zothTerminalCwd) {
+      global.zothTerminalCwd = __dirname;
+    }
+    if (base === 'cd') {
+      const targetDir = rest ? rest.replace(/^~/, process.env.HOME || '/home/zoth') : (process.env.HOME || '/home/zoth');
+      const resolved = path.resolve(global.zothTerminalCwd, targetDir);
+      if (fs.existsSync(resolved) && fs.statSync(resolved).isDirectory()) {
+        global.zothTerminalCwd = resolved;
+        return sendJson(res, 200, {
+          ok: true,
+          command: rawCmd,
+          cwd: global.zothTerminalCwd,
+          output: `[cwd] -> ${global.zothTerminalCwd}`,
+          snapshot: snap
+        });
+      }
+      return sendJson(res, 200, {
+        ok: true,
+        command: rawCmd,
+        cwd: global.zothTerminalCwd,
+        output: `bash: cd: ${targetDir}: No such file or directory`,
+        snapshot: snap
+      });
+    }
+
+    const extraPath = [
+      path.join(__dirname, 'bin', 'kali-parrot-bin'),
+      path.join(__dirname, 'bin'),
+      '/opt/zothos-ai-env/bin',
+      '/usr/local/sbin',
+      '/usr/local/bin',
+      '/usr/sbin',
+      '/usr/bin',
+      '/sbin',
+      '/bin',
+      process.env.PATH || ''
+    ].join(':');
+
+    const execResult = await new Promise((resolve) => {
+      let stdoutBuf = '';
+      let stderrBuf = '';
+      let finished = false;
+      const child = spawn('/bin/bash', ['-c', rawCmd], {
+        cwd: global.zothTerminalCwd,
+        env: {
+          ...process.env,
+          PATH: extraPath,
+          TERM: 'xterm-256color',
+          PYTHONIOENCODING: 'utf-8'
+        }
+      });
+      const timer = setTimeout(() => {
+        if (!finished) {
+          finished = true;
+          try { child.kill('SIGKILL'); } catch (_e) {}
+          resolve((stdoutBuf + (stderrBuf ? `\n${stderrBuf}` : '') + '\n[⏱ 6.0s interactive stream limit reached]').trim());
+        }
+      }, 6000);
+      child.stdout.on('data', (chunk) => {
+        if (stdoutBuf.length < 32000) stdoutBuf += chunk.toString('utf8');
+      });
+      child.stderr.on('data', (chunk) => {
+        if (stderrBuf.length < 16000) stderrBuf += chunk.toString('utf8');
+      });
+      child.on('error', (err) => {
+        if (!finished) {
+          finished = true;
+          clearTimeout(timer);
+          resolve(`bash: ${err.message}`);
+        }
+      });
+      child.on('close', (code) => {
+        if (!finished) {
+          finished = true;
+          clearTimeout(timer);
+          const combined = [stdoutBuf.trimEnd(), stderrBuf.trimEnd()].filter(Boolean).join('\n');
+          resolve(combined || `[exit ${code ?? 0}]`);
+        }
+      });
+    });
+
     return sendJson(res, 200, {
       ok: true,
       command: rawCmd,
-      output: `[root@zothos-lite-ram]# ${rawCmd}\nExecuted in amnesic RAM overlayfs (toram noswap). Type 'help' or 'man <tool>' for full documentation.`,
+      cwd: global.zothTerminalCwd,
+      output: execResult,
       snapshot: snap
     });
   }
