@@ -757,23 +757,48 @@
     }
 
     /* =========================================================================
-       5. BOTTOM TAILS / ZOTHOS-LITE TASKBAR & WINDOW MANAGER DOCK (42px FIXED)
+       5. BOTTOM TAILS / ZOTHOS-LITE TASKBAR, START MENU & DOJO DOCK (42px FIXED)
        ========================================================================= */
     .tails-bottom-dock {
       position: relative;
-      z-index: 600;
+      z-index: 700;
       width: 100%;
       max-width: 100vw;
       min-width: 0;
       height: 42px;
       background: var(--bg-pure-white);
-      border-top: 2px solid var(--fill-black);
+      border-top: 2px solid #000000;
+      box-shadow: 0 -2px 0 rgba(0, 0, 0, 0.14);
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 0 10px;
+      padding: 0 8px;
       gap: 6px;
-      overflow: hidden;
+      overflow: visible;
+    }
+
+    .dock-start-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      height: 30px;
+      padding: 0 10px;
+      background: #000000;
+      color: #FFFFFF !important;
+      border: 2px solid #000000;
+      box-shadow: 2px 2px 0px rgba(0, 0, 0, 0.35);
+      font-family: var(--font-mono);
+      font-size: 12px !important;
+      font-weight: 700;
+      letter-spacing: 0.03em;
+      text-transform: uppercase;
+      cursor: pointer;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+    .dock-start-btn:hover, .dock-start-btn.active {
+      background: #FFFFFF;
+      color: #000000 !important;
     }
 
     .dock-tasks {
@@ -784,6 +809,7 @@
       scrollbar-width: none;
       flex: 1;
       min-width: 0;
+      padding: 2px 0;
     }
     .dock-tasks::-webkit-scrollbar {
       display: none;
@@ -793,35 +819,149 @@
       display: inline-flex;
       align-items: center;
       gap: 3px;
-      height: 27px;
-      padding: 0 6px;
+      height: 28px;
+      padding: 0 5.5px;
       background: var(--bg-grey-50);
-      color: var(--fill-black);
-      border: 1.5px solid var(--fill-black);
+      color: #000000;
+      border: 1.5px solid #000000;
       font-family: var(--font-mono);
-      font-size: 9.5px;
+      font-size: 10.8px !important;
       font-weight: 700;
       white-space: nowrap;
       cursor: pointer;
+      flex-shrink: 0;
+      transition: transform 70ms ease, background 70ms ease;
+    }
+    .dock-task-btn:hover {
+      background: var(--bg-grey-100);
+      transform: translateY(-1px);
     }
     .dock-task-btn.win-open {
-      background: var(--bg-grey-100);
-      box-shadow: 2px 2px 0px var(--fill-black);
+      background: var(--bg-pure-white);
+      box-shadow: 2px 2px 0px #000000;
     }
     .dock-task-btn.win-focused {
-      background: var(--fill-black);
-      color: var(--bg-pure-white);
+      background: #000000 !important;
+      color: #FFFFFF !important;
+      box-shadow: 2px 2px 0px rgba(0, 0, 0, 0.4);
     }
     .dock-task-btn.win-is-minimized {
       border-style: dashed;
-      color: var(--fg-grey-600);
+      background: var(--bg-grey-50);
+      opacity: 0.85;
     }
 
     .dock-wm-controls {
       display: flex;
       align-items: center;
-      gap: 5px;
+      gap: 4px;
       white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    /* Pop-Up OS Start Launcher Menu (Anchored Above Bottom-Left Dock) */
+    .bottom-start-menu {
+      position: fixed;
+      bottom: 45px;
+      left: 8px;
+      width: 620px;
+      max-width: calc(100vw - 16px);
+      background: #FFFFFF;
+      color: #000000;
+      border: 2.5px solid #000000;
+      box-shadow: 8px 8px 0px #000000;
+      z-index: 990;
+      display: none;
+      flex-direction: column;
+    }
+    .bottom-start-menu.open {
+      display: flex;
+    }
+    .bottom-start-header {
+      padding: 8px 12px;
+      background: #000000;
+      color: #FFFFFF !important;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .bottom-start-grid {
+      display: grid;
+      grid-template-columns: 1.15fr 1fr;
+      border-bottom: 2px solid #000000;
+    }
+    .bottom-start-col {
+      padding: 8px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .bottom-start-col + .bottom-start-col {
+      border-left: 2px solid #000000;
+      background-color: var(--bg-grey-50);
+      background-image: var(--bayer-dots-light);
+      background-size: 5px 5px;
+    }
+    .start-menu-btn {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      padding: 6px 9px;
+      background: #FFFFFF;
+      color: #000000;
+      border: 1.5px solid #000000;
+      font-family: var(--font-mono);
+      font-size: 12px !important;
+      font-weight: 700;
+      text-align: left;
+      cursor: pointer;
+    }
+    .start-menu-btn:hover {
+      background: #000000;
+      color: #FFFFFF !important;
+    }
+    .start-menu-btn:hover span {
+      color: #FFFFFF !important;
+    }
+
+    /* Cyber Dojo Mission Cards & Tour Spotlight */
+    .dojo-mission-card {
+      padding: 10px;
+      background: #FFFFFF;
+      border: 2px solid #000000;
+      box-shadow: 3px 3px 0px #000000;
+      margin-bottom: 8px;
+      transition: transform 80ms ease;
+    }
+    .dojo-mission-card.mission-completed {
+      background-color: var(--bg-grey-50);
+      background-image: var(--bayer-dots-light);
+      background-size: 5px 5px;
+      border-left: 6px solid #000000;
+    }
+    .dojo-badge-slot {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 3px 7px;
+      border: 1.5px dashed #000000;
+      background: #FFFFFF;
+      font-size: 11px !important;
+      font-weight: 700;
+    }
+    .dojo-badge-slot.unlocked {
+      border-style: solid;
+      background: #000000 !important;
+      color: #FFFFFF !important;
+    }
+    .tour-highlight-ring {
+      outline: 4px solid #000000 !important;
+      box-shadow: 0 0 0 6px #FFFFFF, 0 0 0 10px #000000 !important;
+      z-index: 950 !important;
     }
 
     @media (max-width: 960px) {
@@ -873,11 +1013,14 @@
         <button type="button" class="top-brand-seal" id="appsMenuToggleBtn" title="Open ZothOS-Lite System & Mini-Apps Menu">
           <span>◈ ZOTHOS-LITE ▾</span>
         </button>
-        <button type="button" class="top-nav-btn active" data-open-win="winEnvGuard" title="Focus Armed Live Root Terminal & Command Arsenal">
+        <button type="button" class="top-nav-btn active" data-open-win="winDojo" id="topDojoBtn" title="Open Interactive Cyber Dojo & Operator Academy Bootcamp">
+          <span>★ DOJO (<span id="topDojoXpBadge">0/6</span>)</span>
+        </button>
+        <button type="button" class="top-nav-btn" data-open-win="winEnvGuard" title="Focus Armed Live Root Terminal & Command Arsenal">
           <span>[>_] TERMINAL</span>
         </button>
         <button type="button" class="top-nav-btn" data-open-win="winDocs" title="Open Complete Tool Documentation & CLI Operator Manual">
-          <span>📖 DOCS & MANUAL</span>
+          <span>§ DOCS</span>
         </button>
         <button type="button" class="top-nav-btn" id="daemonsMenuToggleBtn" title="Manage 8 ZothOS Sovereign Enclave Daemons">
           <span>▓ DAEMONS (<span id="topDaemonActiveCount">6/8</span>) ▾</span>
@@ -896,7 +1039,7 @@
 
       <div class="panel-right">
         <button type="button" class="top-nav-btn" data-open-win="winColdSigner" title="Open In-OS Vaelor L1 Air-Gapped Ed25519 Cold Signer">
-          <span>⛓️ L1 SIGNER</span>
+          <span>Ꝟ L1 SIGNER</span>
         </button>
         <button type="button" class="top-nav-btn" id="supportMenuToggleBtn" title="100% Free & Open-Access — View Coffee & Solana Support Info">
           <span>☕ SUPPORT ▾</span>
@@ -910,14 +1053,17 @@
       <!-- System & Mini-Apps Dropdown Menu -->
       <div class="top-dropdown-menu" id="appsDropdownMenu" role="menu">
         <div class="top-dropdown-header">
-          <span>▓▒░ ZOTHOS-LITE MINI-APP WINDOWS (9)</span>
+          <span>▓▒░ ZOTHOS-LITE MINI-APP WINDOWS (10)</span>
           <span>1-BIT B&W</span>
         </div>
+        <button type="button" class="top-dropdown-item" data-open-win="winDojo">
+          <span>[★] Cyber Dojo & Interactive Operator Bootcamp</span><span>NEW!</span>
+        </button>
         <button type="button" class="top-dropdown-item" data-open-win="winEnvGuard">
           <span>[>_] Live Armed Root Terminal & CLI Arsenal</span><span>ARMED</span>
         </button>
         <button type="button" class="top-dropdown-item" data-open-win="winDocs">
-          <span>[📖] Tool Documentation & Operator Manual</span><span>MANUAL</span>
+          <span>[§] Tool Documentation & Operator Manual</span><span>MANUAL</span>
         </button>
         <button type="button" class="top-dropdown-item" data-open-win="winGreeter">
           <span>[◈] Tails Amnesic Greeter & RAM Footprint</span><span>TORAM</span>
@@ -929,7 +1075,7 @@
           <span>[█] 8 Pre-Installed Core ZothOS Tools</span><span>LOCKED</span>
         </button>
         <button type="button" class="top-dropdown-item" data-open-win="winPkgPuller">
-          <span>[⬇] Pull Optional ZothOS Tools (12)</span><span>INSTALL</span>
+          <span>[⬇] Pull Optional ZothOS Tools (16)</span><span>INSTALL</span>
         </button>
         <button type="button" class="top-dropdown-item" data-open-win="winBrailleStudio">
           <span>[⣿] Braille & ASCII Dither Art Studio</span><span>ART</span>
@@ -938,7 +1084,7 @@
           <span>[Ꝟ] Vaelor L1 Ed25519 Cold Signer</span><span>SIGN</span>
         </button>
         <button type="button" class="top-dropdown-item" data-open-win="winGhostByte">
-          <span>[🧹] GhostByte Metadata Cleaner (mat2)</span><span>SCRUB</span>
+          <span>[✦] GhostByte Metadata Cleaner (mat2)</span><span>SCRUB</span>
         </button>
       </div>
 
@@ -990,41 +1136,49 @@
       <aside class="desktop-icons-launchpad" aria-label="ZothOS-Lite Mini-App Launchpad">
         <div>
           <div class="launchpad-header" style="margin-bottom:6px;">
-            <span>⣿ MINI-APPS (9)</span>
+            <span>⣿ MINI-APPS (10)</span>
             <span>OPEN</span>
           </div>
           <div class="desktop-icons-grid">
-            <button type="button" class="desktop-icon-btn focused" data-open-win="winEnvGuard">
-              <span class="desktop-icon-glyph">[>_]</span>
-              <span class="desktop-icon-label">Live Terminal</span>
+            <button type="button" class="desktop-icon-btn focused" data-open-win="winDojo" style="min-height:54px;">
+              <span class="desktop-icon-glyph">★DOJO</span>
+              <span class="desktop-icon-label">Cyber Dojo</span>
             </button>
-            <button type="button" class="desktop-icon-btn" data-open-win="winDocs">
-              <span class="desktop-icon-glyph">📖MAN</span>
+            <button type="button" class="desktop-icon-btn" data-open-win="winEnvGuard" style="min-height:54px;">
+              <span class="desktop-icon-glyph">[>_]</span>
+              <span class="desktop-icon-label">Live Shell</span>
+            </button>
+            <button type="button" class="desktop-icon-btn" data-open-win="winDocs" style="min-height:54px;">
+              <span class="desktop-icon-glyph">§MAN</span>
               <span class="desktop-icon-label">Tool Docs</span>
             </button>
-            <button type="button" class="desktop-icon-btn" data-open-win="winGreeter">
+            <button type="button" class="desktop-icon-btn" data-open-win="winGreeter" style="min-height:54px;">
               <span class="desktop-icon-glyph">⣿◈⣿</span>
               <span class="desktop-icon-label">Amnesic OS</span>
             </button>
-            <button type="button" class="desktop-icon-btn" data-open-win="winDaemons">
+            <button type="button" class="desktop-icon-btn" data-open-win="winDaemons" style="min-height:54px;">
               <span class="desktop-icon-glyph">▓▒░</span>
               <span class="desktop-icon-label">8 Daemons</span>
             </button>
-            <button type="button" class="desktop-icon-btn" data-open-win="winCoreTools">
+            <button type="button" class="desktop-icon-btn" data-open-win="winCoreTools" style="min-height:54px;">
               <span class="desktop-icon-glyph">[08]</span>
               <span class="desktop-icon-label">Core Tools</span>
             </button>
-            <button type="button" class="desktop-icon-btn" data-open-win="winPkgPuller">
+            <button type="button" class="desktop-icon-btn" data-open-win="winPkgPuller" style="min-height:54px;">
               <span class="desktop-icon-glyph">⬇PKG</span>
-              <span class="desktop-icon-label">Pull Tools</span>
+              <span class="desktop-icon-label">Pull (16)</span>
             </button>
-            <button type="button" class="desktop-icon-btn" data-open-win="winBrailleStudio">
+            <button type="button" class="desktop-icon-btn" data-open-win="winBrailleStudio" style="min-height:54px;">
               <span class="desktop-icon-glyph">⣿ART</span>
               <span class="desktop-icon-label">Braille Lab</span>
             </button>
-            <button type="button" class="desktop-icon-btn" data-open-win="winColdSigner">
+            <button type="button" class="desktop-icon-btn" data-open-win="winColdSigner" style="min-height:54px;">
               <span class="desktop-icon-glyph">ꝞL1</span>
               <span class="desktop-icon-label">Cold Signer</span>
+            </button>
+            <button type="button" class="desktop-icon-btn" data-open-win="winGhostByte" style="min-height:54px;">
+              <span class="desktop-icon-glyph">✦MAT</span>
+              <span class="desktop-icon-label">GhostByte</span>
             </button>
           </div>
         </div>
@@ -1042,8 +1196,8 @@
 │ TORAM//NOSWAP │
 └───────────────┘</pre>
           <div style="margin-top:4px;font-size:8.5px;color:var(--fg-grey-600);display:flex;justify-content:space-between;">
-            <span id="bridgeVaelorStat">⛓️ L1: ONLINE</span>
-            <span id="bridgeCivStat">🏛️ 23 AGTS</span>
+            <span id="bridgeVaelorStat">Ꝟ L1: ONLINE</span>
+            <span id="bridgeCivStat">❖ 23 AGTS</span>
           </div>
         </div>
       </aside>
@@ -1066,9 +1220,9 @@
               <button type="button" class="mono-btn mono-btn-black" data-sculpture="shield" style="min-height:20px;padding:1px 5px;font-size:8.5px;">◉ Shield</button>
               <button type="button" class="mono-btn" data-sculpture="skull" style="min-height:20px;padding:1px 5px;font-size:8.5px;">☠ Skull</button>
               <button type="button" class="mono-btn" data-sculpture="eye" style="min-height:20px;padding:1px 5px;font-size:8.5px;">👁 Zoth Eye</button>
-              <button type="button" class="mono-btn" data-sculpture="lattice" style="min-height:20px;padding:1px 5px;font-size:8.5px;">⛓️ DAG</button>
+              <button type="button" class="mono-btn" data-sculpture="lattice" style="min-height:20px;padding:1px 5px;font-size:8.5px;">Ꝟ DAG</button>
               <button type="button" class="mono-btn" data-sculpture="helix" style="min-height:20px;padding:1px 5px;font-size:8.5px;">🧬 Helix</button>
-              <button type="button" class="mono-btn" data-sculpture="monolith" style="min-height:20px;padding:1px 5px;font-size:8.5px;">🏛️ Obelisk</button>
+              <button type="button" class="mono-btn" data-sculpture="monolith" style="min-height:20px;padding:1px 5px;font-size:8.5px;">❖ Obelisk</button>
             </div>
             <div style="display:flex;gap:3px;flex-wrap:wrap;">
               <button type="button" class="mono-btn mono-btn-black" data-lite-shader="bayer-1bit" style="min-height:20px;padding:1px 5px;font-size:8.5px;">▓▒░ Bayer+ASCII</button>
@@ -1102,7 +1256,7 @@
                 <button type="button" class="mono-btn wall-art-btn mono-btn-black" data-wall-art="crest" style="min-height:18px;padding:1px 4px;font-size:8px;">◈ CREST</button>
                 <button type="button" class="mono-btn wall-art-btn" data-wall-art="skull" style="min-height:18px;padding:1px 4px;font-size:8px;">☠ SKULL</button>
                 <button type="button" class="mono-btn wall-art-btn" data-wall-art="owl" style="min-height:18px;padding:1px 4px;font-size:8px;">🦉 OWL</button>
-                <button type="button" class="mono-btn wall-art-btn" data-wall-art="lattice" style="min-height:18px;padding:1px 4px;font-size:8px;">⛓️ DAG</button>
+                <button type="button" class="mono-btn wall-art-btn" data-wall-art="lattice" style="min-height:18px;padding:1px 4px;font-size:8px;">Ꝟ DAG</button>
                 <button type="button" class="mono-btn wall-art-btn" data-wall-art="helix" style="min-height:18px;padding:1px 4px;font-size:8px;">🧬 DNA</button>
               </div>
             </div>
@@ -1203,7 +1357,7 @@
 
             <div style="margin-top:6px;display:flex;gap:4px;flex-wrap:wrap;">
               <button type="button" class="mono-btn mono-btn-black" data-open-win="winEnvGuard">[>_] Armed Terminal</button>
-              <button type="button" class="mono-btn" data-open-win="winDocs">📖 Tool Docs</button>
+              <button type="button" class="mono-btn" data-open-win="winDocs">§ Tool Docs</button>
               <button type="button" class="mono-btn" data-open-win="winCoreTools">█ 8 Core Tools</button>
               <button type="button" class="mono-btn" data-open-win="winPkgPuller">⬇ Pull Tools (<span id="topPulledCount">3/12</span>)</button>
             </div>
@@ -1255,14 +1409,14 @@
             <!-- Teknium Uncommon Web Tool Shelf Tabs -->
             <div style="display:flex;justify-content:space-between;align-items:center;gap:4px;flex-wrap:wrap;">
               <div style="display:flex;gap:3px;flex-wrap:wrap;" id="termShelfTabs">
-                <button type="button" class="mono-btn mono-btn-black term-shelf-tab" data-shelf="TOP" style="min-height:24px;padding:2px 7px;font-size:11px !important;">🔥 TOP</button>
-                <button type="button" class="mono-btn term-shelf-tab" data-shelf="KALI" style="min-height:24px;padding:2px 7px;font-size:11px !important;">🐉 KALI</button>
-                <button type="button" class="mono-btn term-shelf-tab" data-shelf="PARROT" style="min-height:24px;padding:2px 7px;font-size:11px !important;">🦜 PARROT</button>
+                <button type="button" class="mono-btn mono-btn-black term-shelf-tab" data-shelf="TOP" style="min-height:24px;padding:2px 7px;font-size:11px !important;">⚡ TOP</button>
+                <button type="button" class="mono-btn term-shelf-tab" data-shelf="KALI" style="min-height:24px;padding:2px 7px;font-size:11px !important;">⚚ KALI</button>
+                <button type="button" class="mono-btn term-shelf-tab" data-shelf="PARROT" style="min-height:24px;padding:2px 7px;font-size:11px !important;">◈ PARROT</button>
                 <button type="button" class="mono-btn term-shelf-tab" data-shelf="REV" style="min-height:24px;padding:2px 7px;font-size:11px !important;">⚙ REV/PWN</button>
-                <button type="button" class="mono-btn term-shelf-tab" data-shelf="UNIX" style="min-height:24px;padding:2px 7px;font-size:11px !important;">🐍 UNIX/PY</button>
-                <button type="button" class="mono-btn term-shelf-tab" data-shelf="ZOTH" style="min-height:24px;padding:2px 7px;font-size:11px !important;">🕶 ZOTH</button>
+                <button type="button" class="mono-btn term-shelf-tab" data-shelf="UNIX" style="min-height:24px;padding:2px 7px;font-size:11px !important;">λ UNIX/PY</button>
+                <button type="button" class="mono-btn term-shelf-tab" data-shelf="ZOTH" style="min-height:24px;padding:2px 7px;font-size:11px !important;">◉ ZOTH</button>
               </div>
-              <button type="button" class="mono-btn mono-btn-black" data-win-action="maximize" data-win-id="winEnvGuard" style="min-height:24px;padding:2px 7px;font-size:11px !important;">⛶ FULLSCREEN</button>
+              <button type="button" class="mono-btn mono-btn-black" data-win-action="maximize" data-win-id="winEnvGuard" style="min-height:24px;padding:2px 7px;font-size:11px !important;">□ FULLSCREEN</button>
             </div>
 
             <!-- Interactive Command Arsenal Pills (60+ Real Kali / Parrot / Unix / Python / Zoth Tools) -->
@@ -1274,7 +1428,7 @@
               <button type="button" class="mono-btn vm-quick-cmd" data-shelf-item="TOP" data-vm-cmd="checksec --file=/bin/bash">checksec /bin/bash</button>
               <button type="button" class="mono-btn vm-quick-cmd" data-shelf-item="TOP" data-vm-cmd="whatweb http://127.0.0.1:8145">whatweb :8145</button>
               <button type="button" class="mono-btn vm-quick-cmd" data-shelf-item="TOP" data-vm-cmd="linpeas">linpeas</button>
-              <button type="button" class="mono-btn vm-quick-cmd" data-shelf-item="TOP" data-vm-cmd="zoth-rayban --status">🕶 zoth-rayban</button>
+              <button type="button" class="mono-btn vm-quick-cmd" data-shelf-item="TOP" data-vm-cmd="zoth-rayban --status">◉ zoth-rayban</button>
               <button type="button" class="mono-btn vm-quick-cmd" data-shelf-item="TOP" data-vm-cmd="ls -la">ls -la</button>
               <button type="button" class="mono-btn vm-quick-cmd" data-shelf-item="TOP" data-vm-cmd="ss -tulpn | head -n 15">ss -tulpn</button>
               <button type="button" class="mono-btn vm-quick-cmd" data-shelf-item="TOP" data-vm-cmd="python3 -c 'import sys,hashlib; print(sys.version.split()[0], hashlib.sha256(b&quot;zothos&quot;).hexdigest()[:24])'">python3 sha256</button>
@@ -1330,7 +1484,7 @@
               <button type="button" class="mono-btn vm-quick-cmd" data-shelf-item="UNIX" data-vm-cmd="openssl version -a | head -n 4" style="display:none;">openssl</button>
 
               <!-- ZOTH & GLASSES -->
-              <button type="button" class="mono-btn vm-quick-cmd" data-shelf-item="ZOTH" data-vm-cmd="zoth-rayban --status" style="display:none;">🕶 zoth-rayban</button>
+              <button type="button" class="mono-btn vm-quick-cmd" data-shelf-item="ZOTH" data-vm-cmd="zoth-rayban --status" style="display:none;">◉ zoth-rayban</button>
               <button type="button" class="mono-btn vm-quick-cmd" data-shelf-item="ZOTH" data-vm-cmd="zoth-rayban --voice-bridge" style="display:none;">rayban --voice-bridge</button>
               <button type="button" class="mono-btn vm-quick-cmd" data-shelf-item="ZOTH" data-vm-cmd="zoth-rayban --scrub" style="display:none;">rayban --scrub</button>
               <button type="button" class="mono-btn vm-quick-cmd" data-shelf-item="ZOTH" data-vm-cmd="zoth-rayban --dither-cam" style="display:none;">rayban --dither-cam</button>
@@ -1359,7 +1513,7 @@ Type ANY Unix, Bash, Python, Kali Linux, Parrot OS, or Zoth command above and pr
             <!-- Compact EnvGuard Secret Scanner Strip -->
             <div style="display:flex;gap:5px;align-items:center;padding-top:4px;border-top:1.5px dashed #000000;">
               <input type="text" id="envguardInput" class="mono-input" value="AWS_SECRET_ACCESS_KEY=wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY" aria-label="EnvGuard Secret Scanner Input" style="min-height:28px;font-size:12px !important;flex:1;" />
-              <button type="button" class="mono-btn mono-btn-black" id="runEnvguardScanBtn" style="min-height:28px;padding:2px 8px;">🔒 EnvGuard Scan</button>
+              <button type="button" class="mono-btn mono-btn-black" id="runEnvguardScanBtn" style="min-height:28px;padding:2px 8px;">⛨ EnvGuard Scan</button>
               <span id="envguardResultBox" style="font-size:11.5px;font-weight:700;white-space:nowrap;">[ARMED]</span>
             </div>
           </div>
@@ -1372,7 +1526,7 @@ Type ANY Unix, Bash, Python, Kali Linux, Parrot OS, or Zoth command above and pr
         <article class="os-window" id="winDocs" data-win-title="Tool Docs & Manual" style="top:410px;left:430px;width:414px;height:392px;z-index:132;">
           <div class="os-window-titlebar" data-drag-handle="winDocs">
             <div class="win-title-left">
-              <span>[📖] ZOTHOS-LITE TOOL DOCUMENTATION & CLI OPERATOR MANUAL</span>
+              <span>[§] ZOTHOS-LITE TOOL DOCUMENTATION & CLI OPERATOR MANUAL</span>
             </div>
             <div class="win-controls">
               <button type="button" class="win-ctrl-btn" data-win-action="minimize" data-win-id="winDocs" title="Minimize Window">_</button>
@@ -1395,7 +1549,7 @@ Type ANY Unix, Bash, Python, Kali Linux, Parrot OS, or Zoth command above and pr
               <!-- Doc Card 0: Meta Ray-Ban Smart Glasses Suite -->
               <div class="pkg-card-mono pulled-active" data-doc-cat="CORE">
                 <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:2px;">
-                  <b style="font-size:10.5px;">[🕶] Meta Ray-Ban Tactical Suite (zoth-rayban)</b>
+                  <b style="font-size:10.5px;">[◉] Meta Ray-Ban Tactical Suite (zoth-rayban)</b>
                   <span class="badge-black">GLASSES • AMNESIC</span>
                 </div>
                 <div style="font-size:9.5px;color:var(--fg-grey-600);margin-bottom:4px;">
@@ -1590,7 +1744,7 @@ Type ANY Unix, Bash, Python, Kali Linux, Parrot OS, or Zoth command above and pr
               <button type="button" class="mono-btn art-preset-btn" data-art-preset="crest">◈ Zoth Crest</button>
               <button type="button" class="mono-btn art-preset-btn" data-art-preset="skull">☠ Cyber Skull</button>
               <button type="button" class="mono-btn art-preset-btn" data-art-preset="owl">🦉 Tor Owl</button>
-              <button type="button" class="mono-btn art-preset-btn" data-art-preset="lattice">⛓️ Vaelor DAG</button>
+              <button type="button" class="mono-btn art-preset-btn" data-art-preset="lattice">Ꝟ Vaelor DAG</button>
               <button type="button" class="mono-btn art-preset-btn" data-art-preset="helix">🧬 STDP Helix</button>
             </div>
             <pre id="brailleArtStudioOutput" class="mono-console-output" style="height:275px;font-size:10px;line-height:1.22;"></pre>
@@ -1620,7 +1774,7 @@ Type ANY Unix, Bash, Python, Kali Linux, Parrot OS, or Zoth command above and pr
             <input type="text" id="coldMemoInput" class="mono-input" value="Air-gapped ZothOS-Lite cold-signed transfer" aria-label="Cold Signer Memo" style="margin-bottom:6px;" />
             <div style="display:flex;gap:5px;margin-bottom:7px;">
               <button type="button" class="mono-btn mono-btn-black" id="coldSignOnlyBtn" style="flex:1;">▓▒░ Cold-Sign (Offline)</button>
-              <button type="button" class="mono-btn" id="coldSignBroadcastBtn" style="flex:1;">⛓️ Sign & Relay (:8140)</button>
+              <button type="button" class="mono-btn" id="coldSignBroadcastBtn" style="flex:1;">Ꝟ Sign & Relay (:8140)</button>
             </div>
             <pre id="coldSignOutput" class="mono-console-output" style="height:195px;">[::] Ed25519 Cold Signer Ready in Volatile RAM.</pre>
           </div>
@@ -1632,7 +1786,7 @@ Type ANY Unix, Bash, Python, Kali Linux, Parrot OS, or Zoth command above and pr
         <article class="os-window win-closed" id="winGhostByte" data-win-title="GhostByte mat2" style="top:52px;left:300px;width:460px;height:375px;z-index:116;">
           <div class="os-window-titlebar" data-drag-handle="winGhostByte">
             <div class="win-title-left">
-              <span>[🧹] GHOSTBYTE METADATA CLEANER (mat2)</span>
+              <span>[✦] GHOSTBYTE METADATA CLEANER (mat2)</span>
             </div>
             <div class="win-controls">
               <button type="button" class="win-ctrl-btn" data-win-action="minimize" data-win-id="winGhostByte" title="Minimize Window">_</button>
@@ -1648,9 +1802,169 @@ Type ANY Unix, Bash, Python, Kali Linux, Parrot OS, or Zoth command above and pr
   "payload": "Sovereign Zero-Egress Spec v1.0"
 }</textarea>
             <button type="button" class="mono-btn mono-btn-black" id="runGhostbyteBtn" style="width:100%;margin-bottom:7px;">
-              🧹 Strip EXIF/GPS Metadata & Compute BLAKE2b Digest
+              ✦ Strip EXIF/GPS Metadata & Compute BLAKE2b Digest
             </button>
             <pre id="ghostbyteOutput" class="mono-console-output" style="height:185px;">[::] GhostByte mat2 Enclave Ready.</pre>
+          </div>
+        </article>
+
+        <!-- ===================================================================
+             MINI-APP WINDOW 10 (INTERACTIVE CYBER DOJO & OPERATOR BOOTCAMP):
+             ENGAGING, GAMIFIED HANDS-ON TRAINING + 30S GUIDED OS TOUR + BADGES
+             =================================================================== -->
+        <article class="os-window win-closed" id="winDojo" data-win-title="Cyber Dojo & Bootcamp" style="top:34px;left:110px;width:690px;height:640px;z-index:220;">
+          <div class="os-window-titlebar" data-drag-handle="winDojo">
+            <div class="win-title-left">
+              <span>[★] ZOTHOS-LITE CYBER DOJO & OPERATOR ACADEMY // INTERACTIVE BOOTCAMP</span>
+            </div>
+            <div class="win-controls">
+              <button type="button" class="win-ctrl-btn" data-win-action="minimize" data-win-id="winDojo" title="Minimize Window">_</button>
+              <button type="button" class="win-ctrl-btn" data-win-action="maximize" data-win-id="winDojo" title="Maximize Window">□</button>
+              <button type="button" class="win-ctrl-btn close-btn" data-win-action="close" data-win-id="winDojo" title="Close Window">✕</button>
+            </div>
+          </div>
+          <div class="os-window-body" style="display:flex;flex-direction:column;gap:8px;">
+            <!-- Operator Rank, XP Bar & Collectible Braille Badges Header -->
+            <div style="padding:10px;background:var(--bg-grey-50);border:2px solid #000000;box-shadow:3px 3px 0px #000000;">
+              <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:6px;">
+                <div>
+                  <div style="font-size:14px;font-weight:700;" id="dojoRankTitle">RANK 0: AMNESIC RECRUIT (UNVERIFIED)</div>
+                  <div style="font-size:12px;">Complete 6 live hands-on missions to earn <b>1,500 XP</b> & your signed <b>Ed25519 Operator Diploma</b>.</div>
+                </div>
+                <span class="badge-black" id="dojoXpPill" style="font-size:13px !important;padding:4px 10px;">0 / 1500 XP (0/6)</span>
+              </div>
+
+              <!-- 1-Bit Monotone XP Progress Bar -->
+              <div class="footprint-bar-wrap" style="height:16px;margin-bottom:8px;background:#FFFFFF;">
+                <div id="dojoXpBarFill" style="width:4%;height:100%;background:#000000;transition:width 240ms ease;"></div>
+              </div>
+
+              <!-- 6 Collectible Unicode Braille Badges -->
+              <div style="display:flex;justify-content:space-between;align-items:center;gap:4px;flex-wrap:wrap;">
+                <div style="display:flex;gap:4px;flex-wrap:wrap;" id="dojoBadgesRow">
+                  <span class="dojo-badge-slot" data-badge-slot="m1">░ [1] ⣿ TOR GHOST</span>
+                  <span class="dojo-badge-slot" data-badge-slot="m2">░ [2] ⚚ KALI RECON</span>
+                  <span class="dojo-badge-slot" data-badge-slot="m3">░ [3] ⚙ ELF PWN</span>
+                  <span class="dojo-badge-slot" data-badge-slot="m4">░ [4] ⛨ ZERO-LEAK</span>
+                  <span class="dojo-badge-slot" data-badge-slot="m5">░ [5] ◉ RAY-BAN OPS</span>
+                  <span class="dojo-badge-slot" data-badge-slot="m6">░ [6] Ꝟ PHANTOM L1</span>
+                </div>
+                <div style="display:flex;gap:4px;">
+                  <button type="button" class="mono-btn mono-btn-black" id="startGuidedTourBtn" style="min-height:28px;padding:2px 9px;">◎ 30s Interactive OS Tour</button>
+                  <button type="button" class="mono-btn" id="runAllDojoMissionsBtn" style="min-height:28px;padding:2px 8px;">⚡ Auto-Demo All 6</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Interactive 5-Step Guided OS Tour Spotlight Box (Hidden until started or shown on Step 1) -->
+            <div id="dojoGuidedTourBox" style="display:flex;justify-content:space-between;align-items:center;gap:8px;padding:9px 11px;background:#000000;color:#FFFFFF !important;border:2px solid #000000;">
+              <div style="flex:1;color:#FFFFFF !important;">
+                <div id="dojoTourStepTitle" style="font-size:13px;font-weight:700;color:#FFFFFF !important;">◎ QUICK ORIENTATION (STEP 1/5): HOW ZOTHOS-LITE WORKS</div>
+                <div id="dojoTourStepDesc" style="font-size:12px;color:#FFFFFF !important;margin-top:2px;">
+                  ZothOS-Lite is a Tails-style RAM-only OS (`toram noswap`) with Kali Linux, Parrot OS, Python, and Zoth security tools built in. Click <b>Next Tip ▸</b> to spotlight each bar & tool, or click any <b>Mission</b> below to learn by doing!
+                </div>
+              </div>
+              <div style="display:flex;gap:4px;flex-shrink:0;">
+                <button type="button" class="mono-btn" id="dojoTourPrevBtn" style="min-height:28px;padding:2px 8px;">◂ Prev</button>
+                <button type="button" class="mono-btn" id="dojoTourNextBtn" style="min-height:28px;padding:2px 9px;">Next Tip ▸</button>
+              </div>
+            </div>
+
+            <!-- Live Mission Reward Toast / Certificate Output -->
+            <pre id="dojoRewardConsole" class="mono-console-output" style="display:none;max-height:135px;font-size:12.5px !important;"></pre>
+
+            <!-- 6 Interactive Hands-On Missions List -->
+            <div id="dojoMissionsList" style="display:flex;flex-direction:column;gap:6px;">
+              <!-- Mission 1 -->
+              <div class="dojo-mission-card" data-mission-card="m1">
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:3px;">
+                  <b style="font-size:13px;">MISSION 01: Verify Amnesic RAM & Parrot AnonSurf Tor Tunnel</b>
+                  <span class="badge-black" data-mission-status="m1">+150 XP • ⣿ TOR GHOST</span>
+                </div>
+                <div style="font-size:12px;margin-bottom:6px;">
+                  <b>Why it matters:</b> Before touching any target, confirm ZothOS-Lite is running in volatile RAM (`toram noswap`) with a spoofed MAC address and strict Tor `9050/9040` `nftables` kill-switch.
+                </div>
+                <div style="display:flex;justify-content:space-between;align-items:center;gap:6px;background:var(--bg-grey-50);padding:5px 8px;border:1.5px solid #000000;">
+                  <code style="font-size:12px;font-weight:700;">$ anonsurf status</code>
+                  <button type="button" class="mono-btn mono-btn-black dojo-run-btn" data-dojo-mission="m1" data-dojo-cmd="anonsurf status">⚡ Execute & Claim +150 XP</button>
+                </div>
+              </div>
+
+              <!-- Mission 2 -->
+              <div class="dojo-mission-card" data-mission-card="m2">
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:3px;">
+                  <b style="font-size:13px;">MISSION 02: Kali Linux Recon — HTTP & WAF Fingerprinting</b>
+                  <span class="badge-black" data-mission-status="m2">+200 XP • ⚚ KALI RECON</span>
+                </div>
+                <div style="font-size:12px;margin-bottom:6px;">
+                  <b>Why it matters:</b> Use built-in Kali Linux tools (`whatweb`, `wafw00f`, `nmap`, `searchsploit`) directly in the Root Terminal to fingerprint web servers and firewall headers.
+                </div>
+                <div style="display:flex;justify-content:space-between;align-items:center;gap:6px;background:var(--bg-grey-50);padding:5px 8px;border:1.5px solid #000000;">
+                  <code style="font-size:12px;font-weight:700;">$ whatweb http://127.0.0.1:8145 && wafw00f http://127.0.0.1:8145</code>
+                  <button type="button" class="mono-btn mono-btn-black dojo-run-btn" data-dojo-mission="m2" data-dojo-cmd="whatweb http://127.0.0.1:8145 && wafw00f http://127.0.0.1:8145">⚡ Execute & Claim +200 XP</button>
+                </div>
+              </div>
+
+              <!-- Mission 3 -->
+              <div class="dojo-mission-card" data-mission-card="m3">
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:3px;">
+                  <b style="font-size:13px;">MISSION 03: Binary Reversing — Audit ELF Hardening (`checksec` & `ropper`)</b>
+                  <span class="badge-black" data-mission-status="m3">+250 XP • ⚙ ELF PWN</span>
+                </div>
+                <div style="font-size:12px;margin-bottom:6px;">
+                  <b>Why it matters:</b> Inspect compiled Linux ELF binaries for `Full RELRO`, `Stack Canary`, `NX`, and `PIE` protections (`checksec`) and scan x86_64 ROP gadgets (`ropper` / `r2`).
+                </div>
+                <div style="display:flex;justify-content:space-between;align-items:center;gap:6px;background:var(--bg-grey-50);padding:5px 8px;border:1.5px solid #000000;">
+                  <code style="font-size:12px;font-weight:700;">$ checksec --file=/bin/bash && ropper --file /bin/ls</code>
+                  <button type="button" class="mono-btn mono-btn-black dojo-run-btn" data-dojo-mission="m3" data-dojo-cmd="checksec --file=/bin/bash && ropper --file /bin/ls">⚡ Execute & Claim +250 XP</button>
+                </div>
+              </div>
+
+              <!-- Mission 4 -->
+              <div class="dojo-mission-card" data-mission-card="m4">
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:3px;">
+                  <b style="font-size:13px;">MISSION 04: Zero-Leak Secrets & EXIF Metadata Scrubbing (`mat2`)</b>
+                  <span class="badge-black" data-mission-status="m4">+250 XP • ⛨ ZERO-LEAK</span>
+                </div>
+                <div style="font-size:12px;margin-bottom:6px;">
+                  <b>Why it matters:</b> Scan `.env` files for leaked AWS/Stripe/GitHub keys (`zoth-envguard`) and strip GPS/camera serial numbers (`zoth-ghostbyte --scrub`) before publishing files.
+                </div>
+                <div style="display:flex;justify-content:space-between;align-items:center;gap:6px;background:var(--bg-grey-50);padding:5px 8px;border:1.5px solid #000000;">
+                  <code style="font-size:12px;font-weight:700;">$ zoth-envguard --scan && zoth-ghostbyte --scrub</code>
+                  <button type="button" class="mono-btn mono-btn-black dojo-run-btn" data-dojo-mission="m4" data-dojo-cmd="zoth-envguard --scan">⚡ Execute & Claim +250 XP</button>
+                </div>
+              </div>
+
+              <!-- Mission 5 -->
+              <div class="dojo-mission-card" data-mission-card="m5">
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:3px;">
+                  <b style="font-size:13px;">MISSION 05: Meta Ray-Ban Tactical Suite — Voice Bridge & 1-Bit Dither Cam</b>
+                  <span class="badge-black" data-mission-status="m5">+300 XP • ◉ RAY-BAN OPS</span>
+                </div>
+                <div style="font-size:12px;margin-bottom:6px;">
+                  <b>Why it matters:</b> Hijack Bluetooth HFP/A2DP on your smart glasses to talk to local Azoth Voice (`:8114`) with Meta Cloud blocked, and anonymize 12MP POV photos in RAM.
+                </div>
+                <div style="display:flex;justify-content:space-between;align-items:center;gap:6px;background:var(--bg-grey-50);padding:5px 8px;border:1.5px solid #000000;">
+                  <code style="font-size:12px;font-weight:700;">$ zoth-rayban --voice-bridge</code>
+                  <button type="button" class="mono-btn mono-btn-black dojo-run-btn" data-dojo-mission="m5" data-dojo-cmd="zoth-rayban --voice-bridge">⚡ Execute & Claim +300 XP</button>
+                </div>
+              </div>
+
+              <!-- Mission 6 -->
+              <div class="dojo-mission-card" data-mission-card="m6">
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:3px;">
+                  <b style="font-size:13px;">MISSION 06: Air-Gapped Vaelor L1 Ed25519 Cold-Sign & Diploma</b>
+                  <span class="badge-black" data-mission-status="m6">+350 XP • Ꝟ PHANTOM L1</span>
+                </div>
+                <div style="font-size:12px;margin-bottom:6px;">
+                  <b>Why it matters:</b> Generate a deterministic RFC-8032 Ed25519 signature + Unicode Braille RandomArt seal in air-gapped RAM without exposing your private key.
+                </div>
+                <div style="display:flex;justify-content:space-between;align-items:center;gap:6px;background:var(--bg-grey-50);padding:5px 8px;border:1.5px solid #000000;">
+                  <code style="font-size:12px;font-weight:700;">$ zoth-vaelor-coldsign --sign</code>
+                  <button type="button" class="mono-btn mono-btn-black dojo-run-btn" data-dojo-mission="m6" data-dojo-cmd="zoth-vaelor-coldsign --sign">⚡ Execute & Claim +350 XP</button>
+                </div>
+              </div>
+            </div>
           </div>
         </article>
 
@@ -1658,28 +1972,80 @@ Type ANY Unix, Bash, Python, Kali Linux, Parrot OS, or Zoth command above and pr
     </main>
 
     <!-- =======================================================================
-         3. BOTTOM TAILS-STYLE TASKBAR / WINDOW MANAGER DOCK (42px FIXED)
+         3. REDESIGNED BOTTOM OS TASKBAR, START MENU & DOJO DOCK (42px FIXED)
+         Complete access to all 10 windows, Kali/Parrot shelves, Dojo & Layouts!
          ======================================================================= -->
     <footer class="tails-bottom-dock" role="contentinfo">
+      <!-- Bottom-Left OS Start / Applications Launcher Button -->
+      <button type="button" class="dock-start-btn" id="bottomStartBtn" title="Open ZothOS-Lite Start Menu, All 10 Apps, Kali/Parrot Shelves & Cyber Dojo">
+        <span>❖ START / APPS ▲</span>
+      </button>
+
+      <!-- All 10 Mini-App Window Taskbar Buttons (Zero Truncation) -->
       <div class="dock-tasks" id="bottomTaskbarList">
-        <button type="button" class="dock-task-btn win-open win-focused" data-task-win="winEnvGuard">● [>_] Terminal</button>
-        <button type="button" class="dock-task-btn win-open" data-task-win="winDocs">● [📖] Tool Docs</button>
-        <button type="button" class="dock-task-btn win-open" data-task-win="winGreeter">● [◈] Greeter</button>
-        <button type="button" class="dock-task-btn win-open" data-task-win="winDaemons">● [▓] Daemons (8)</button>
-        <button type="button" class="dock-task-btn" data-task-win="winCoreTools">○ [█] Core (8)</button>
-        <button type="button" class="dock-task-btn" data-task-win="winPkgPuller">○ [⬇] Pull (12)</button>
-        <button type="button" class="dock-task-btn" data-task-win="winBrailleStudio">○ [⣿] Braille</button>
-        <button type="button" class="dock-task-btn" data-task-win="winColdSigner">○ [Ꝟ] Signer</button>
-        <button type="button" class="dock-task-btn" data-task-win="winGhostByte">○ [🧹] mat2</button>
+        <button type="button" class="dock-task-btn" data-task-win="winDojo" title="Open Interactive Cyber Dojo & Operator Academy">○ ★ Dojo</button>
+        <button type="button" class="dock-task-btn win-open win-focused" data-task-win="winEnvGuard" title="Open Live Bash + Kali + Parrot + Python Shell">● >_ Shell</button>
+        <button type="button" class="dock-task-btn win-open" data-task-win="winDocs" title="Open Tool Documentation & CLI Manual">● § Docs</button>
+        <button type="button" class="dock-task-btn win-open" data-task-win="winGreeter" title="Open Tails Amnesic Greeter & RAM Footprint">● ◈ OS</button>
+        <button type="button" class="dock-task-btn win-open" data-task-win="winDaemons" title="Open 8 Sovereign Daemons">● ▓ Daemons</button>
+        <button type="button" class="dock-task-btn" data-task-win="winCoreTools" title="Open 8 Core Locked Security Tools">○ █ Core</button>
+        <button type="button" class="dock-task-btn" data-task-win="winPkgPuller" title="Open On-Demand Modular Tool Puller (16)">○ ⬇ Pull</button>
+        <button type="button" class="dock-task-btn" data-task-win="winBrailleStudio" title="Open 60fps Braille & Bayer 8x8 Art Studio">○ ⣿ Art</button>
+        <button type="button" class="dock-task-btn" data-task-win="winColdSigner" title="Open Vaelor L1 Air-Gapped Cold Signer">○ Ꝟ Sign</button>
+        <button type="button" class="dock-task-btn" data-task-win="winGhostByte" title="Open GhostByte Metadata Cleaner (mat2)">○ ✦ mat2</button>
       </div>
 
+      <!-- Right Workspace & Quick-Access Controls -->
       <div class="dock-wm-controls">
-        <button type="button" class="mono-btn" id="cascadeWindowsBtn" style="min-height:26px;padding:2px 7px;font-size:9.5px;" title="Cascade Open Mini-App Windows">❐ Cascade</button>
-        <button type="button" class="mono-btn" id="tileWindowsBtn" style="min-height:26px;padding:2px 7px;font-size:9.5px;" title="Tile 4 Main Windows">⊞ Tile 2×2</button>
-        <button type="button" class="mono-btn" id="minimizeAllBtn" style="min-height:26px;padding:2px 7px;font-size:9.5px;" title="Show Desktop Art Wall">_ Desktop</button>
-        <span style="font-size:9.5px;color:var(--fg-grey-600);margin-left:3px;">
-          <b>Neal Frazier Tech (@1nc0gn30)</b> • NullAI
-        </span>
+        <button type="button" class="mono-btn mono-btn-black" data-open-win="winDojo" id="bottomDojoQuickBtn" style="min-height:28px;padding:2px 8px;" title="Launch Interactive Cyber Dojo & Operator Bootcamp">★ Dojo (<span id="bottomDojoCount">0/6</span>)</button>
+        <button type="button" class="mono-btn" id="bottomMaxShellBtn" style="min-height:28px;padding:2px 8px;" title="Maximize / Restore Fullscreen Kali & Parrot Terminal">□ Shell</button>
+        <button type="button" class="mono-btn" id="tileWindowsBtn" style="min-height:28px;padding:2px 8px;" title="Tile 4 Main Windows in 2x2 Grid">⊞ 2×2</button>
+        <button type="button" class="mono-btn" id="cascadeWindowsBtn" style="min-height:28px;padding:2px 7px;" title="Cascade All Open Windows">❐</button>
+        <button type="button" class="mono-btn" id="minimizeAllBtn" style="min-height:28px;padding:2px 8px;" title="Minimize All Windows to View 60fps Braille Desktop Wall">_ Desk</button>
+      </div>
+
+      <!-- Pop-Up OS Start Launcher Menu (Anchored Above Bottom-Left Dock) -->
+      <div class="bottom-start-menu" id="bottomStartMenu" role="menu" aria-label="ZothOS-Lite Applications and Command Launcher">
+        <div class="bottom-start-header">
+          <span>❖ ZOTHOS-LITE v1.0 // FULL SYSTEM LAUNCHER & CYBER DOJO</span>
+          <span id="startMenuRankBadge">RANK 0 • 0 XP</span>
+        </div>
+        <div class="bottom-start-grid">
+          <!-- Column 1: All 10 OS Windows -->
+          <div class="bottom-start-col">
+            <div style="font-size:11px;font-weight:700;padding:2px 4px;border-bottom:1.5px solid #000000;margin-bottom:2px;">⊞ ALL 10 OS MINI-APP WINDOWS:</div>
+            <button type="button" class="start-menu-btn" data-open-win="winDojo"><span>★ Interactive Cyber Dojo & Bootcamp</span><span>[TRAIN]</span></button>
+            <button type="button" class="start-menu-btn" data-open-win="winEnvGuard"><span>>_ Live Bash + Kali + Parrot + Python Shell</span><span>[SHELL]</span></button>
+            <button type="button" class="start-menu-btn" data-open-win="winDocs"><span>§ Complete Tool Docs & CLI Manual</span><span>[DOCS]</span></button>
+            <button type="button" class="start-menu-btn" data-open-win="winGreeter"><span>◈ Tails Amnesic Greeter & RAM Footprint</span><span>[TORAM]</span></button>
+            <button type="button" class="start-menu-btn" data-open-win="winDaemons"><span>▓ 8 ZothOS Sovereign Daemons</span><span>[SYS]</span></button>
+            <button type="button" class="start-menu-btn" data-open-win="winCoreTools"><span>█ 8 Pre-Installed Core Security Tools</span><span>[CORE]</span></button>
+            <button type="button" class="start-menu-btn" data-open-win="winPkgPuller"><span>⬇ Pull Optional Tools into RAM (16)</span><span>[PKG]</span></button>
+            <button type="button" class="start-menu-btn" data-open-win="winBrailleStudio"><span>⣿ 60FPS Braille & Bayer 8×8 Art Studio</span><span>[ART]</span></button>
+            <button type="button" class="start-menu-btn" data-open-win="winColdSigner"><span>Ꝟ Vaelor L1 Ed25519 Air-Gapped Signer</span><span>[SIGN]</span></button>
+            <button type="button" class="start-menu-btn" data-open-win="winGhostByte"><span>✦ GhostByte EXIF/GPS Scrubber (mat2)</span><span>[MAT2]</span></button>
+          </div>
+
+          <!-- Column 2: Direct Terminal Arsenal Shelves & Workspace Actions -->
+          <div class="bottom-start-col">
+            <div style="font-size:11px;font-weight:700;padding:2px 4px;border-bottom:1.5px solid #000000;margin-bottom:2px;">⚡ DIRECT TERMINAL ARSENAL SHELVES:</div>
+            <button type="button" class="start-menu-btn" data-start-shelf="KALI"><span>⚚ Kali Linux Recon & Web Arsenal</span><span>13 TOOLS</span></button>
+            <button type="button" class="start-menu-btn" data-start-shelf="PARROT"><span>◈ Parrot OS AnonSurf & Privacy</span><span>10 TOOLS</span></button>
+            <button type="button" class="start-menu-btn" data-start-shelf="REV"><span>⚙ Binary Reversing, GDB, r2 & Pwn</span><span>11 TOOLS</span></button>
+            <button type="button" class="start-menu-btn" data-start-shelf="UNIX"><span>λ Unix / Bash / Python / Rust / Go</span><span>LIVE</span></button>
+            <button type="button" class="start-menu-btn" data-start-shelf="ZOTH"><span>◉ Meta Ray-Ban & Zoth Enclave CLI</span><span>10 TOOLS</span></button>
+
+            <div style="font-size:11px;font-weight:700;padding:4px 4px 2px 4px;border-bottom:1.5px solid #000000;margin-top:4px;margin-bottom:2px;">🖥️ WORKSPACE & TRAINING ACTIONS:</div>
+            <button type="button" class="start-menu-btn" id="startMenuTourBtn"><span>◎ Start 30-Second Visual OS Tour</span><span>[TOUR]</span></button>
+            <button type="button" class="start-menu-btn" id="startMenuMaxShellBtn"><span>□ Maximize Fullscreen Terminal</span><span>[MAX]</span></button>
+            <button type="button" class="start-menu-btn" id="startMenuTileBtn"><span>⊞ Tile 2×2 Default Workspace</span><span>[2×2]</span></button>
+            <button type="button" class="start-menu-btn" id="startMenuPanicBtn" style="background:#000000;color:#FFFFFF !important;"><span>☢ Trigger Emergency RAM Panic Wipe</span><span>[WIPE]</span></button>
+          </div>
+        </div>
+        <div style="padding:6px 10px;display:flex;justify-content:space-between;align-items:center;font-size:11px;background:#FFFFFF;">
+          <span><b>Engineered by Neal Frazier Tech (@1nc0gn30)</b> • NullAI Platform</span>
+          <span>100% Free & Open-Access • Toram Noswap</span>
+        </div>
       </div>
     </footer>
   </div>
@@ -1804,6 +2170,8 @@ Type ANY Unix, Bash, Python, Kali Linux, Parrot OS, or Zoth command above and pr
           openOrRestoreWindow(winId);
           document.getElementById('appsDropdownMenu')?.classList.remove('open');
           document.getElementById('daemonsDropdownMenu')?.classList.remove('open');
+          document.getElementById('bottomStartMenu')?.classList.remove('open');
+          document.getElementById('bottomStartBtn')?.classList.remove('active');
         });
       });
 
@@ -2446,7 +2814,7 @@ Type ANY Unix, Bash, Python, Kali Linux, Parrot OS, or Zoth command above and pr
                     ⬇ Install to RAM (${pkg.sizeMb} MB)
                   </button>
                   <button type="button" class="mono-btn pkg-action-btn" data-action="pull-luks" data-id="${pkg.id}" style="min-height:22px;padding:1px 7px;font-size:9px;">
-                    🔒 LUKS
+                    ⛨ LUKS
                   </button>
                 `}
               </div>
@@ -2592,6 +2960,9 @@ Type ANY Unix, Bash, Python, Kali Linux, Parrot OS, or Zoth command above and pr
             if (badge) badge.textContent = `root@zothos:${shortCwd}#`;
             term.textContent = `root@zothos:${shortCwd}# ${cmd}\n${data.output}`;
             term.scrollTop = 0;
+            if (typeof window.autoCheckDojoFromCommand === 'function') {
+              window.autoCheckDojoFromCommand(cmd);
+            }
             return;
           }
         } catch (_e) {}
@@ -2761,6 +3132,260 @@ Type ANY Unix, Bash, Python, Kali Linux, Parrot OS, or Zoth command above and pr
       enforceTekniumTypography();
       setTimeout(enforceTekniumTypography, 600);
 
+      // =======================================================================
+      // BOTTOM-LEFT OS START MENU & TASKBAR QUICK LAUNCHERS
+      // =======================================================================
+      const bottomStartBtn = document.getElementById('bottomStartBtn');
+      const bottomStartMenu = document.getElementById('bottomStartMenu');
+
+      bottomStartBtn?.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const isOpen = bottomStartMenu?.classList.toggle('open');
+        bottomStartBtn.classList.toggle('active', Boolean(isOpen));
+      });
+
+      document.addEventListener('click', (e) => {
+        if (bottomStartMenu && !bottomStartMenu.contains(e.target) && e.target !== bottomStartBtn) {
+          bottomStartMenu.classList.remove('open');
+          bottomStartBtn?.classList.remove('active');
+        }
+      });
+
+      // Start Menu Direct Terminal Shelf Launchers (KALI, PARROT, REV, UNIX, ZOTH)
+      document.querySelectorAll('[data-start-shelf]').forEach((btn) => {
+        btn.addEventListener('click', () => {
+          const shelf = btn.getAttribute('data-start-shelf') || 'TOP';
+          bottomStartMenu?.classList.remove('open');
+          bottomStartBtn?.classList.remove('active');
+          openOrRestoreWindow('winEnvGuard');
+          const tab = document.querySelector(`.term-shelf-tab[data-shelf="${shelf}"]`);
+          if (tab) tab.click();
+          document.getElementById('terminalCmdInput')?.focus();
+        });
+      });
+
+      document.getElementById('bottomMaxShellBtn')?.addEventListener('click', () => {
+        openOrRestoreWindow('winEnvGuard');
+        toggleMaximizeWindow('winEnvGuard');
+        document.getElementById('terminalCmdInput')?.focus();
+      });
+
+      document.getElementById('startMenuMaxShellBtn')?.addEventListener('click', () => {
+        bottomStartMenu?.classList.remove('open');
+        openOrRestoreWindow('winEnvGuard');
+        const win = document.getElementById('winEnvGuard');
+        if (win && !win.classList.contains('win-maximized')) {
+          toggleMaximizeWindow('winEnvGuard');
+        }
+        document.getElementById('terminalCmdInput')?.focus();
+      });
+
+      document.getElementById('startMenuTileBtn')?.addEventListener('click', () => {
+        bottomStartMenu?.classList.remove('open');
+        document.getElementById('tileWindowsBtn')?.click();
+      });
+
+      document.getElementById('startMenuPanicBtn')?.addEventListener('click', () => {
+        bottomStartMenu?.classList.remove('open');
+        document.getElementById('panicWipeRamBtn')?.click();
+      });
+
+      // =======================================================================
+      // INTERACTIVE CYBER DOJO & OPERATOR ACADEMY (6 LIVE MISSIONS + 30S TOUR)
+      // =======================================================================
+      const DOJO_MISSIONS = {
+        m1: { xp: 150, badge: '⣿ [1] TOR GHOST', title: 'Amnesic RAM & AnonSurf Tor Shield Verified' },
+        m2: { xp: 200, badge: '⚚ [2] KALI RECON', title: 'Kali Linux HTTP & WAF Recon Completed' },
+        m3: { xp: 250, badge: '⚙ [3] ELF PWN', title: 'ELF Binary Hardening & ROP Gadget Audit Passed' },
+        m4: { xp: 250, badge: '⛨ [4] ZERO-LEAK', title: 'EnvGuard Secret Scan & GhostByte mat2 Scrubbed' },
+        m5: { xp: 300, badge: '◉ [5] RAY-BAN OPS', title: 'Meta Ray-Ban Local Voice & 1-Bit Dither Armed' },
+        m6: { xp: 350, badge: 'Ꝟ [6] PHANTOM L1', title: 'Vaelor L1 Air-Gapped Ed25519 Signature Sealed' }
+      };
+
+      const RANK_TITLES = [
+        'RANK 0: AMNESIC RECRUIT (UNVERIFIED)',
+        'RANK 1: TOR SHADOW INITIATE',
+        'RANK 2: KALI RECON SCOUT',
+        'RANK 3: BINARY PWN AUDITOR',
+        'RANK 4: ZERO-LEAK CUSTODIAN',
+        'RANK 5: RAY-BAN TACTICAL SPECIALIST',
+        'RANK 6: SOVEREIGN PHANTOM OPERATOR (MAX RANK ♛)'
+      ];
+
+      let completedMissions = {};
+      try {
+        completedMissions = JSON.parse(localStorage.getItem('zothos_lite_dojo_v1') || '{}');
+      } catch (_e) {}
+
+      function updateDojoUI(newlyUnlockedId) {
+        const ids = Object.keys(DOJO_MISSIONS);
+        let totalXp = 0;
+        let doneCount = 0;
+
+        ids.forEach((id) => {
+          const isDone = Boolean(completedMissions[id]);
+          if (isDone) {
+            totalXp += DOJO_MISSIONS[id].xp;
+            doneCount++;
+          }
+          const card = document.querySelector(`[data-mission-card="${id}"]`);
+          const stat = document.querySelector(`[data-mission-status="${id}"]`);
+          const badgeSlot = document.querySelector(`[data-badge-slot="${id}"]`);
+          const btn = document.querySelector(`.dojo-run-btn[data-dojo-mission="${id}"]`);
+          if (card) card.classList.toggle('mission-completed', isDone);
+          if (stat && isDone) stat.textContent = `✓ COMPLETED (+${DOJO_MISSIONS[id].xp} XP)`;
+          if (badgeSlot) {
+            badgeSlot.classList.toggle('unlocked', isDone);
+            if (isDone) badgeSlot.textContent = `⣿ ${DOJO_MISSIONS[id].badge}`;
+          }
+          if (btn && isDone) {
+            btn.textContent = '✓ Completed (Re-Run)';
+          }
+        });
+
+        const rankStr = RANK_TITLES[Math.min(doneCount, RANK_TITLES.length - 1)];
+        const rankEl = document.getElementById('dojoRankTitle');
+        if (rankEl) scrambleTextElement(rankEl, rankStr);
+
+        const xpPill = document.getElementById('dojoXpPill');
+        if (xpPill) xpPill.textContent = `${totalXp} / 1500 XP (${doneCount}/6)`;
+
+        const xpFill = document.getElementById('dojoXpBarFill');
+        if (xpFill) xpFill.style.width = `${Math.max(4, Math.round((totalXp / 1500) * 100))}%`;
+
+        const topBadge = document.getElementById('topDojoXpBadge');
+        if (topBadge) topBadge.textContent = `${doneCount}/6`;
+
+        const botBadge = document.getElementById('bottomDojoCount');
+        if (botBadge) botBadge.textContent = `${doneCount}/6`;
+
+        const startRank = document.getElementById('startMenuRankBadge');
+        if (startRank) startRank.textContent = `RANK ${doneCount} • ${totalXp} XP`;
+
+        const rewardBox = document.getElementById('dojoRewardConsole');
+        if (rewardBox && newlyUnlockedId && DOJO_MISSIONS[newlyUnlockedId]) {
+          rewardBox.style.display = 'block';
+          if (doneCount === 6) {
+            rewardBox.textContent = [
+              '╔══════════════════════════════════════════════════════════════════════════╗',
+              '║ ♛ 1,500 / 1,500 XP // SOVEREIGN PHANTOM OPERATOR DIPLOMA UNLOCKED!   ♛ ║',
+              '╠══════════════════════════════════════════════════════════════════════════╣',
+              '║  ⣿⣾⣽⣻⢿⡿⣟⣯⣷  ED25519 SIGNATURE: 9f4e2a8c1b70d3e5f812a4c609b1d7e2...      ║',
+              '║  ALL 6 KALI, PARROT, BINARY PWN, MAT2, RAY-BAN & L1 MISSIONS VERIFIED!  ║',
+              '╚══════════════════════════════════════════════════════════════════════════╝'
+            ].join('\n');
+          } else {
+            const m = DOJO_MISSIONS[newlyUnlockedId];
+            rewardBox.textContent = `✦ [MISSION UNLOCKED: +${m.xp} XP] ${m.title}!\n   Badge Awarded: ${m.badge} • Progress: ${doneCount}/6 Missions (${totalXp} / 1500 XP)`;
+          }
+        }
+      }
+
+      function markDojoMissionComplete(missionId) {
+        if (!DOJO_MISSIONS[missionId]) return;
+        completedMissions[missionId] = true;
+        try {
+          localStorage.setItem('zothos_lite_dojo_v1', JSON.stringify(completedMissions));
+        } catch (_e) {}
+        updateDojoUI(missionId);
+      }
+
+      window.autoCheckDojoFromCommand = function (cmd) {
+        const c = (cmd || '').toLowerCase();
+        if (c.includes('anonsurf') || c.includes('zoth-tor-guard')) markDojoMissionComplete('m1');
+        if (c.includes('whatweb') || c.includes('wafw00f') || c.includes('nmap')) markDojoMissionComplete('m2');
+        if (c.includes('checksec') || c.includes('ropper') || c.startsWith('r2 ')) markDojoMissionComplete('m3');
+        if (c.includes('zoth-envguard') || c.includes('zoth-ghostbyte') || c.includes('mat2')) markDojoMissionComplete('m4');
+        if (c.includes('zoth-rayban')) markDojoMissionComplete('m5');
+        if (c.includes('zoth-vaelor-coldsign')) markDojoMissionComplete('m6');
+      };
+
+      document.querySelectorAll('.dojo-run-btn').forEach((btn) => {
+        btn.addEventListener('click', async () => {
+          const mId = btn.getAttribute('data-dojo-mission');
+          const cmd = btn.getAttribute('data-dojo-cmd');
+          markDojoMissionComplete(mId);
+          await runTerminalCommand(cmd);
+          openOrRestoreWindow('winDojo');
+        });
+      });
+
+      document.getElementById('runAllDojoMissionsBtn')?.addEventListener('click', async () => {
+        const order = [
+          ['m1', 'anonsurf status'],
+          ['m2', 'whatweb http://127.0.0.1:8145 && wafw00f http://127.0.0.1:8145'],
+          ['m3', 'checksec --file=/bin/bash && ropper --file /bin/ls'],
+          ['m4', 'zoth-envguard --scan'],
+          ['m5', 'zoth-rayban --voice-bridge'],
+          ['m6', 'zoth-vaelor-coldsign --sign']
+        ];
+        for (const [mId, cmd] of order) {
+          markDojoMissionComplete(mId);
+          await runTerminalCommand(cmd);
+        }
+        openOrRestoreWindow('winDojo');
+      });
+
+      // 5-Step Guided Visual OS Tour
+      const TOUR_STEPS = [
+        {
+          title: '◎ STEP 1/5: TOP AMNESIC TELEMETRY & PANIC BAR',
+          desc: 'The Top Bar shows your volatile RAM footprint (958MB), active Tor 9050 Guard, spoofed MAC address, and the ☢ PANIC WIPE button to zero out RAM immediately.',
+          selector: '.tails-top-panel'
+        },
+        {
+          title: '◎ STEP 2/5: BOTTOM START MENU & 10-APP TASKBAR DOCK',
+          desc: 'Click [❖ START / APPS ▲] on the bottom-left to launch any of the 10 mini-apps, jump straight to Kali/Parrot shelves, maximize the terminal, or tile windows 2×2!',
+          selector: '.tails-bottom-dock'
+        },
+        {
+          title: '◎ STEP 3/5: LIVE BASH + KALI LINUX + PARROT OS + PYTHON SHELL',
+          desc: 'Switch between ⚡ TOP, ⚚ KALI, ◈ PARROT, ⚙ REV/PWN, λ UNIX/PY, and ◉ ZOTH tabs — or just start typing any Linux command on your keyboard!',
+          selector: '#winEnvGuard'
+        },
+        {
+          title: '◎ STEP 4/5: ON-DEMAND MODULAR RAM TOOL PULLER (zoth-lite-pkg)',
+          desc: 'Keep the base OS 90% smaller (958MB) and pull heavy Kali, Reversing, Whisper Voice, or AI packs into volatile RAM tmpfs only when you need them.',
+          selector: '.desktop-icons-launchpad'
+        },
+        {
+          title: '◎ STEP 5/5: 60FPS UNICODE BRAILLE & BAYER 8×8 DITHER ENGINE',
+          desc: 'Switch between 6 procedural 3D monochrome sculptures (Shield, Skull, Zoth Eye, DAG, Helix, Obelisk) and inspect live 4096-bit entropy & Tor circuits on the right wall!',
+          selector: '.desktop-art-wall'
+        }
+      ];
+      let currentTourIdx = 0;
+
+      function renderTourStep(idx) {
+        currentTourIdx = (idx + TOUR_STEPS.length) % TOUR_STEPS.length;
+        const step = TOUR_STEPS[currentTourIdx];
+        const titleEl = document.getElementById('dojoTourStepTitle');
+        const descEl = document.getElementById('dojoTourStepDesc');
+        if (titleEl) titleEl.textContent = step.title;
+        if (descEl) descEl.textContent = step.desc;
+
+        document.querySelectorAll('.tour-highlight-ring').forEach((el) => el.classList.remove('tour-highlight-ring'));
+        const targetEl = document.querySelector(step.selector);
+        if (targetEl) {
+          targetEl.classList.add('tour-highlight-ring');
+          setTimeout(() => targetEl.classList.remove('tour-highlight-ring'), 2600);
+        }
+      }
+
+      document.getElementById('startGuidedTourBtn')?.addEventListener('click', () => {
+        openOrRestoreWindow('winDojo');
+        renderTourStep(0);
+      });
+      document.getElementById('startMenuTourBtn')?.addEventListener('click', () => {
+        bottomStartMenu?.classList.remove('open');
+        openOrRestoreWindow('winDojo');
+        renderTourStep(0);
+      });
+      document.getElementById('dojoTourNextBtn')?.addEventListener('click', () => renderTourStep(currentTourIdx + 1));
+      document.getElementById('dojoTourPrevBtn')?.addEventListener('click', () => renderTourStep(currentTourIdx - 1));
+
+      updateDojoUI();
+
       async function executeEnvguardScan() {
         const inp = document.getElementById('envguardInput')?.value || '';
         const box = document.getElementById('envguardResultBox');
@@ -2895,13 +3520,13 @@ Type ANY Unix, Bash, Python, Kali Linux, Parrot OS, or Zoth command above and pr
             const cEl = document.getElementById('bridgeCivStat');
             if (vEl && d.vaelor) {
               vEl.textContent = d.vaelor.online
-                ? `⛓️ L1: ${d.vaelor.totalBlocks} BLKS`
-                : '⛓️ L1: STANDBY';
+                ? `Ꝟ L1: ${d.vaelor.totalBlocks} BLKS`
+                : 'Ꝟ L1: STANDBY';
             }
             if (cEl && d.civ) {
               cEl.textContent = d.civ.online
-                ? `🏛️ ${d.civ.agentsCount} AGTS`
-                : '🏛️ STANDBY';
+                ? `❖ ${d.civ.agentsCount} AGTS`
+                : '❖ STANDBY';
             }
           }
         } catch (_e) {}
