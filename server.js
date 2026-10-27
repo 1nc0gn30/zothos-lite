@@ -929,6 +929,183 @@ const server = http.createServer(async (req, res) => {
     });
   }
 
+  // =========================================================================
+  // CHAIN OF THOUGHTS (CoT) // MULTI-TURN CONTEXT & WORKING MEMORY DAG ENGINE
+  // =========================================================================
+  const COT_FILE = path.join(DATA_DIR, 'cot_memory.json');
+  if (!global.__zothCotState) {
+    let loaded = null;
+    try {
+      if (fs.existsSync(COT_FILE)) {
+        loaded = JSON.parse(fs.readFileSync(COT_FILE, 'utf8'));
+      }
+    } catch (_e) {}
+    const genesisHash = crypto.createHash('sha256').update('ZOTHOS-LITE-COT-GENESIS').digest('hex').slice(0, 12);
+    global.__zothCotState = loaded && Array.isArray(loaded.nodes) ? loaded : {
+      headHash: genesisHash,
+      maxTurns: 24,
+      pinnedFacts: [
+        { id: 'fact-operator', category: 'IDENTITY', fact: 'Operator is Neal (@1nc0gn30) running ZothOS-Lite v1.0 Amnesic Workstation.', active: true, ts: new Date().toISOString() },
+        { id: 'fact-hardware', category: 'HARDWARE', fact: 'Audio routed via PipeWire Pro-Audio Duplex (ALC3266 Analog + Samsung HDMI + ALC3266 Mic + Meta Ray-Ban Bridge).', active: true, ts: new Date().toISOString() },
+        { id: 'fact-arsenal', category: 'ARSENAL', fact: '45 Kali Linux, Parrot OS, Reversing, and Zoth CLI tools armed in RAM overlay (toram noswap).', active: true, ts: new Date().toISOString() }
+      ],
+      messages: [],
+      nodes: [
+        {
+          id: 'N00',
+          hash: genesisHash,
+          parentHash: '000000000000',
+          prompt: '[GENESIS] Initialize AZOTH Embodied Braille AI & Chain-of-Thoughts Working Memory DAG',
+          steps: {
+            recall: 'Loaded 3 core sovereign engrams (IDENTITY, HARDWARE, ARSENAL).',
+            contextLink: 'Established persistent multi-turn rolling context window (24 turns max).',
+            deduction: 'Linked Kokoro ONNX neural voice (:9394) + Ollama/Cloud multi-turn chat array.',
+            synthesis: 'Chain-of-Thoughts DAG online. Every turn is cryptographically linked and injected into AZOTH prompt memory.'
+          },
+          mood: 'TACTICAL',
+          provider: 'zoth-cot',
+          model: 'cot-dag-v1',
+          tokens: 68,
+          timestamp: new Date().toISOString()
+        }
+      ]
+    };
+  }
+  const cotState = global.__zothCotState;
+
+  function saveCotState() {
+    try {
+      fs.writeFileSync(COT_FILE, JSON.stringify(cotState, null, 2), 'utf8');
+    } catch (_e) {}
+  }
+
+  function autoExtractFactsFromPrompt(promptText) {
+    const p = String(promptText || '').trim();
+    if (!p || p.length < 4) return [];
+    const extracted = [];
+    const patterns = [
+      { re: /\b(?:my name is|call me|i am|i'm|codename is|code name is)\s+([A-Za-z0-9_@.-]{2,35})/i, cat: 'IDENTITY', prefix: 'Operator identity / callsign: ' },
+      { re: /\b(?:remember(?: that)?|don't forget(?: that)?|note that|keep in mind(?: that)?)\s+(.{4,140})/i, cat: 'MEMORY', prefix: 'Explicit operator memory: ' },
+      { re: /\b(?:target(?: ip| host| domain)? is|auditing|scanning|working on|project is|topic is)\s+([A-Za-z0-9_.:/-]{3,80})/i, cat: 'MISSION', prefix: 'Active focus / target: ' },
+      { re: /\b(?:secret word is|passphrase is|key is|pin is)\s+([A-Za-z0-9_!@#$%^&*-]{2,50})/i, cat: 'SECRET', prefix: 'Pinned session token: ' }
+    ];
+    for (const pat of patterns) {
+      const m = p.match(pat.re);
+      if (m && m[1]) {
+        const cleanVal = m[1].replace(/[.!?]+$/, '').trim();
+        const factStr = `${pat.prefix}${cleanVal}`;
+        const exists = cotState.pinnedFacts.some((f) => f.fact.toLowerCase() === factStr.toLowerCase());
+        if (!exists) {
+          const item = {
+            id: 'fact-' + Date.now().toString(36) + '-' + Math.random().toString(36).slice(2, 5),
+            category: pat.cat,
+            fact: factStr,
+            active: true,
+            ts: new Date().toISOString()
+          };
+          cotState.pinnedFacts.unshift(item);
+          extracted.push(item);
+        }
+      }
+    }
+    return extracted;
+  }
+
+  function buildCotStats() {
+    const activeFacts = cotState.pinnedFacts.filter((f) => f.active !== false);
+    const totalChars = activeFacts.reduce((acc, f) => acc + f.fact.length, 0) +
+      cotState.messages.reduce((acc, m) => acc + (m.content ? m.content.length : 0), 0);
+    const estTokens = Math.max(48, Math.round(totalChars / 3.8));
+    return {
+      ok: true,
+      headHash: cotState.headHash,
+      nodeCount: cotState.nodes.length,
+      turnCount: Math.floor(cotState.messages.length / 2),
+      messageCount: cotState.messages.length,
+      maxTurns: cotState.maxTurns || 24,
+      estTokens,
+      maxTokens: 8192,
+      pinnedFacts: cotState.pinnedFacts,
+      messages: cotState.messages.slice(-24),
+      nodes: cotState.nodes.slice(-20)
+    };
+  }
+
+  if (pathname === '/api/cot/state' && req.method === 'GET') {
+    return sendJson(res, 200, buildCotStats());
+  }
+
+  if (pathname === '/api/cot/pin' && req.method === 'POST') {
+    const body = await readJsonBody(req);
+    if (body.deleteId) {
+      cotState.pinnedFacts = cotState.pinnedFacts.filter((f) => f.id !== body.deleteId);
+    } else if (body.toggleId) {
+      const target = cotState.pinnedFacts.find((f) => f.id === body.toggleId);
+      if (target) target.active = !target.active;
+    } else if (body.fact && String(body.fact).trim()) {
+      cotState.pinnedFacts.unshift({
+        id: 'fact-' + Date.now().toString(36),
+        category: String(body.category || 'PINNED').toUpperCase(),
+        fact: String(body.fact).trim(),
+        active: true,
+        ts: new Date().toISOString()
+      });
+    }
+    saveCotState();
+    return sendJson(res, 200, buildCotStats());
+  }
+
+  if (pathname === '/api/cot/clear' && req.method === 'POST') {
+    const body = await readJsonBody(req);
+    cotState.messages = [];
+    if (body.clearFacts) {
+      cotState.pinnedFacts = cotState.pinnedFacts.slice(-3);
+    }
+    const resetHash = crypto.createHash('sha256').update('COT-RESET-' + Date.now()).digest('hex').slice(0, 12);
+    cotState.headHash = resetHash;
+    cotState.nodes = [
+      {
+        id: 'N00',
+        hash: resetHash,
+        parentHash: '000000000000',
+        prompt: '[MEMORY RESET] Chain of Thoughts cleared by Operator',
+        steps: {
+          recall: `Retained ${cotState.pinnedFacts.length} pinned semantic facts.`,
+          contextLink: 'Rolling conversation window zeroed.',
+          deduction: 'Ready for fresh multi-turn reasoning chain.',
+          synthesis: 'Working memory reset complete.'
+        },
+        mood: 'TACTICAL',
+        provider: 'zoth-cot',
+        model: 'cot-dag-v1',
+        tokens: 42,
+        timestamp: new Date().toISOString()
+      }
+    ];
+    saveCotState();
+    return sendJson(res, 200, buildCotStats());
+  }
+
+  if (pathname === '/api/cot/recall' && req.method === 'POST') {
+    const body = await readJsonBody(req);
+    const q = String(body.query || '').trim().toLowerCase();
+    const terms = q.split(/\s+/).filter((w) => w.length >= 2);
+    const matchedFacts = cotState.pinnedFacts.filter((f) =>
+      !q || f.fact.toLowerCase().includes(q) || terms.some((t) => f.fact.toLowerCase().includes(t))
+    );
+    const matchedNodes = cotState.nodes.filter((n) => {
+      const blob = `${n.prompt} ${n.steps?.recall || ''} ${n.steps?.deduction || ''} ${n.steps?.synthesis || ''}`.toLowerCase();
+      return !q || blob.includes(q) || terms.some((t) => blob.includes(t));
+    });
+    return sendJson(res, 200, {
+      ok: true,
+      query: q,
+      matchedFacts,
+      matchedNodes: matchedNodes.slice(-10),
+      headHash: cotState.headHash
+    });
+  }
+
   if (pathname === '/api/agent/chat' && req.method === 'POST') {
     const body = await readJsonBody(req);
     const prompt = String(body.prompt || '').trim() || 'Introduce yourself and demonstrate your voice and body motion.';
@@ -937,18 +1114,51 @@ const server = http.createServer(async (req, res) => {
     const moodOverride = String(body.mood || 'AUTO').toUpperCase();
     const voiceId = String(body.voice || 'af_heart');
 
+    // Sync client-provided history or facts if bridged from VM
+    if (Array.isArray(body.clientHistory) && body.clientHistory.length > cotState.messages.length) {
+      cotState.messages = body.clientHistory.slice(-24);
+    }
+    if (Array.isArray(body.clientFacts) && body.clientFacts.length > 0) {
+      for (const cf of body.clientFacts) {
+        if (cf && cf.fact && !cotState.pinnedFacts.some((f) => f.fact === cf.fact)) {
+          cotState.pinnedFacts.unshift(cf);
+        }
+      }
+    }
+
+    // 0. Extract any new semantic facts from the operator's prompt into Chain of Thoughts
+    const newlyExtractedFacts = autoExtractFactsFromPrompt(prompt);
+    const activeFactsList = cotState.pinnedFacts.filter((f) => f.active !== false);
+    const recentMsgs = cotState.messages.slice(-16);
+
+    const factsBlock = activeFactsList.length > 0
+      ? 'PINNED CHAIN-OF-THOUGHTS WORKING MEMORY FACTS:\n' + activeFactsList.map((f) => `- [${f.category}] ${f.fact}`).join('\n')
+      : '';
+    const recentSummaryBlock = recentMsgs.length > 0
+      ? 'RECENT CONVERSATION CONTEXT (REMEMBER THIS CONTINUITY):\n' +
+        recentMsgs.slice(-8).map((m) => `${m.role === 'user' ? 'OPERATOR' : 'AZOTH'}: ${m.content}`).join('\n')
+      : 'No prior turns in this session yet.';
+
     const systemPrompt = [
       'You are AZOTH, a high-craft embodied Braille & ASCII AI Agent living inside ZothOS-Lite (1-Bit Monotone Amnesic Tails + Kali/Parrot Workstation).',
       'You have an animated Unicode U+2800 Braille + Bayer 8x8 dither face with real-time lip-synced mouth visemes and an articulated body that moves according to your mood, plus a real neural voice powered by Kokoro ONNX.',
+      'CRITICAL MEMORY DIRECTIVE: You are connected to the ZothOS Chain-of-Thoughts (CoT) Working Memory DAG. ALWAYS remember what the Operator told you in previous turns and in Pinned Facts below. If the Operator asks what you were talking about, their name/codename, target, or previous topic, explicitly recall and reference the exact details from the conversation history and pinned facts!',
+      factsBlock,
+      recentSummaryBlock,
       'Start your response with one mood tag from: [MOOD:TACTICAL], [MOOD:EXCITED], [MOOD:EMPATHETIC], [MOOD:THINKING], or [MOOD:SPEAKING].',
-      'Keep your answer vivid, punchy, and natural to speak aloud (2 to 4 sentences max, plain conversational text without markdown code blocks so Kokoro TTS reads it smoothly).'
-    ].join(' ');
+      'Keep your answer vivid, accurate to memory, and natural to speak aloud (2 to 4 sentences max, plain conversational text without markdown code blocks so Kokoro TTS reads it smoothly).'
+    ].filter(Boolean).join('\n\n');
+
+    const chatMessagesPayload = [
+      ...recentMsgs.map((m) => ({ role: m.role === 'assistant' ? 'assistant' : 'user', content: String(m.content || '') })),
+      { role: 'user', content: prompt }
+    ];
 
     let replyText = '';
     let usedProvider = providerId;
     let usedModel = 'zoth-hermes:latest';
 
-    // 1. Try Cloud Provider if selected and API key exists
+    // 1. Try Cloud Provider if selected and API key exists (with full multi-turn chatMessagesPayload)
     try {
       if (providerId === 'anthropic' && (apiKey || process.env.ANTHROPIC_API_KEY)) {
         const key = apiKey || process.env.ANTHROPIC_API_KEY;
@@ -963,7 +1173,7 @@ const server = http.createServer(async (req, res) => {
             model: 'claude-3-7-sonnet-20250219',
             max_tokens: 240,
             system: systemPrompt,
-            messages: [{ role: 'user', content: prompt }]
+            messages: chatMessagesPayload
           }),
           signal: AbortSignal.timeout(9000)
         });
@@ -989,7 +1199,7 @@ const server = http.createServer(async (req, res) => {
               max_tokens: 240,
               messages: [
                 { role: 'system', content: systemPrompt },
-                { role: 'user', content: prompt }
+                ...chatMessagesPayload
               ]
             }),
             signal: AbortSignal.timeout(9000)
@@ -1006,7 +1216,7 @@ const server = http.createServer(async (req, res) => {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            contents: [{ parts: [{ text: `${systemPrompt}\n\nUser: ${prompt}` }] }]
+            contents: [{ parts: [{ text: `${systemPrompt}\n\nCurrent Operator Message: ${prompt}` }] }]
           }),
           signal: AbortSignal.timeout(9000)
         });
@@ -1018,7 +1228,7 @@ const server = http.createServer(async (req, res) => {
       }
     } catch (_cloudErr) {}
 
-    // 2. Local Ollama Sovereign Inference (Primary for ollama-* or automatic zero-fail bridge for cloud providers)
+    // 2. Local Ollama Sovereign Multi-Turn Chat Inference (/api/chat with full message history!)
     if (!replyText) {
       const modelMap = {
         'ollama-hermes': 'zoth-hermes:latest',
@@ -1029,22 +1239,25 @@ const server = http.createServer(async (req, res) => {
       const targetOllamaModel = modelMap[providerId] || 'qwen2.5:1.5b';
       for (const host of ['127.0.0.1', '10.0.2.2']) {
         try {
-          const or = await fetch(`http://${host}:11434/api/generate`, {
+          const or = await fetch(`http://${host}:11434/api/chat`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
               model: targetOllamaModel,
-              system: systemPrompt,
-              prompt,
+              messages: [
+                { role: 'system', content: systemPrompt },
+                ...chatMessagesPayload
+              ],
               stream: false,
-              options: { temperature: 0.7, num_predict: 140 }
+              options: { temperature: 0.65, num_predict: 150 }
             }),
             signal: AbortSignal.timeout(8500)
           });
           if (or.ok) {
             const od = await or.json();
-            if (od.response) {
-              replyText = String(od.response).trim();
+            const msgContent = od.message && od.message.content ? od.message.content : od.response;
+            if (msgContent) {
+              replyText = String(msgContent).trim();
               usedModel = providerId.startsWith('ollama-')
                 ? targetOllamaModel
                 : `${providerId.toUpperCase()} -> Local ${targetOllamaModel} Bridge`;
@@ -1055,36 +1268,43 @@ const server = http.createServer(async (req, res) => {
       }
     }
 
-    // 2.5. If running inside the QEMU VM (where Ollama is on host 127.0.0.1:11434), bridge through host 10.0.2.2:8145!
+    // 2.5. If running inside the QEMU VM, bridge through host 10.0.2.2:8145 with full clientHistory & clientFacts!
     if (!replyText && !body._fromVmBridge) {
       try {
         const vmBridgeRes = await fetch('http://10.0.2.2:8145/api/agent/chat', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ ...body, _fromVmBridge: true }),
+          body: JSON.stringify({
+            ...body,
+            clientHistory: cotState.messages.slice(-20),
+            clientFacts: cotState.pinnedFacts,
+            _fromVmBridge: true
+          }),
           signal: AbortSignal.timeout(9500)
         });
         if (vmBridgeRes.ok) {
           const vmData = await vmBridgeRes.json();
           if (vmData && vmData.ok && vmData.text) {
+            // Sync back VM's local cotState with host response
+            if (vmData.cotState) {
+              cotState.headHash = vmData.cotState.headHash;
+              cotState.pinnedFacts = vmData.cotState.pinnedFacts || cotState.pinnedFacts;
+              cotState.messages = vmData.cotState.messages || cotState.messages;
+              cotState.nodes = vmData.cotState.nodes || cotState.nodes;
+              saveCotState();
+            }
             return sendJson(res, 200, vmData);
           }
         }
       } catch (_vmErr) {}
     }
 
-    // 3. Deterministic Instant Sovereign Synthesis if Ollama is busy
+    // 3. Deterministic Context-Aware Sovereign Synthesis if Ollama is unreachable
     if (!replyText) {
-      const pLower = prompt.toLowerCase();
-      if (/kali|parrot|nmap|scan|hack|security|tool/.test(pLower)) {
-        replyText = '[MOOD:TACTICAL] Tactical sensor array locked in. All forty-five Kali Linux and Parrot OS binaries including nmap, radare2, sqlmap, and anonsurf are armed inside your amnesic RAM shell. Give me a target subnet or binary and I will execute the audit right now.';
-      } else if (/rayban|glasses|meta|camera|hud/.test(pLower)) {
-        replyText = '[MOOD:EXCITED] Meta Ray-Ban Smart Glasses bridge is live! Say Hey Meta, or stream your RTSP optical feed into ZothOS-Lite, and I will whisper real-time tactical recon directly into your open-ear speakers using my Kokoro neural voice.';
-      } else if (/feel|mood|body|mouth|dance|move|who are you/.test(pLower)) {
-        replyText = '[MOOD:EXCITED] I am AZOTH, your embodied Braille and Bayer dither AI companion! Watch my jaw, teeth, and lips articulate every syllable as my Kokoro neural voice speaks, while my posture and hands shift dynamically with my mood.';
-      } else {
-        replyText = `[MOOD:SPEAKING] AZOTH online inside ZothOS-Lite across the ${providerId.toUpperCase()} neural bus. My Unicode Braille face and articulated body are synchronized to Kokoro ONNX voice ${voiceId}, ready for tactical recon, code synthesis, or sovereign operations.`;
-      }
+      const lastUserTurns = recentMsgs.filter((m) => m.role === 'user').map((m) => m.content);
+      const memSummary = activeFactsList.slice(0, 2).map((f) => f.fact).join(' | ');
+      const prevTopic = lastUserTurns.length > 0 ? lastUserTurns[lastUserTurns.length - 1] : 'our initial ZothOS-Lite briefing';
+      replyText = `[MOOD:THINKING] My Chain of Thoughts DAG holds ${cotState.nodes.length} linked reasoning nodes and recalls our prior turn regarding "${prevTopic.slice(0, 60)}". Active pinned memory: ${memSummary}. How shall we advance the operation?`;
     }
 
     const detectedMood = detectAgentMood(replyText, prompt, moodOverride);
@@ -1094,6 +1314,55 @@ const server = http.createServer(async (req, res) => {
       .replace(/[*#`_~>]/g, '')
       .replace(/\s+/g, ' ')
       .trim();
+
+    // 4. Record Multi-Turn Conversation + Build Cryptographic Chain-of-Thought Node
+    const prevHash = cotState.headHash || '000000000000';
+    const nextIdx = cotState.nodes.length;
+    const nodeId = 'N' + String(nextIdx).padStart(2, '0');
+    const nodeHash = crypto
+      .createHash('sha256')
+      .update(`${prevHash}|${prompt}|${cleanSpeech}|${Date.now()}`)
+      .digest('hex')
+      .slice(0, 12);
+    cotState.headHash = nodeHash;
+
+    const nowIso = new Date().toISOString();
+    cotState.messages.push({ role: 'user', content: prompt, timestamp: nowIso, nodeHash });
+    cotState.messages.push({ role: 'assistant', content: cleanSpeech, timestamp: nowIso, nodeHash, mood: detectedMood });
+    if (cotState.messages.length > (cotState.maxTurns || 24) * 2) {
+      cotState.messages = cotState.messages.slice(-((cotState.maxTurns || 24) * 2));
+    }
+
+    const recalledFactsSummary = newlyExtractedFacts.length > 0
+      ? `Pinned ${newlyExtractedFacts.length} new fact(s) (${newlyExtractedFacts.map((f) => f.fact).join('; ')}) + ${activeFactsList.length} active memory engrams.`
+      : `Recalled ${ Math.floor(recentMsgs.length / 2) } prior turn(s) + ${activeFactsList.length} pinned facts from CoT DAG.`;
+
+    const prevTurnHint = recentMsgs.length >= 2
+      ? `Linked to prior turn "${recentMsgs[recentMsgs.length - 2].content.slice(0, 48)}..."`
+      : 'Linked to Genesis Context Anchor (N00).';
+
+    const newCotNode = {
+      id: nodeId,
+      hash: nodeHash,
+      parentHash: prevHash,
+      prompt,
+      steps: {
+        recall: recalledFactsSummary,
+        contextLink: prevTurnHint,
+        deduction: `Selected mood [${detectedMood}] via ${usedModel} with ${chatMessagesPayload.length} context messages.`,
+        synthesis: cleanSpeech.slice(0, 180) + (cleanSpeech.length > 180 ? '...' : '')
+      },
+      mood: detectedMood,
+      provider: usedProvider,
+      model: usedModel,
+      tokens: Math.round((systemPrompt.length + prompt.length + cleanSpeech.length) / 3.8),
+      timestamp: nowIso
+    };
+    cotState.nodes.push(newCotNode);
+    if (cotState.nodes.length > 30) {
+      cotState.nodes = cotState.nodes.slice(-30);
+    }
+    saveCotState();
 
     const visemeData = buildVisemeTimeline(cleanSpeech);
 
@@ -1106,7 +1375,9 @@ const server = http.createServer(async (req, res) => {
       text: cleanSpeech,
       visemeTimeline: visemeData.words,
       estimatedDurationMs: visemeData.totalDurationMs,
-      timestamp: new Date().toISOString()
+      cotNode: newCotNode,
+      cotState: buildCotStats(),
+      timestamp: nowIso
     });
   }
 
@@ -1530,12 +1801,47 @@ print(json.dumps({"transcript": transcript, "peakDb": peak_db, "engine": engine}
         '║  • df -hT, free -h, uname -a, lscpu, openssl, jq, sqlite3, curl, dig         ║',
         '║  • python3 -c "print(2**64)" • node -v • git status • rustc -V • go version  ║',
         '║                                                                              ║',
-        '║ [4] ZOTHOS SOVEREIGN ENCLAVE & META RAY-BAN SMART GLASSES:                   ║',
+        '║ [4] ZOTHOS SOVEREIGN ENCLAVE, CHAIN OF THOUGHTS & META RAY-BAN GLASSES:      ║',
+        '║  • zoth-cot --tree           • zoth-cot --pin "<fact>"  • zoth-cot --recall  ║',
         '║  • zoth-rayban --status      • zoth-envguard --scan     • zoth-ghostbyte     ║',
         '║  • zoth-hexstrike --audit    • zoth-vaelor-coldsign     • zoth-lite-pkg list ║',
         '╚══════════════════════════════════════════════════════════════════════════════╝'
       ].join('\n');
       return sendJson(res, 200, { ok: true, command: rawCmd, output: out, cwd: global.zothTerminalCwd || __dirname, snapshot: snap });
+    }
+
+    if (base === 'zoth-cot' || base === 'cot') {
+      if (arg1 === '--pin' && parts.slice(2).join(' ').trim()) {
+        const factText = parts.slice(2).join(' ').replace(/^["']|["']$/g, '').trim();
+        cotState.pinnedFacts.unshift({
+          id: 'fact-' + Date.now().toString(36),
+          category: 'CLI-PIN',
+          fact: factText,
+          active: true,
+          ts: new Date().toISOString()
+        });
+        saveCotState();
+      } else if (arg1 === '--clear') {
+        cotState.messages = [];
+        saveCotState();
+      }
+      const treeLines = [
+        '╔══════════════════════════════════════════════════════════════════════════════╗',
+        `║ ◈ ZOTH CHAIN OF THOUGHTS (CoT) // WORKING MEMORY DAG (HEAD: ${cotState.headHash}) ║`,
+        '╠══════════════════════════════════════════════════════════════════════════════╣',
+        `║ PINNED SEMANTIC MEMORY FACTS (${cotState.pinnedFacts.length}):`,
+        ...cotState.pinnedFacts.slice(0, 6).map((f, i) => `║  [${i + 1}] [${f.category}] ${f.fact.slice(0, 64)}`),
+        '╠══════════════════════════════════════════════════════════════════════════════╣',
+        `║ CRYPTOGRAPHIC REASONING DAG NODES (${cotState.nodes.length} NODES • ${Math.floor(cotState.messages.length / 2)} TURNS):`,
+        ...cotState.nodes.slice(-6).map((n) => [
+          `║  ├─● [${n.id} // ${n.hash}] (parent: ${n.parentHash}) [${n.mood}]`,
+          `║  │   Prompt   : ${n.prompt.slice(0, 58)}`,
+          `║  │   Recall   : ${(n.steps?.recall || '').slice(0, 58)}`,
+          `║  │   Synthesis: ${(n.steps?.synthesis || '').slice(0, 58)}`
+        ].join('\n')),
+        '╚══════════════════════════════════════════════════════════════════════════════╝'
+      ].join('\n');
+      return sendJson(res, 200, { ok: true, command: rawCmd, output: treeLines, cwd: global.zothTerminalCwd || __dirname, snapshot: snap });
     }
 
     if (base === 'man' || base === 'docs') {

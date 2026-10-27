@@ -1036,7 +1036,7 @@
       <!-- Sovereign Horology & Temporal Enclave Dropdown Popover (Clicked from Niche Clock) -->
       <div class="top-dropdown-menu" id="clockDropdownMenu" style="left:auto;right:8px;width:405px;" role="menu">
         <div class="top-dropdown-header">
-          <span>⏳ SOVEREIGN HOROLOGY // NICHE TEMPORAL ENCLAVE</span>
+          <span>◈ SOVEREIGN HOROLOGY // NICHE TEMPORAL ENCLAVE</span>
           <span id="nicheClockLunarBadge">◐ SIDEREAL</span>
         </div>
         <div style="padding:10px;background:#FFFFFF;display:flex;flex-direction:column;gap:8px;font-size:11.5px;">
@@ -1094,11 +1094,14 @@
       <!-- Unified System, Mini-Apps, Daemons, Support & Panic Wipe Dropdown Menu -->
       <div class="top-dropdown-menu" id="appsDropdownMenu" role="menu" style="width:370px;">
         <div class="top-dropdown-header">
-          <span>▓▒░ ZOTHOS-LITE SYSTEM & MINI-APPS (11)</span>
+          <span>▓▒░ ZOTHOS-LITE SYSTEM & MINI-APPS (12)</span>
           <span>1-BIT B&W</span>
         </div>
         <button type="button" class="top-dropdown-item" data-open-win="winAgent">
           <span>[◉] AZOTH Embodied Braille AI + Kokoro Voice</span><span>VOICE!</span>
+        </button>
+        <button type="button" class="top-dropdown-item" data-open-win="winCoT">
+          <span>[◈] Chain of Thoughts // Context & Memory DAG</span><span>MEMORY!</span>
         </button>
         <button type="button" class="top-dropdown-item" data-open-win="winEnvGuard">
           <span>[>_] Live Armed Root Terminal (Kali/Parrot/Bash)</span><span>SHELL</span>
@@ -2199,15 +2202,16 @@ Type ANY Unix, Bash, Python, Kali Linux, Parrot OS, or Zoth command above and pr
                   </div>
                 </div>
 
-                <!-- Optional Cloud API Key + Speaker Test / Kokoro Controls Row -->
+                <!-- Optional Cloud API Key + Speaker Test / Kokoro Controls + Chain of Thoughts Button -->
                 <div style="display:flex;justify-content:space-between;align-items:center;gap:4px;flex-wrap:wrap;">
-                  <input id="azothApiKeyInput" type="password" class="mono-input" placeholder="Optional Cloud API Key (Auto-bridges to Local Ollama)" style="flex:1;min-width:110px;min-height:24px;padding:2px 6px;font-size:11px !important;" />
+                  <input id="azothApiKeyInput" type="password" class="mono-input" placeholder="Optional Cloud API Key (Auto-bridges to Local Ollama)" style="flex:1;min-width:95px;min-height:24px;padding:2px 6px;font-size:11px !important;" />
                   <label style="font-size:11px;font-weight:700;display:inline-flex;align-items:center;gap:3px;cursor:pointer;">
                     <input type="checkbox" id="azothAutoSpeakToggle" checked style="width:13px;height:13px;accent-color:#000000;" />
                     <span>♫ Speak</span>
                   </label>
-                  <button type="button" class="mono-btn" id="azothTestSpeakerBtn" style="min-height:24px;padding:1px 6px;font-size:10.5px !important;" title="Play Test Voice Through Connected Speakers">♫ Test Out</button>
-                  <button type="button" class="mono-btn mono-btn-black" id="azothReplayVoiceBtn" style="min-height:24px;padding:1px 6px;font-size:10.5px !important;">▶ Replay</button>
+                  <button type="button" class="mono-btn mono-btn-black" data-open-win="winCoT" id="azothOpenCotBtn" style="min-height:24px;padding:1px 6px;font-size:10.5px !important;" title="Open Chain of Thoughts (CoT) Working Memory & Context DAG">◈ CoT (<span id="azothCotCountBadge" style="color:#FFFFFF !important;">1</span>)</button>
+                  <button type="button" class="mono-btn" id="azothTestSpeakerBtn" style="min-height:24px;padding:1px 6px;font-size:10.5px !important;" title="Play Test Voice Through Connected Speakers">♫ Test</button>
+                  <button type="button" class="mono-btn mono-btn-black" id="azothReplayVoiceBtn" style="min-height:24px;padding:1px 6px;font-size:10.5px !important;">▶</button>
                   <button type="button" class="mono-btn" id="azothStopVoiceBtn" style="min-height:24px;padding:1px 5px;font-size:10.5px !important;">■</button>
                 </div>
               </div>
@@ -2216,7 +2220,7 @@ Type ANY Unix, Bash, Python, Kali Linux, Parrot OS, or Zoth command above and pr
               <div style="display:flex;gap:3px;flex-wrap:wrap;">
                 <button type="button" class="mono-btn azoth-quick-prompt" data-prompt="Introduce yourself with high energy! Show me how your mouth lip-syncs and your body moves when you are excited!" data-force-mood="EXCITED" style="min-height:24px;padding:1px 6px;font-size:10.5px !important;">⚡ Excited + Lip-Sync</button>
                 <button type="button" class="mono-btn azoth-quick-prompt" data-prompt="Give me a tactical Kali Linux and Parrot OS security briefing for an amnesic operator." data-force-mood="TACTICAL" style="min-height:24px;padding:1px 6px;font-size:10.5px !important;">❖ Tactical Brief</button>
-                <button type="button" class="mono-btn azoth-quick-prompt" data-prompt="Ponder the philosophy of a 1-bit Braille consciousness living in volatile RAM." data-force-mood="THINKING" style="min-height:24px;padding:1px 6px;font-size:10.5px !important;">⚙ Thinking Pose</button>
+                <button type="button" class="mono-btn" id="azothQuickMemoryProofBtn" style="min-height:24px;padding:1px 6px;font-size:10.5px !important;" title="Prove Multi-Turn Memory Recall Across Chain of Thoughts">◈ Test CoT Recall</button>
                 <button type="button" class="mono-btn azoth-quick-prompt" data-prompt="How do we link my Meta Ray-Ban smart glasses to your Kokoro voice in ZothOS-Lite?" data-force-mood="EMPATHETIC" style="min-height:24px;padding:1px 6px;font-size:10.5px !important;">♡ Ray-Ban Voice</button>
               </div>
 
@@ -2225,10 +2229,10 @@ Type ANY Unix, Bash, Python, Kali Linux, Parrot OS, or Zoth command above and pr
                 <div style="padding:7px 9px;background:var(--bg-grey-50);border:2px solid #000000;box-shadow:2px 2px 0px #000000;">
                   <div style="display:flex;justify-content:space-between;font-size:10.5px;font-weight:700;margin-bottom:3px;border-bottom:1px solid #000000;padding-bottom:2px;">
                     <span>◉ AZOTH // EMBODIED BRAILLE AI</span>
-                    <span>SPEAKER: ANALOG+HDMI • MIC: ALC3266</span>
+                    <span>◈ CoT MEMORY DAG ACTIVE • MIC: ALC3266</span>
                   </div>
                   <div style="font-size:12.5px;line-height:1.42;">
-                    Greetings Operator! My <b>Kokoro ONNX voice</b> is routed to your connected speakers (<b>Analog ALC3266 + HDMI Monitor</b>) and your <b>ALC3266 Microphone</b> is armed for <b>Voice-to-Text</b>. Click <b>◉ MIC</b> below to talk into your mic or type a prompt!
+                    Greetings Operator! My <b>Chain of Thoughts (CoT) Working Memory DAG</b> is now active so I remember every turn, fact, and target we discuss. Click <b>◈ CoT</b> above to inspect or pin context, or click <b>◉ MIC</b> below to talk!
                   </div>
                 </div>
               </div>
@@ -2236,9 +2240,80 @@ Type ANY Unix, Bash, Python, Kali Linux, Parrot OS, or Zoth command above and pr
               <!-- Prompt Input + Hardware Microphone Voice-to-Text Button -->
               <form id="azothChatForm" style="display:flex;gap:5px;align-items:center;margin:0;" onsubmit="return false;">
                 <button type="button" class="mono-btn mono-btn-black" id="azothMicSttBtn" title="Record from Connected Microphone (Voice-to-Text) & Send to AZOTH" style="min-height:36px;padding:0 10px;font-size:12px !important;flex-shrink:0;">◉ MIC</button>
-                <input id="azothPromptInput" type="text" class="mono-input" placeholder="Type or click ◉ MIC for Voice-to-Text..." autocomplete="off" style="flex:1;min-height:36px;" />
+                <input id="azothPromptInput" type="text" class="mono-input" placeholder="Type or click ◉ MIC (CoT Memory remembers every turn)..." autocomplete="off" style="flex:1;min-height:36px;" />
                 <button type="submit" class="mono-btn mono-btn-black" id="azothSendBtn" style="min-height:36px;padding:0 12px;font-size:12.5px !important;flex-shrink:0;">SPEAK ↵</button>
               </form>
+            </div>
+          </div>
+        </article>
+
+        <!-- ===================================================================
+             MINI-APP WINDOW 12: CHAIN OF THOUGHTS (CoT) // CONTEXT & WORKING MEMORY DAG
+             Multi-Turn Conversation Memory, Pinned Facts Vault & Cryptographic Reasoning Tree
+             =================================================================== -->
+        <article class="os-window" id="winCoT" data-win-title="Chain of Thoughts (CoT)" style="top:10px;left:640px;width:618px;height:680px;z-index:186;">
+          <div class="os-window-titlebar" data-drag-handle="winCoT">
+            <div class="win-title-left">
+              <span>[◈] CHAIN OF THOUGHTS // MULTI-TURN CONTEXT & WORKING MEMORY DAG</span>
+            </div>
+            <div class="win-controls">
+              <button type="button" class="win-ctrl-btn" data-win-action="minimize" data-win-id="winCoT" title="Minimize Window">_</button>
+              <button type="button" class="win-ctrl-btn" data-win-action="maximize" data-win-id="winCoT" title="Maximize Window">□</button>
+              <button type="button" class="win-ctrl-btn close-btn" data-win-action="close" data-win-id="winCoT" title="Close Window">✕</button>
+            </div>
+          </div>
+          <div class="os-window-body" style="display:grid;grid-template-columns:310px 1fr;gap:10px;height:calc(100% - 34px);overflow:hidden;padding:10px;">
+            <!-- Left Column: Animated Braille/Bayer Thought-DAG Canvas + Pinned Semantic Facts Vault -->
+            <div style="display:flex;flex-direction:column;gap:7px;height:100%;overflow:hidden;">
+              <!-- Live Synaptic Thought-DAG Header & Token Telemetry -->
+              <div style="padding:6px 8px;background:#000000;color:#FFFFFF !important;border:2px solid #000000;display:flex;justify-content:space-between;align-items:center;">
+                <span style="font-size:11px;font-weight:700;color:#FFFFFF !important;">◈ MERKLE THOUGHT DAG</span>
+                <span id="cotHeadHashBadge" style="font-size:10.5px;background:#FFFFFF;color:#000000 !important;padding:1px 6px;font-weight:700;">HEAD: GENESIS</span>
+              </div>
+
+              <!-- 60FPS Animated Braille & Bayer 4x4 Dither Chain-of-Thoughts DAG Visualizer -->
+              <div style="border:2px solid #000000;background:#FFFFFF;padding:3px;box-shadow:3px 3px 0px #000000;">
+                <canvas id="cotDagCanvas" width="296" height="145" aria-label="Animated Chain of Thoughts Synaptic DAG Visualizer" style="width:100%;height:145px;display:block;"></canvas>
+              </div>
+
+              <!-- Context Window & Token Budget Bar -->
+              <div style="padding:6px 8px;background:var(--bg-grey-50);border:2px solid #000000;font-size:11px;">
+                <div style="display:flex;justify-content:space-between;font-weight:700;margin-bottom:3px;">
+                  <span>ROLLING CONTEXT WINDOW:</span>
+                  <span id="cotStatsLabel">0 TURNS • 68 / 8192 TOK</span>
+                </div>
+                <div style="height:8px;background:#FFFFFF;border:1.5px solid #000000;overflow:hidden;">
+                  <div id="cotTokenMeterFill" style="height:100%;width:12%;background:#000000;"></div>
+                </div>
+              </div>
+
+              <!-- Pinned Semantic Facts & Working Memory Engrams -->
+              <div style="flex:1;min-height:0;display:flex;flex-direction:column;border:2px solid #000000;background:#FFFFFF;padding:7px;gap:6px;overflow:hidden;">
+                <div style="display:flex;justify-content:space-between;align-items:center;border-bottom:1.5px solid #000000;padding-bottom:3px;font-size:11px;font-weight:700;">
+                  <span>◈ PINNED CONTEXT FACTS (<span id="cotFactCount">3</span>)</span>
+                  <span style="font-size:9.5px;color:var(--fg-grey-600);">AUTO-INJECTED</span>
+                </div>
+                <div id="cotPinnedFactsList" style="flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:5px;font-size:11px;"></div>
+                <!-- Pin New Context Fact Form -->
+                <form id="cotPinFactForm" style="display:flex;gap:4px;margin:0;" onsubmit="return false;">
+                  <input id="cotNewFactInput" type="text" class="mono-input" placeholder="Pin context (e.g. 'Target: 10.0.2.15')..." style="flex:1;min-height:28px;padding:2px 6px;font-size:11px !important;" />
+                  <button type="submit" class="mono-btn mono-btn-black" style="min-height:28px;padding:2px 8px;font-size:11px !important;">+ PIN</button>
+                </form>
+              </div>
+            </div>
+
+            <!-- Right Column: Step-by-Step Chain of Thoughts Reasoning Inspector & Recall Tester -->
+            <div style="display:flex;flex-direction:column;gap:7px;height:100%;overflow:hidden;">
+              <!-- Top Action & Recall Search Bar -->
+              <div style="display:flex;gap:5px;align-items:center;flex-wrap:wrap;padding:6px 8px;background:var(--bg-grey-50);border:2px solid #000000;">
+                <input id="cotRecallSearchInput" type="text" class="mono-input" placeholder="Search Chain of Thoughts or filter recalled nodes..." style="flex:1;min-width:140px;min-height:28px;padding:2px 7px;font-size:11.5px !important;" />
+                <button type="button" class="mono-btn mono-btn-black" id="cotRunMemoryProofBtn" style="min-height:28px;padding:2px 8px;font-size:11px !important;" title="Run Automated 2-Turn Memory Proof with AZOTH">⚡ Prove Memory</button>
+                <button type="button" class="mono-btn" id="cotClearMemoryBtn" style="min-height:28px;padding:2px 7px;font-size:11px !important;" title="Reset Conversation Turns">✕ Reset</button>
+              </div>
+
+              <!-- Step-by-Step Reasoning Nodes Stream -->
+              <div style="flex:1;min-height:0;border:2px solid #000000;background:#FFFFFF;padding:8px;overflow-y:auto;display:flex;flex-direction:column;gap:8px;" id="cotNodesStream">
+              </div>
             </div>
           </div>
         </article>
@@ -2248,17 +2323,18 @@ Type ANY Unix, Bash, Python, Kali Linux, Parrot OS, or Zoth command above and pr
 
     <!-- =======================================================================
          3. ULTRA-MINIMAL BOTTOM OS TASKBAR & START MENU DOCK (ZERO OVERFLOW!)
-         All 11 Apps, Kali/Parrot Shelves, Dojo & Window Layouts live inside ❖ MENU!
+         All 12 Apps, Kali/Parrot Shelves, Dojo & Window Layouts live inside ❖ MENU!
          ======================================================================= -->
     <footer class="tails-bottom-dock" role="contentinfo" style="justify-content:space-between;overflow:visible;">
       <!-- Bottom-Left OS Start / Applications Launcher Button -->
-      <button type="button" class="dock-start-btn" id="bottomStartBtn" title="Open ZothOS-Lite Start Menu, All 11 Apps, Kali/Parrot Shelves & Window Controls" style="padding:2px 10px;">
+      <button type="button" class="dock-start-btn" id="bottomStartBtn" title="Open ZothOS-Lite Start Menu, All 12 Apps, Kali/Parrot Shelves & Window Controls" style="padding:2px 10px;">
         <span>❖ MENU ▲</span>
       </button>
 
       <!-- Focused Window Pill Only + Overflow Dropdown Pill (Zero Overflow Guarantee) -->
       <div class="dock-tasks" id="bottomTaskbarList" style="flex:1;justify-content:center;overflow:hidden;">
         <button type="button" class="dock-task-btn win-open win-focused" data-task-win="winAgent" title="AZOTH Embodied Braille AI Agent + Kokoro Voice">● ◉ AZOTH AI</button>
+        <button type="button" class="dock-task-btn" data-task-win="winCoT" style="display:none;" title="Chain of Thoughts (CoT) Working Memory & Context DAG">○ ◈ CoT Memory</button>
         <button type="button" class="dock-task-btn" data-task-win="winDojo" style="display:none;" title="Interactive Cyber Dojo & Operator Academy">○ ★ Dojo</button>
         <button type="button" class="dock-task-btn" data-task-win="winEnvGuard" style="display:none;" title="Live Bash + Kali + Parrot + Python Shell">○ >_ Shell</button>
         <button type="button" class="dock-task-btn" data-task-win="winDocs" style="display:none;" title="Tool Documentation & CLI Manual">○ § Docs</button>
@@ -2284,10 +2360,11 @@ Type ANY Unix, Bash, Python, Kali Linux, Parrot OS, or Zoth command above and pr
           <span id="startMenuRankBadge">RANK 0 • 0 XP</span>
         </div>
         <div class="bottom-start-grid">
-          <!-- Column 1: All 11 OS Windows -->
+          <!-- Column 1: All 12 OS Windows -->
           <div class="bottom-start-col">
-            <div style="font-size:11px;font-weight:700;padding:2px 4px;border-bottom:1.5px solid #000000;margin-bottom:2px;">⊞ ALL 11 OS MINI-APP WINDOWS:</div>
+            <div style="font-size:11px;font-weight:700;padding:2px 4px;border-bottom:1.5px solid #000000;margin-bottom:2px;">⊞ ALL 12 OS MINI-APP WINDOWS:</div>
             <button type="button" class="start-menu-btn" data-open-win="winAgent"><span>◉ AZOTH Embodied Braille AI + Kokoro Voice</span><span>[VOICE]</span></button>
+            <button type="button" class="start-menu-btn" data-open-win="winCoT"><span>◈ Chain of Thoughts // Context & Memory DAG</span><span>[MEMORY]</span></button>
             <button type="button" class="start-menu-btn" data-open-win="winDojo"><span>★ Interactive Cyber Dojo & Bootcamp</span><span>[TRAIN]</span></button>
             <button type="button" class="start-menu-btn" data-open-win="winEnvGuard"><span>>_ Live Bash + Kali + Parrot + Python Shell</span><span>[SHELL]</span></button>
             <button type="button" class="start-menu-btn" data-open-win="winDocs"><span>§ Complete Tool Docs & CLI Manual</span><span>[DOCS]</span></button>
@@ -2336,7 +2413,7 @@ Type ANY Unix, Bash, Python, Kali Linux, Parrot OS, or Zoth command above and pr
       let shaderMode = 'bayer-1bit';
       let activeSculpture = 'shield';
       let frameTick = 0;
-      let topZIndex = 140;
+      let topZIndex = 220;
 
       const BAYER_4X4 = [
         [ 0,  8,  2, 10],
@@ -3541,7 +3618,7 @@ Type ANY Unix, Bash, Python, Kali Linux, Parrot OS, or Zoth command above and pr
           btn.addEventListener('click', async () => {
             const action = btn.getAttribute('data-action');
             const toolId = btn.getAttribute('data-id');
-            btn.textContent = '⏳ TOR PULL…';
+            btn.textContent = '◈ TOR PULL…';
             if (action === 'pull-ram') {
               await apiPost('/api/pkg/pull', { toolId, mode: 'RAM_TMPFS' });
               runTerminalCommand(`zoth-lite-pkg pull ${toolId}`);
@@ -3661,7 +3738,7 @@ Type ANY Unix, Bash, Python, Kali Linux, Parrot OS, or Zoth command above and pr
           return;
         }
 
-        term.textContent = `root@zothos:~# ${cmd}\n[⏳ Executing in live Bash / Kali / Parrot / Zoth shell...]`;
+        term.textContent = `root@zothos:~# ${cmd}\n[◈ Executing in live Bash / Kali / Parrot / Zoth shell...]`;
 
         try {
           const res = await fetch('/api/terminal/exec', {
@@ -4195,7 +4272,7 @@ Type ANY Unix, Bash, Python, Kali Linux, Parrot OS, or Zoth command above and pr
         const amountVlr = Number(document.getElementById('coldAmountInput')?.value || 25);
         const memo = document.getElementById('coldMemoInput')?.value || 'ZothOS-Lite cold-signed transfer';
         const outBox = document.getElementById('coldSignOutput');
-        if (outBox) outBox.textContent = '⏳ Computing SHA-256 micro-PoW & Ed25519 signature in RAM...';
+        if (outBox) outBox.textContent = '◈ Computing SHA-256 micro-PoW & Ed25519 signature in RAM...';
         try {
           const res = await fetch('/api/crypto/cold-sign', {
             method: 'POST',
@@ -5141,7 +5218,263 @@ Type ANY Unix, Bash, Python, Kali Linux, Parrot OS, or Zoth command above and pr
       // Run Embodied Avatar Canvas at smooth ~30-60fps
       setInterval(renderAzothAvatarFrame, 33);
 
-      // Handle Chat Submission to /api/agent/chat + Kokoro Voice Playback
+      // =======================================================================
+      // CHAIN OF THOUGHTS (CoT) // MULTI-TURN CONTEXT & WORKING MEMORY DAG UI
+      // =======================================================================
+      let cotClientState = {
+        headHash: 'GENESIS',
+        nodeCount: 1,
+        turnCount: 0,
+        estTokens: 68,
+        maxTokens: 8192,
+        pinnedFacts: [],
+        messages: [],
+        nodes: []
+      };
+
+      async function fetchCotState() {
+        try {
+          const res = await fetch('/api/cot/state');
+          const data = await res.json();
+          if (data && data.ok) {
+            cotClientState = data;
+            renderCotUi();
+          }
+        } catch (_e) {}
+      }
+
+      function renderCotUi(searchQuery) {
+        const q = String(searchQuery !== undefined ? searchQuery : (document.getElementById('cotRecallSearchInput')?.value || '')).trim().toLowerCase();
+
+        const badge = document.getElementById('azothCotCountBadge');
+        if (badge) badge.textContent = String(cotClientState.nodes?.length || 1);
+
+        const headBadge = document.getElementById('cotHeadHashBadge');
+        if (headBadge) headBadge.textContent = `HEAD: ${cotClientState.headHash || 'GENESIS'}`;
+
+        const statsLbl = document.getElementById('cotStatsLabel');
+        if (statsLbl) {
+          statsLbl.textContent = `${cotClientState.turnCount || 0} TURNS • ${cotClientState.estTokens || 68} / ${cotClientState.maxTokens || 8192} TOK`;
+        }
+        const meterFill = document.getElementById('cotTokenMeterFill');
+        if (meterFill) {
+          const pct = Math.min(100, Math.max(8, Math.round(((cotClientState.estTokens || 68) / 1600) * 100)));
+          meterFill.style.width = `${pct}%`;
+        }
+
+        const factCount = document.getElementById('cotFactCount');
+        const facts = cotClientState.pinnedFacts || [];
+        if (factCount) factCount.textContent = String(facts.length);
+
+        const factsListEl = document.getElementById('cotPinnedFactsList');
+        if (factsListEl) {
+          factsListEl.innerHTML = '';
+          facts.forEach((f) => {
+            if (q && !f.fact.toLowerCase().includes(q) && !String(f.category).toLowerCase().includes(q)) return;
+            const row = document.createElement('div');
+            row.style.cssText = `padding:5px 6px;border:1.5px solid #000000;background:${f.active === false ? 'var(--bg-grey-100)' : 'var(--bg-grey-50)'};display:flex;justify-content:space-between;align-items:flex-start;gap:5px;`;
+            const textSpan = document.createElement('div');
+            textSpan.style.cssText = 'flex:1;line-height:1.3;font-size:11px;';
+            textSpan.innerHTML = `<b style="background:#000000;color:#FFFFFF !important;padding:0 4px;font-size:9.5px;margin-right:4px;">${f.category || 'FACT'}</b>`;
+            const bodySpan = document.createElement('span');
+            bodySpan.textContent = f.fact;
+            textSpan.appendChild(bodySpan);
+
+            const delBtn = document.createElement('button');
+            delBtn.type = 'button';
+            delBtn.className = 'mono-btn';
+            delBtn.style.cssText = 'min-height:18px;padding:0 4px;font-size:9.5px !important;';
+            delBtn.textContent = '✕';
+            delBtn.title = 'Remove Pinned Fact';
+            delBtn.addEventListener('click', async () => {
+              const r = await fetch('/api/cot/pin', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ deleteId: f.id })
+              });
+              const d = await r.json();
+              if (d && d.ok) {
+                cotClientState = d;
+                renderCotUi();
+              }
+            });
+            row.appendChild(textSpan);
+            row.appendChild(delBtn);
+            factsListEl.appendChild(row);
+          });
+        }
+
+        const streamEl = document.getElementById('cotNodesStream');
+        if (streamEl) {
+          streamEl.innerHTML = '';
+          const nodes = (cotClientState.nodes || []).slice().reverse();
+          nodes.forEach((n) => {
+            const blob = `${n.id} ${n.hash} ${n.prompt} ${n.steps?.recall || ''} ${n.steps?.contextLink || ''} ${n.steps?.deduction || ''} ${n.steps?.synthesis || ''}`.toLowerCase();
+            if (q && !blob.includes(q)) return;
+
+            const card = document.createElement('div');
+            card.style.cssText = 'padding:8px 10px;border:2px solid #000000;background:#FFFFFF;box-shadow:3px 3px 0px #000000;font-size:11.5px;display:flex;flex-direction:column;gap:4px;';
+            card.innerHTML = `
+              <div style="display:flex;justify-content:space-between;align-items:center;background:#000000;color:#FFFFFF !important;padding:3px 7px;font-size:10.5px;font-weight:700;">
+                <span style="color:#FFFFFF !important;">◈ NODE [${n.id}] // HASH: ${n.hash} (◀ ${n.parentHash?.slice(0, 8) || '0000'})</span>
+                <span style="color:#FFFFFF !important;">MOOD: ${n.mood || 'TACTICAL'} • ${n.tokens || 64} TOK</span>
+              </div>
+              <div style="padding:4px 6px;background:var(--bg-grey-50);border:1px solid #000000;font-weight:700;">
+                OPERATOR PROMPT &gt; <span class="cot-node-prompt"></span>
+              </div>
+              <div style="padding-left:6px;border-left:2.5px solid #000000;display:flex;flex-direction:column;gap:3px;font-size:11px;line-height:1.35;">
+                <div><b>├─ [1. MEMORY RECALL]:</b> <span class="cot-step-recall"></span></div>
+                <div><b>├─ [2. CONTEXT LINK] :</b> <span class="cot-step-link"></span></div>
+                <div><b>├─ [3. DEDUCTION]    :</b> <span class="cot-step-deduct"></span></div>
+                <div><b>└─ [4. SYNTHESIS]    :</b> <span class="cot-step-synth"></span></div>
+              </div>
+            `;
+            card.querySelector('.cot-node-prompt').textContent = n.prompt || '';
+            card.querySelector('.cot-step-recall').textContent = n.steps?.recall || '';
+            card.querySelector('.cot-step-link').textContent = n.steps?.contextLink || '';
+            card.querySelector('.cot-step-deduct').textContent = n.steps?.deduction || '';
+            card.querySelector('.cot-step-synth').textContent = n.steps?.synthesis || '';
+            streamEl.appendChild(card);
+          });
+        }
+        renderCotDagCanvas();
+      }
+
+      // 60FPS Animated Braille & Bayer 4x4 Dither Chain-of-Thoughts Synaptic DAG Canvas
+      function renderCotDagCanvas() {
+        const cvs = document.getElementById('cotDagCanvas');
+        if (!cvs) return;
+        const ctx = cvs.getContext('2d');
+        const w = cvs.width;
+        const h = cvs.height;
+        const t = performance.now() * 0.001;
+
+        ctx.fillStyle = '#FFFFFF';
+        ctx.fillRect(0, 0, w, h);
+
+        // Subtle engineering grid
+        ctx.strokeStyle = '#E6E6E2';
+        ctx.lineWidth = 1;
+        for (let gx = 0; gx < w; gx += 18) {
+          ctx.beginPath(); ctx.moveTo(gx, 0); ctx.lineTo(gx, h); ctx.stroke();
+        }
+        for (let gy = 0; gy < h; gy += 18) {
+          ctx.beginPath(); ctx.moveTo(0, gy); ctx.lineTo(w, gy); ctx.stroke();
+        }
+
+        const nodes = (cotClientState.nodes || []).slice(-6);
+        const count = Math.max(1, nodes.length);
+        const pts = [];
+        for (let i = 0; i < count; i++) {
+          const nx = count === 1 ? w / 2 : 32 + (i / (count - 1)) * (w - 64);
+          const ny = (i % 2 === 0) ? 46 : 98;
+          pts.push({ x: nx, y: ny, node: nodes[i] });
+        }
+
+        // Draw synaptic links + animated Braille packet flow between Chain-of-Thought nodes
+        const brailleFlow = '⠁⠃⠇⠏⠟⠿⣿⣾⣽⣻⢿⡿⣟⣯⣷';
+        for (let i = 0; i < pts.length - 1; i++) {
+          const a = pts[i];
+          const b = pts[i + 1];
+          ctx.strokeStyle = '#000000';
+          ctx.lineWidth = 2.2;
+          ctx.beginPath();
+          ctx.moveTo(a.x, a.y);
+          ctx.lineTo(b.x, b.y);
+          ctx.stroke();
+
+          // Travelling synaptic pulse along edge
+          const frac = (t * 0.9 + i * 0.25) % 1;
+          const px = a.x + (b.x - a.x) * frac;
+          const py = a.y + (b.y - a.y) * frac;
+          ctx.fillStyle = '#000000';
+          ctx.fillRect(px - 6, py - 6, 12, 12);
+          ctx.fillStyle = '#FFFFFF';
+          ctx.font = 'bold 9px "IBM Plex Mono", monospace';
+          ctx.fillText(brailleFlow[Math.floor((t * 12 + i) % brailleFlow.length)], px - 3, py + 3);
+        }
+
+        // Draw each CoT Node Box with Bayer Dither + Node ID + Hash prefix
+        pts.forEach((p, idx) => {
+          const isHead = idx === pts.length - 1;
+          const bw = 46;
+          const bh = 28;
+          ctx.fillStyle = '#FFFFFF';
+          ctx.fillRect(p.x - bw / 2, p.y - bh / 2, bw, bh);
+          if (isHead) {
+            ctx.fillStyle = '#000000';
+            ctx.fillRect(p.x - bw / 2, p.y - bh / 2, bw, bh);
+            ctx.fillStyle = '#FFFFFF';
+          } else {
+            fillDitherRect(ctx, p.x - bw / 2, p.y - bh / 2, bw, bh, 0.22);
+            ctx.strokeStyle = '#000000';
+            ctx.lineWidth = 2;
+            ctx.strokeRect(p.x - bw / 2, p.y - bh / 2, bw, bh);
+            ctx.fillStyle = '#000000';
+          }
+          ctx.font = 'bold 9.5px "IBM Plex Mono", monospace';
+          ctx.textAlign = 'center';
+          ctx.fillText(p.node?.id || `N0${idx}`, p.x, p.y - 2);
+          ctx.font = 'bold 8px "IBM Plex Mono", monospace';
+          ctx.fillText((p.node?.hash || '0x00').slice(0, 5), p.x, p.y + 9);
+        });
+
+        ctx.textAlign = 'left';
+        ctx.fillStyle = '#000000';
+        ctx.font = 'bold 9.5px "IBM Plex Mono", monospace';
+        ctx.fillText(`⣿ SYNAPTIC CoT GRAPH: ${cotClientState.nodes?.length || 1} LINKED NODES • ${cotClientState.pinnedFacts?.length || 3} FACTS`, 6, h - 5);
+      }
+
+      setInterval(renderCotDagCanvas, 80);
+
+      document.getElementById('cotPinFactForm')?.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const inp = document.getElementById('cotNewFactInput');
+        const val = inp ? inp.value.trim() : '';
+        if (!val) return;
+        inp.value = '';
+        const res = await fetch('/api/cot/pin', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ category: 'OPERATOR', fact: val })
+        });
+        const data = await res.json();
+        if (data && data.ok) {
+          cotClientState = data;
+          renderCotUi();
+        }
+      });
+
+      document.getElementById('cotRecallSearchInput')?.addEventListener('input', (e) => {
+        renderCotUi(e.target.value);
+      });
+
+      document.getElementById('cotClearMemoryBtn')?.addEventListener('click', async () => {
+        const res = await fetch('/api/cot/clear', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ clearFacts: false })
+        });
+        const data = await res.json();
+        if (data && data.ok) {
+          cotClientState = data;
+          renderCotUi();
+        }
+      });
+
+      async function runAutomatedTwoTurnMemoryProof() {
+        openOrRestoreWindow('winCoT');
+        openOrRestoreWindow('winAgent');
+        await submitAzothPrompt('Remember that my operator codename is FALCON-7 and we are auditing target 10.0.2.15.', 'TACTICAL');
+        setTimeout(async () => {
+          await submitAzothPrompt('What is my operator codename and what target IP are we auditing right now?', 'EXCITED');
+        }, 2400);
+      }
+
+      document.getElementById('cotRunMemoryProofBtn')?.addEventListener('click', runAutomatedTwoTurnMemoryProof);
+      document.getElementById('azothQuickMemoryProofBtn')?.addEventListener('click', runAutomatedTwoTurnMemoryProof);
+
+      // Handle Chat Submission to /api/agent/chat + Chain-of-Thoughts Memory + Kokoro Voice Playback
       async function submitAzothPrompt(customPrompt, forcedMood) {
         const inputEl = document.getElementById('azothPromptInput');
         const providerEl = document.getElementById('azothProviderSelect');
@@ -5169,7 +5502,7 @@ Type ANY Unix, Bash, Python, Kali Linux, Parrot OS, or Zoth command above and pr
         }
 
         azothState.isThinking = true;
-        if (sendBtn) sendBtn.textContent = '⚙ THINKING...';
+        if (sendBtn) sendBtn.textContent = '⚙ CoT...';
 
         try {
           const res = await fetch('/api/agent/chat', {
@@ -5180,27 +5513,41 @@ Type ANY Unix, Bash, Python, Kali Linux, Parrot OS, or Zoth command above and pr
               provider,
               voice,
               apiKey,
-              mood: moodReq
+              mood: moodReq,
+              clientHistory: cotClientState.messages || [],
+              clientFacts: cotClientState.pinnedFacts || []
             })
           });
           const data = await res.json();
           azothState.isThinking = false;
-          if (sendBtn) sendBtn.textContent = '◉ ASK & SPEAK';
+          if (sendBtn) sendBtn.textContent = 'SPEAK ↵';
 
           if (data && data.ok) {
             const replyMood = data.mood || 'SPEAKING';
             setAzothMood(replyMood, false);
 
+            if (data.cotState) {
+              cotClientState = data.cotState;
+              renderCotUi();
+            } else {
+              fetchCotState();
+            }
+
             if (historyEl) {
+              const cotNode = data.cotNode;
+              const cotBadgeStr = cotNode
+                ? `◈ CoT [${cotNode.id}:${cotNode.hash.slice(0, 6)}] • ${cotClientState.turnCount || 1} Turns in Memory`
+                : `VOICE: ${voice} • MOOD: ${replyMood}`;
               const agentDiv = document.createElement('div');
               agentDiv.style.cssText = 'padding:8px 10px;background:var(--bg-grey-50);border:2px solid #000000;box-shadow:2px 2px 0px #000000;';
               agentDiv.innerHTML = `
-                <div style="display:flex;justify-content:space-between;font-size:11px;font-weight:700;margin-bottom:3px;border-bottom:1px solid #000000;padding-bottom:2px;">
+                <div style="display:flex;justify-content:space-between;font-size:10.5px;font-weight:700;margin-bottom:3px;border-bottom:1px solid #000000;padding-bottom:2px;">
                   <span>◉ AZOTH // ${data.model || provider.toUpperCase()}</span>
-                  <span>VOICE: ${voice} • MOOD: ${replyMood}</span>
+                  <span style="cursor:pointer;text-decoration:underline;" title="Click to Inspect Chain of Thoughts Node">${cotBadgeStr}</span>
                 </div>
                 <div style="font-size:13px;line-height:1.45;font-weight:600;"></div>
               `;
+              agentDiv.querySelector('span[title]')?.addEventListener('click', () => openOrRestoreWindow('winCoT'));
               agentDiv.lastElementChild.textContent = data.text;
               historyEl.appendChild(agentDiv);
               historyEl.scrollTop = historyEl.scrollHeight;
@@ -5210,9 +5557,11 @@ Type ANY Unix, Bash, Python, Kali Linux, Parrot OS, or Zoth command above and pr
           }
         } catch (_err) {
           azothState.isThinking = false;
-          if (sendBtn) sendBtn.textContent = '◉ ASK & SPEAK';
+          if (sendBtn) sendBtn.textContent = 'SPEAK ↵';
         }
       }
+
+      fetchCotState();
 
       const azothForm = document.getElementById('azothChatForm');
       if (azothForm) {
@@ -5462,21 +5811,30 @@ Type ANY Unix, Bash, Python, Kali Linux, Parrot OS, or Zoth command above and pr
         speakWithKokoroAndLipSync(azothState.lastSpeechText, 'af_heart', null, 'SPEAKING');
       }, 900);
 
-      // Position winAgent on the left so the right half of the desktop showcases the 3D Perspective Braille/Dither Wallpaper
+      // Position winAgent on the left and winCoT (Chain of Thoughts) on the right
       function layoutInitialWindowsForViewport() {
         if (window.innerWidth <= 960) return;
         const stage = document.getElementById('osWindowStage');
         if (!stage) return;
         const stageW = stage.clientWidth;
         const stageH = stage.clientHeight;
+        const h = Math.min(685, stageH - 16);
         const agentEl = document.getElementById('winAgent');
+        const cotEl = document.getElementById('winCoT');
         if (agentEl) {
-          const w = Math.min(730, Math.floor(stageW * 0.63));
-          const h = Math.min(680, stageH - 18);
-          agentEl.style.top = '10px';
-          agentEl.style.left = '10px';
-          agentEl.style.width = `${w}px`;
+          const wAgent = Math.floor(stageW * 0.50) - 10;
+          agentEl.style.top = '8px';
+          agentEl.style.left = '8px';
+          agentEl.style.width = `${wAgent}px`;
           agentEl.style.height = `${h}px`;
+        }
+        if (cotEl) {
+          const leftCot = Math.floor(stageW * 0.50) + 4;
+          const wCot = stageW - leftCot - 10;
+          cotEl.style.top = '8px';
+          cotEl.style.left = `${leftCot}px`;
+          cotEl.style.width = `${wCot}px`;
+          cotEl.style.height = `${h}px`;
         }
       }
 
