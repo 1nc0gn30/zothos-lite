@@ -3,9 +3,9 @@
 > **1-Bit Monotone Amnesic Security & AI Workstation (`toram noswap`) — Featuring the AZOTH Embodied Braille/ASCII AI Agent, Kokoro ONNX Neural Voice, Chain of Thoughts (`zoth-cot`) Working Memory DAG, 3D Perspective Braille/Dither Desktop, and 45 Armed Kali/Parrot CLI Tools**
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-000000.svg)](https://opensource.org/licenses/MIT)
-[![RAM Footprint: 958 MB](https://img.shields.io/badge/RAM_Footprint-958_MB_(90%25_Smaller)-000000)](https://github.com/1nc0gn30/zothos-lite)
-[![Agent: AZOTH + Kokoro Voice](https://img.shields.io/badge/AI_Agent-AZOTH_Braille_%2B_Kokoro_ONNX-FFFFFF)](https://github.com/1nc0gn30/zothos-lite)
-[![Memory: Chain of Thoughts DAG](https://img.shields.io/badge/Memory-Chain_of_Thoughts_DAG-000000)](https://github.com/1nc0gn30/chain-of-thoughts)
+[![RAM Footprint: 958 MB](https://img.shields.io/badge/RAM_Footprint-958_MB_(90%25_Smaller)-000000)](https://github.com/NullAITech/zothos-lite)
+[![Agent: AZOTH + Kokoro Voice](https://img.shields.io/badge/AI_Agent-AZOTH_Braille_%2B_Kokoro_ONNX-FFFFFF)](https://github.com/NullAITech/zothos-lite)
+[![Memory: Chain of Thoughts DAG](https://img.shields.io/badge/Memory-Chain_of_Thoughts_DAG-000000)](https://github.com/NullAITech/chain-of-thoughts)
 
 **ZothOS-Lite v1.0** is an ultra-lightweight, Tails-inspired **1-Bit Monotone (`#FFFFFF` Paper White + `#000000` Ink Black + Ordered Bayer 4×4/8×8 Dither + Unicode `U+2800` Braille)** operating environment that boots entirely in volatile RAM (`toram noswap`) in **958 MB** (90% smaller than the 9.3 GB full ZothOS ISO).
 
@@ -39,7 +39,7 @@
 ## 🚀 Quick Start
 
 ```bash
-git clone https://github.com/1nc0gn30/zothos-lite.git
+git clone https://github.com/NullAITech/zothos-lite.git
 cd zothos-lite
 
 # Start the ZothOS-Lite v1.0 Desktop & API Server (:8145)
