@@ -1012,8 +1012,11 @@
          ======================================================================= -->
     <header class="tails-top-panel" role="banner" style="justify-content:space-between;overflow:visible;">
       <div class="panel-left" style="gap:6px;">
-        <button type="button" class="top-brand-seal" id="appsMenuToggleBtn" title="Open ZothOS-Lite System, All 11 Mini-Apps, Audio/Mic, Daemons & Tools Menu">
+        <button type="button" class="top-brand-seal" id="appsMenuToggleBtn" title="Open ZothOS-Lite System, All 12 Mini-Apps, Audio/Mic, Daemons & Tools Menu">
           <span>◈ ZOTHOS ▾</span>
+        </button>
+        <button type="button" class="mono-btn mono-btn-black" data-open-win="winEnvGuard" title="Open Zoth Konsole Terminal (Bash + Kali + Parrot + Python + Native KDE Konsole)" style="min-height:26px;padding:0 8px;font-size:11px !important;box-shadow:2px 2px 0px #000000;">
+          <span>&gt;_ KONSOLE</span>
         </button>
       </div>
 
@@ -1508,15 +1511,16 @@
         </article>
 
         <!-- ===================================================================
-             MINI-APP WINDOW 03 (BOTTOM-LEFT — POPPED OPEN & ARMED BY DEFAULT!):
-             LIVE ARMED ZOTHOS-LITE ROOT TERMINAL & KALI / PARROT / UNIX SHELL
+             MINI-APP WINDOW 03: ZOTH KONSOLE 25.04 // MULTI-TAB PTY & NATIVE KONSOLE
              =================================================================== -->
-        <article class="os-window win-closed" id="winEnvGuard" data-win-title="Live Armed Terminal" style="top:40px;left:60px;width:780px;height:520px;z-index:165;">
+        <article class="os-window win-closed" id="winEnvGuard" data-win-title="Zoth Konsole Terminal" style="top:34px;left:54px;width:820px;height:560px;z-index:165;">
           <div class="os-window-titlebar" data-drag-handle="winEnvGuard">
             <div class="win-title-left">
-              <span id="tekniumTermHeaderTitle" style="font-size:12px;font-weight:700;">[>_] BASH + KALI + PARROT + PYTHON SHELL (<span id="vmRunningBadge">ARMED</span>)</span>
+              <span id="tekniumTermHeaderTitle" style="font-size:12px;font-weight:700;">[&gt;_] ZOTH KONSOLE 25.04 // BASH + KALI + PARROT + PYTHON (<span id="vmRunningBadge">PTY ARMED</span>)</span>
             </div>
             <div class="win-controls">
+              <button type="button" class="win-ctrl-btn" id="launchNativeKonsoleBtn" title="Spawn Real Native KDE /usr/bin/konsole Window on Host Desktop" style="width:auto;padding:0 6px;font-size:10px;font-weight:700;">↗ KDE KONSOLE</button>
+              <button type="button" class="win-ctrl-btn" id="termSplitViewBtn" title="Toggle Side-by-Side Konsole Split View" style="width:28px;">◫</button>
               <button type="button" class="win-ctrl-btn" id="termZoomOutBtn" title="Decrease Terminal Font Size" style="width:26px;">A-</button>
               <button type="button" class="win-ctrl-btn" id="termZoomInBtn" title="Increase Terminal Font Size" style="width:26px;">A+</button>
               <button type="button" class="win-ctrl-btn" id="termContrastToggleBtn" title="Toggle CRT Black vs Paper White" style="width:26px;">◐</button>
@@ -1525,24 +1529,39 @@
               <button type="button" class="win-ctrl-btn close-btn" data-win-action="close" data-win-id="winEnvGuard" title="Close Window">✕</button>
             </div>
           </div>
-          <div class="os-window-body" style="display:flex;flex-direction:column;gap:6px;padding:10px;">
+          <div class="os-window-body" style="display:flex;flex-direction:column;gap:5px;padding:8px;">
+            <!-- KDE Konsole 25.04 Multi-Session Tab Bar + Profile / CWD Telemetry -->
+            <div style="display:flex;justify-content:space-between;align-items:center;gap:4px;flex-wrap:wrap;padding:3px 5px;background:var(--bg-grey-50);border:2px solid #000000;">
+              <div style="display:flex;gap:3px;flex-wrap:wrap;align-items:center;" id="konsoleSessionTabBar">
+                <button type="button" class="mono-btn mono-btn-black konsole-tab-btn" data-konsole-tab="tab-1" style="min-height:22px;padding:1px 7px;font-size:10.5px !important;">[&gt;_] 1: root@zothos (bash)</button>
+                <button type="button" class="mono-btn konsole-tab-btn" data-konsole-tab="tab-2" style="min-height:22px;padding:1px 7px;font-size:10.5px !important;">[⚚] 2: kali-parrot-recon</button>
+                <button type="button" class="mono-btn konsole-tab-btn" data-konsole-tab="tab-3" style="min-height:22px;padding:1px 7px;font-size:10.5px !important;">[λ] 3: python3 / node</button>
+                <button type="button" class="mono-btn" id="konsoleNewTabBtn" title="Open New Konsole Session Tab" style="min-height:22px;padding:1px 6px;font-size:10.5px !important;">+ TAB</button>
+              </div>
+              <div style="display:flex;gap:4px;align-items:center;">
+                <span id="konsoleExecMetaBadge" style="font-size:10px;font-weight:700;padding:1px 6px;border:1.5px solid #000000;background:#FFFFFF;">[exit 0 • 12ms]</span>
+                <button type="button" class="mono-btn mono-btn-black" id="konsoleNativeQuickBtn" title="Launch Native /usr/bin/konsole 25.04 Desktop Window" style="min-height:22px;padding:1px 7px;font-size:10.5px !important;">↗ NATIVE KONSOLE</button>
+              </div>
+            </div>
+
             <!-- Teknium Uncommon Web Tool Shelf Tabs -->
             <div style="display:flex;justify-content:space-between;align-items:center;gap:4px;flex-wrap:wrap;">
               <div style="display:flex;gap:3px;flex-wrap:wrap;" id="termShelfTabs">
-                <button type="button" class="mono-btn mono-btn-black term-shelf-tab" data-shelf="TOP" style="min-height:24px;padding:2px 7px;font-size:11px !important;">⚡ TOP</button>
-                <button type="button" class="mono-btn term-shelf-tab" data-shelf="KALI" style="min-height:24px;padding:2px 7px;font-size:11px !important;">⚚ KALI</button>
-                <button type="button" class="mono-btn term-shelf-tab" data-shelf="PARROT" style="min-height:24px;padding:2px 7px;font-size:11px !important;">◈ PARROT</button>
-                <button type="button" class="mono-btn term-shelf-tab" data-shelf="REV" style="min-height:24px;padding:2px 7px;font-size:11px !important;">⚙ REV/PWN</button>
-                <button type="button" class="mono-btn term-shelf-tab" data-shelf="UNIX" style="min-height:24px;padding:2px 7px;font-size:11px !important;">λ UNIX/PY</button>
-                <button type="button" class="mono-btn term-shelf-tab" data-shelf="ZOTH" style="min-height:24px;padding:2px 7px;font-size:11px !important;">◉ ZOTH</button>
+                <button type="button" class="mono-btn mono-btn-black term-shelf-tab" data-shelf="TOP" style="min-height:23px;padding:1px 7px;font-size:10.5px !important;">⚡ TOP</button>
+                <button type="button" class="mono-btn term-shelf-tab" data-shelf="KALI" style="min-height:23px;padding:1px 7px;font-size:10.5px !important;">⚚ KALI</button>
+                <button type="button" class="mono-btn term-shelf-tab" data-shelf="PARROT" style="min-height:23px;padding:1px 7px;font-size:10.5px !important;">◈ PARROT</button>
+                <button type="button" class="mono-btn term-shelf-tab" data-shelf="REV" style="min-height:23px;padding:1px 7px;font-size:10.5px !important;">⚙ REV/PWN</button>
+                <button type="button" class="mono-btn term-shelf-tab" data-shelf="UNIX" style="min-height:23px;padding:1px 7px;font-size:10.5px !important;">λ UNIX/PY</button>
+                <button type="button" class="mono-btn term-shelf-tab" data-shelf="ZOTH" style="min-height:23px;padding:1px 7px;font-size:10.5px !important;">◉ ZOTH</button>
               </div>
-              <button type="button" class="mono-btn mono-btn-black" data-win-action="maximize" data-win-id="winEnvGuard" style="min-height:24px;padding:2px 7px;font-size:11px !important;">□ FULLSCREEN</button>
+              <button type="button" class="mono-btn mono-btn-black" data-win-action="maximize" data-win-id="winEnvGuard" style="min-height:23px;padding:1px 7px;font-size:10.5px !important;">□ FULLSCREEN</button>
             </div>
 
             <!-- Interactive Command Arsenal Pills (60+ Real Kali / Parrot / Unix / Python / Zoth Tools) -->
-            <div id="termQuickPillsBox" style="display:flex;gap:4px;flex-wrap:wrap;padding:5px;background:var(--bg-grey-50);border:2px solid #000000;min-height:58px;max-height:64px;flex-shrink:0;overflow-y:auto;">
+            <div id="termQuickPillsBox" style="display:flex;gap:4px;flex-wrap:wrap;padding:5px;background:var(--bg-grey-50);border:2px solid #000000;min-height:52px;max-height:58px;flex-shrink:0;overflow-y:auto;">
               <!-- TOP -->
               <button type="button" class="mono-btn mono-btn-black vm-quick-cmd" data-shelf-item="TOP" data-vm-cmd="help">help</button>
+              <button type="button" class="mono-btn vm-quick-cmd" data-shelf-item="TOP" data-vm-cmd="zoth-cot status">◈ zoth-cot status</button>
               <button type="button" class="mono-btn vm-quick-cmd" data-shelf-item="TOP" data-vm-cmd="nmap -sV 127.0.0.1">nmap -sV 127.0.0.1</button>
               <button type="button" class="mono-btn vm-quick-cmd" data-shelf-item="TOP" data-vm-cmd="anonsurf status">anonsurf status</button>
               <button type="button" class="mono-btn vm-quick-cmd" data-shelf-item="TOP" data-vm-cmd="checksec --file=/bin/bash">checksec /bin/bash</button>
@@ -1550,8 +1569,7 @@
               <button type="button" class="mono-btn vm-quick-cmd" data-shelf-item="TOP" data-vm-cmd="linpeas">linpeas</button>
               <button type="button" class="mono-btn vm-quick-cmd" data-shelf-item="TOP" data-vm-cmd="zoth-rayban --status">◉ zoth-rayban</button>
               <button type="button" class="mono-btn vm-quick-cmd" data-shelf-item="TOP" data-vm-cmd="ls -la">ls -la</button>
-              <button type="button" class="mono-btn vm-quick-cmd" data-shelf-item="TOP" data-vm-cmd="ss -tulpn | head -n 15">ss -tulpn</button>
-              <button type="button" class="mono-btn vm-quick-cmd" data-shelf-item="TOP" data-vm-cmd="python3 -c 'import sys,hashlib; print(sys.version.split()[0], hashlib.sha256(b&quot;zothos&quot;).hexdigest()[:24])'">python3 sha256</button>
+              <button type="button" class="mono-btn vm-quick-cmd" data-shelf-item="TOP" data-vm-cmd="konsole">↗ konsole</button>
 
               <!-- KALI -->
               <button type="button" class="mono-btn vm-quick-cmd" data-shelf-item="KALI" data-vm-cmd="nmap -sV -T4 127.0.0.1" style="display:none;">nmap -sV -T4 127.0.0.1</button>
@@ -1598,12 +1616,13 @@
               <button type="button" class="mono-btn vm-quick-cmd" data-shelf-item="UNIX" data-vm-cmd="pwd && ls -la" style="display:none;">pwd && ls -la</button>
               <button type="button" class="mono-btn vm-quick-cmd" data-shelf-item="UNIX" data-vm-cmd="ps aux | head -n 15" style="display:none;">ps aux</button>
               <button type="button" class="mono-btn vm-quick-cmd" data-shelf-item="UNIX" data-vm-cmd="df -hT && free -h" style="display:none;">df -hT && free -h</button>
-              <button type="button" class="mono-btn vm-quick-cmd" data-shelf-item="UNIX" data-vm-cmd="ip -br a && ss -tulpn | head -n 12" style="display:none;">ip a & ports</button>
+              <button type="button" class="mono-btn vm-quick-cmd" data-shelf-item="UNIX" data-vm-cmd="ip -br a && ss -tulpn | head -n 12" style="display:none;">ip a &amp; ports</button>
               <button type="button" class="mono-btn vm-quick-cmd" data-shelf-item="UNIX" data-vm-cmd="python3 --version && node -v && rustc --version && go version" style="display:none;">python/node/rust/go</button>
               <button type="button" class="mono-btn vm-quick-cmd" data-shelf-item="UNIX" data-vm-cmd="git status -s" style="display:none;">git status</button>
               <button type="button" class="mono-btn vm-quick-cmd" data-shelf-item="UNIX" data-vm-cmd="openssl version -a | head -n 4" style="display:none;">openssl</button>
 
               <!-- ZOTH & GLASSES -->
+              <button type="button" class="mono-btn vm-quick-cmd" data-shelf-item="ZOTH" data-vm-cmd="zoth-cot status" style="display:none;">◈ zoth-cot status</button>
               <button type="button" class="mono-btn vm-quick-cmd" data-shelf-item="ZOTH" data-vm-cmd="zoth-rayban --status" style="display:none;">◉ zoth-rayban</button>
               <button type="button" class="mono-btn vm-quick-cmd" data-shelf-item="ZOTH" data-vm-cmd="zoth-rayban --voice-bridge" style="display:none;">rayban --voice-bridge</button>
               <button type="button" class="mono-btn vm-quick-cmd" data-shelf-item="ZOTH" data-vm-cmd="zoth-rayban --scrub" style="display:none;">rayban --scrub</button>
@@ -1616,19 +1635,24 @@
               <button type="button" class="mono-btn vm-quick-cmd" data-shelf-item="ZOTH" data-vm-cmd="systemctl status" style="display:none;">systemctl status</button>
             </div>
 
-            <!-- Live Interactive Command Input Line (Click Anywhere or Type Directly!) -->
+            <!-- Live Interactive Command Input Line (Supports Up/Down History, Tab Auto-Complete, Ctrl+L) -->
             <div style="display:flex;gap:4px;align-items:center;flex-shrink:0;">
-              <span id="termPromptBadge" style="font-size:12px;font-weight:700;background:#000000;color:#FFFFFF !important;padding:6px 7px;border:2px solid #000000;white-space:nowrap;">root#</span>
-              <input type="text" id="terminalCmdInput" class="mono-input" value="" autofocus autocomplete="off" spellcheck="false" placeholder="Type bash, nmap, anonsurf, r2, checksec, python3, sqlmap, zoth-rayban..." aria-label="ZothOS-Lite Terminal Command Input" style="flex:1;min-width:140px;min-height:34px;font-size:13.5px !important;font-weight:700 !important;" />
+              <span id="termPromptBadge" style="font-size:11.5px;font-weight:700;background:#000000;color:#FFFFFF !important;padding:6px 7px;border:2px solid #000000;white-space:nowrap;">root@zothos:~/zothos-lite#</span>
+              <input type="text" id="terminalCmdInput" class="mono-input" value="" autofocus autocomplete="off" spellcheck="false" placeholder="Type bash, nmap, anonsurf, zoth-cot, checksec, python3, konsole (Tab = complete)..." aria-label="ZothOS-Lite Konsole Command Input" style="flex:1;min-width:120px;min-height:34px;font-size:13.5px !important;font-weight:700 !important;" />
               <button type="button" class="mono-btn mono-btn-black" id="runTerminalCmdBtn" style="min-height:34px;padding:4px 9px;flex-shrink:0;">RUN ↵</button>
-              <button type="button" class="mono-btn" id="clearTerminalBtn" style="min-height:34px;padding:4px 7px;flex-shrink:0;">CLR</button>
+              <button type="button" class="mono-btn" id="clearTerminalBtn" title="Clear Active Konsole Tab Scrollback (Ctrl+L)" style="min-height:34px;padding:4px 7px;flex-shrink:0;">CLR</button>
             </div>
 
-            <!-- Live Monotone Terminal Output Screen (Click to Focus Input!) -->
-            <pre id="terminalScreen" class="mono-console-output" title="Click anywhere here and start typing commands" style="flex:1;min-height:110px;font-size:13px !important;line-height:1.45;">╔══════════════════════════════════════════════════════════════════════════════╗
-║ ⣿ ZOTHOS-LITE v1.0 // BASH + KALI + PARROT + PYTHON + ZOTH SHELL (ARMED)   ⣿ ║
+            <!-- Konsole Primary + Optional Split-View Viewport Container -->
+            <div id="konsoleSplitContainer" style="flex:1;min-height:120px;display:flex;gap:6px;overflow:hidden;">
+              <pre id="terminalScreen" class="mono-console-output" title="Click anywhere here and start typing commands" style="flex:1;min-height:110px;font-size:13px !important;line-height:1.45;margin:0;">╔══════════════════════════════════════════════════════════════════════════════╗
+║ ⣿ ZOTH KONSOLE 25.04 // MULTI-TAB BASH + KALI + PARROT + PYTHON PTY SHELL  ⣿ ║
 ╚══════════════════════════════════════════════════════════════════════════════╝
 Type ANY Unix, Bash, Python, Kali Linux, Parrot OS, or Zoth command above and press Enter.</pre>
+              <pre id="terminalSplitSecondary" class="mono-console-output" style="display:none;flex:1;min-height:110px;font-size:12px !important;line-height:1.4;margin:0;border-left:3px solid #000000;">╔════════════════════════════════════════════╗
+║ ◫ KONSOLE SPLIT-PANE // LIVE TELEMETRY     ║
+╚════════════════════════════════════════════╝</pre>
+            </div>
 
             <!-- Compact EnvGuard Secret Scanner Strip -->
             <div style="display:flex;gap:5px;align-items:center;padding-top:4px;border-top:1.5px dashed #000000;">
@@ -1814,10 +1838,10 @@ Type ANY Unix, Bash, Python, Kali Linux, Parrot OS, or Zoth command above and pr
         <!-- ===================================================================
              MINI-APP WINDOW 06: ON-DEMAND ZOTHOS TOOL INSTALLER (zoth-lite-pkg)
              =================================================================== -->
-        <article class="os-window win-closed" id="winPkgPuller" data-win-title="Pull ZothOS Tools (12)" style="top:42px;left:180px;width:490px;height:430px;z-index:119;">
+        <article class="os-window win-closed" id="winPkgPuller" data-win-title="Pull ZothOS Tools (16)" style="top:42px;left:180px;width:520px;height:440px;z-index:119;">
           <div class="os-window-titlebar" data-drag-handle="winPkgPuller">
             <div class="win-title-left">
-              <span>[⬇] INSTALL ZOTHOS TOOLS ON DEMAND (zoth-lite-pkg) — <span id="pulledCountBadge">3/12</span></span>
+              <span>[⬇] INSTALL ZOTHOS TOOLS ON DEMAND (zoth-lite-pkg) — <span id="pulledCountBadge">3/16</span></span>
             </div>
             <div class="win-controls">
               <button type="button" class="win-ctrl-btn" data-win-action="minimize" data-win-id="winPkgPuller" title="Minimize Window">_</button>
@@ -1828,11 +1852,12 @@ Type ANY Unix, Bash, Python, Kali Linux, Parrot OS, or Zoth command above and pr
           <div class="os-window-body">
             <div style="display:flex;justify-content:space-between;align-items:center;gap:6px;flex-wrap:wrap;margin-bottom:7px;">
               <div style="display:flex;gap:4px;flex-wrap:wrap;" id="categoryFilterBar">
-                <button type="button" class="mono-btn mono-btn-black" data-cat-filter="ALL" style="min-height:24px;padding:2px 6px;font-size:9.5px;">ALL (12)</button>
+                <button type="button" class="mono-btn mono-btn-black" data-cat-filter="ALL" style="min-height:24px;padding:2px 6px;font-size:9.5px;">ALL (16)</button>
                 <button type="button" class="mono-btn" data-cat-filter="PULLED" style="min-height:24px;padding:2px 6px;font-size:9.5px;">⣿ INSTALLED</button>
-                <button type="button" class="mono-btn" data-cat-filter="Security & Red-Team" style="min-height:24px;padding:2px 6px;font-size:9.5px;">SECURITY</button>
-                <button type="button" class="mono-btn" data-cat-filter="AI & Memory" style="min-height:24px;padding:2px 6px;font-size:9.5px;">AI & MEMORY</button>
-                <button type="button" class="mono-btn" data-cat-filter="Dev & Builders" style="min-height:24px;padding:2px 6px;font-size:9.5px;">DEV</button>
+                <button type="button" class="mono-btn" data-cat-filter="Kali & Parrot Security" style="min-height:24px;padding:2px 6px;font-size:9.5px;">⚚ KALI &amp; PARROT</button>
+                <button type="button" class="mono-btn" data-cat-filter="Security & Red-Team" style="min-height:24px;padding:2px 6px;font-size:9.5px;">⛨ SECURITY</button>
+                <button type="button" class="mono-btn" data-cat-filter="AI" style="min-height:24px;padding:2px 6px;font-size:9.5px;">◈ AI &amp; MEMORY</button>
+                <button type="button" class="mono-btn" data-cat-filter="DEV" style="min-height:24px;padding:2px 6px;font-size:9.5px;">⚙ DEV &amp; SWARM</button>
               </div>
               <button type="button" class="mono-btn" id="exportCustomIsoBtn" style="min-height:24px;padding:2px 6px;font-size:9.5px;">⬇ Export Profile</button>
             </div>
@@ -2413,7 +2438,7 @@ Type ANY Unix, Bash, Python, Kali Linux, Parrot OS, or Zoth command above and pr
       let shaderMode = 'bayer-1bit';
       let activeSculpture = 'shield';
       let frameTick = 0;
-      let topZIndex = 220;
+      let topZIndex = 350;
 
       const BAYER_4X4 = [
         [ 0,  8,  2, 10],
@@ -3582,6 +3607,10 @@ Type ANY Unix, Bash, Python, Kali Linux, Parrot OS, or Zoth command above and pr
         const filtered = catalog.filter((pkg) => {
           if (activeCategory === 'ALL') return true;
           if (activeCategory === 'PULLED') return pkg.pulled;
+          if (activeCategory === 'AI') return String(pkg.category || '').startsWith('AI');
+          if (activeCategory === 'DEV') {
+            return pkg.category === 'Dev & Builders' || pkg.category === 'Swarm & Automation';
+          }
           return pkg.category === activeCategory;
         });
 
@@ -3595,7 +3624,7 @@ Type ANY Unix, Bash, Python, Kali Linux, Parrot OS, or Zoth command above and pr
             </div>
             <div style="font-size:10px;color:var(--fg-grey-600);margin-bottom:5px;">${pkg.description}</div>
             <div style="display:flex;justify-content:space-between;align-items:center;gap:6px;">
-              <code style="font-size:9.5px;color:var(--fg-grey-600);">${pkg.id}</code>
+              <code style="font-size:9.5px;color:var(--fg-grey-600);">${pkg.id} • ${pkg.category || 'Enclave'}</code>
               <div style="display:flex;gap:4px;">
                 ${pkg.pulled ? `
                   <button type="button" class="mono-btn pkg-action-btn" data-action="purge" data-id="${pkg.id}" style="min-height:22px;padding:1px 7px;font-size:9px;">
@@ -3665,6 +3694,7 @@ Type ANY Unix, Bash, Python, Kali Linux, Parrot OS, or Zoth command above and pr
 
       const cmdHistory = [
         'help',
+        'zoth-cot status',
         'nmap -sV 127.0.0.1',
         'anonsurf status',
         'checksec --file=/bin/bash',
@@ -3677,8 +3707,167 @@ Type ANY Unix, Bash, Python, Kali Linux, Parrot OS, or Zoth command above and pr
       let historyIdx = cmdHistory.length;
       let termFontSizePx = 13.5;
 
+      // Multi-Tab KDE Konsole 25.04 Session State
+      let activeKonsoleTab = 'tab-1';
+      let konsoleTabCounter = 3;
+      const konsoleSessions = {
+        'tab-1': {
+          label: '[>_] 1: root@zothos (bash)',
+          shortCwd: '~/zothos-lite',
+          scrollback: []
+        },
+        'tab-2': {
+          label: '[⚚] 2: kali-parrot-recon',
+          shortCwd: '~/zothos-lite',
+          scrollback: [
+            '╔══════════════════════════════════════════════════════════════════════════════╗\n' +
+            '║ ⚚ KONSOLE SESSION #2 // KALI LINUX & PARROT OS TACTICAL RECON SHELL          ║\n' +
+            '╚══════════════════════════════════════════════════════════════════════════════╝\n' +
+            'root@zothos:~/zothos-lite# anonsurf status && checksec --file=/bin/ls\n' +
+            '[✓] Tor 9050 Transparent Guard ARMED • ELF PIE + Full RELRO + NX Verified.'
+          ]
+        },
+        'tab-3': {
+          label: '[λ] 3: python3 / node',
+          shortCwd: '~/zothos-lite',
+          scrollback: [
+            '╔══════════════════════════════════════════════════════════════════════════════╗\n' +
+            '║ λ KONSOLE SESSION #3 // PYTHON 3.13 + NODE v22 + RUST + GOPOLYGLOT SHELL     ║\n' +
+            '╚══════════════════════════════════════════════════════════════════════════════╝\n' +
+            'root@zothos:~/zothos-lite# python3 --version && node -v\n' +
+            'Python 3.13.3 • Node.js v22.x • Type any python3 -c "..." or node -e "..." command!'
+          ]
+        }
+      };
+
+      function syncKonsoleViewport() {
+        const term = document.getElementById('terminalScreen');
+        const badge = document.getElementById('termPromptBadge');
+        const sess = konsoleSessions[activeKonsoleTab] || konsoleSessions['tab-1'];
+        if (badge) {
+          badge.textContent = `root@zothos:${sess.shortCwd || '~/zothos-lite'}#`;
+        }
+        if (term) {
+          term.textContent = sess.scrollback.length
+            ? sess.scrollback.join('\n──────────────────────────────────────────────────────────────────────────────\n')
+            : `root@zothos:${sess.shortCwd || '~/zothos-lite'}# _ (Konsole session [${activeKonsoleTab}] ready — type any command and press Enter)`;
+          term.scrollTop = term.scrollHeight;
+        }
+        updateKonsoleSplitPane();
+      }
+
+      function updateKonsoleSplitPane() {
+        const splitEl = document.getElementById('terminalSplitSecondary');
+        if (!splitEl || splitEl.style.display === 'none') return;
+        const fp = currentState?.footprint || {};
+        const ac = currentState?.amnesiaConfig || {};
+        const cotHead = cotClientState?.headHash || 'GENESIS';
+        const cotNodes = cotClientState?.nodes?.length || 1;
+        const cotFacts = cotClientState?.pinnedFacts?.length || 4;
+        splitEl.textContent = [
+          '╔════════════════════════════════════════════╗',
+          '║ ◫ KONSOLE SPLIT-PANE // LIVE ENCLAVE WATCH ║',
+          '╠════════════════════════════════════════════╣',
+          `║ • Active Tab : ${activeKonsoleTab.toUpperCase().padEnd(27, ' ')} ║`,
+          `║ • Working Dir: ${(konsoleSessions[activeKonsoleTab]?.shortCwd || '~/zothos-lite').padEnd(27, ' ')} ║`,
+          `║ • RAM Image  : ${String((fp.totalIsoMb || 958) + ' MB (toram noswap)').padEnd(27, ' ')} ║`,
+          `║ • Spoofed MAC: ${String(ac.spoofedMac || '02:42:ac:11:00:7f').padEnd(27, ' ')} ║`,
+          `║ • CoT Memory : ${String(`HEAD ${cotHead} (${cotNodes} nodes)`).padEnd(27, ' ')} ║`,
+          `║ • Pinned Fact: ${String(`${cotFacts} active semantic facts`).padEnd(27, ' ')} ║`,
+          '╠════════════════════════════════════════════╣',
+          '║ RECENT COMMAND HISTORY:                    ║',
+          ...cmdHistory.slice(-6).map((c, idx) => `║  [${idx + 1}] ${c.slice(0, 36).padEnd(36, ' ')}  ║`),
+          '╚════════════════════════════════════════════╝'
+        ].join('\n');
+      }
+
+      function switchKonsoleTab(tabId) {
+        if (!konsoleSessions[tabId]) return;
+        activeKonsoleTab = tabId;
+        document.querySelectorAll('.konsole-tab-btn').forEach((btn) => {
+          btn.classList.toggle('mono-btn-black', btn.getAttribute('data-konsole-tab') === tabId);
+        });
+        syncKonsoleViewport();
+        document.getElementById('terminalCmdInput')?.focus();
+      }
+
+      document.querySelectorAll('.konsole-tab-btn').forEach((btn) => {
+        btn.addEventListener('click', () => {
+          const tabId = btn.getAttribute('data-konsole-tab');
+          if (tabId) switchKonsoleTab(tabId);
+        });
+      });
+
+      document.getElementById('konsoleNewTabBtn')?.addEventListener('click', () => {
+        konsoleTabCounter += 1;
+        const newId = `tab-${konsoleTabCounter}`;
+        konsoleSessions[newId] = {
+          label: `[>_] ${konsoleTabCounter}: bash #${konsoleTabCounter}`,
+          shortCwd: '~/zothos-lite',
+          scrollback: [
+            `╔══════════════════════════════════════════════════════════════════════════════╗\n` +
+            `║ ⣿ KONSOLE SESSION #${konsoleTabCounter} // NEW AMNESIC BASH + KALI + PARROT + ZOTH TAB       ⣿ ║\n` +
+            `╚══════════════════════════════════════════════════════════════════════════════╝`
+          ]
+        };
+        const bar = document.getElementById('konsoleSessionTabBar');
+        const plusBtn = document.getElementById('konsoleNewTabBtn');
+        if (bar && plusBtn) {
+          const btn = document.createElement('button');
+          btn.type = 'button';
+          btn.className = 'mono-btn konsole-tab-btn';
+          btn.setAttribute('data-konsole-tab', newId);
+          btn.style.cssText = 'min-height:22px;padding:1px 7px;font-size:10.5px !important;';
+          btn.textContent = konsoleSessions[newId].label;
+          btn.addEventListener('click', () => switchKonsoleTab(newId));
+          bar.insertBefore(btn, plusBtn);
+        }
+        switchKonsoleTab(newId);
+      });
+
+      document.getElementById('termSplitViewBtn')?.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const splitEl = document.getElementById('terminalSplitSecondary');
+        if (!splitEl) return;
+        const isHidden = splitEl.style.display === 'none';
+        splitEl.style.display = isHidden ? 'block' : 'none';
+        updateKonsoleSplitPane();
+      });
+
+      async function launchNativeKdeKonsole() {
+        openOrRestoreWindow('winEnvGuard');
+        const metaBadge = document.getElementById('konsoleExecMetaBadge');
+        if (metaBadge) metaBadge.textContent = '[spawning KDE Konsole...]';
+        try {
+          const res = await fetch('/api/terminal/launch-konsole', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ sessionId: activeKonsoleTab })
+          });
+          const data = await res.json();
+          const sess = konsoleSessions[activeKonsoleTab] || konsoleSessions['tab-1'];
+          sess.scrollback.push(
+            `root@zothos:${sess.shortCwd}# konsole --workdir ${data.cwd || '~/zothos-lite'}\n` +
+            `${data.message || '[KDE Konsole 25.04 launched]'}`
+          );
+          if (sess.scrollback.length > 24) sess.scrollback.shift();
+          if (metaBadge) metaBadge.textContent = data.pid ? `[PID ${data.pid} • KONSOLE]` : '[KONSOLE ARMED]';
+          syncKonsoleViewport();
+        } catch (_e) {}
+      }
+
+      document.getElementById('launchNativeKonsoleBtn')?.addEventListener('click', (e) => {
+        e.stopPropagation();
+        launchNativeKdeKonsole();
+      });
+      document.getElementById('konsoleNativeQuickBtn')?.addEventListener('click', (e) => {
+        e.stopPropagation();
+        launchNativeKdeKonsole();
+      });
+
       const AUTOCOMPLETE_CMDS = [
-        'help', 'nmap -sV 127.0.0.1', 'anonsurf status', 'anonsurf myip', 'anonsurf changeid',
+        'help', 'konsole', 'zoth-cot status', 'zoth-cot --tree', 'nmap -sV 127.0.0.1',
+        'anonsurf status', 'anonsurf myip', 'anonsurf changeid',
         'checksec --file=/bin/bash', 'ropper --file /bin/ls', 'whatweb http://127.0.0.1:8145',
         'wafw00f http://127.0.0.1:8145', 'searchsploit linux kernel', 'linpeas', 'dig localhost',
         'nuclei -version', 'subfinder -version', 'httpx -version', 'sqlmap --version', 'nikto -Version',
@@ -3733,27 +3922,45 @@ Type ANY Unix, Bash, Python, Kali Linux, Parrot OS, or Zoth command above and pr
         if (autoOpen !== false) {
           openOrRestoreWindow('winEnvGuard');
         }
+        const sess = konsoleSessions[activeKonsoleTab] || konsoleSessions['tab-1'];
         if (cmd === 'clear' || cmd === 'cls') {
-          term.textContent = 'root@zothos:~# _ (Terminal cleared — type any command and press Enter)';
+          sess.scrollback = [];
+          syncKonsoleViewport();
           return;
         }
 
-        term.textContent = `root@zothos:~# ${cmd}\n[◈ Executing in live Bash / Kali / Parrot / Zoth shell...]`;
+        const metaBadge = document.getElementById('konsoleExecMetaBadge');
+        if (metaBadge) metaBadge.textContent = '[◈ running...]';
 
         try {
           const res = await fetch('/api/terminal/exec', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ command: cmd })
+            body: JSON.stringify({ command: cmd, sessionId: activeKonsoleTab })
           });
           const data = await res.json();
           if (data && data.ok) {
             if (data.snapshot) renderSystemState(data.snapshot);
-            const shortCwd = data.cwd ? data.cwd.replace('/home/zoth/NullAITech/zothos-lite', '~') : '~';
-            const badge = document.getElementById('termPromptBadge');
-            if (badge) badge.textContent = `root@zothos:${shortCwd}#`;
-            term.textContent = `root@zothos:${shortCwd}# ${cmd}\n${data.output}`;
-            term.scrollTop = 0;
+            const shortCwd = data.shortCwd || (data.cwd ? data.cwd.replace(/^\/home\/[^/]+/, '~') : '~/zothos-lite');
+            sess.shortCwd = shortCwd;
+            const entry = `root@zothos:${shortCwd}# ${cmd}\n${data.output}`;
+            // On initial background help load, don't duplicate if already populated
+            if (autoOpen === false && sess.scrollback.length > 0) {
+              sess.scrollback[0] = entry;
+            } else {
+              sess.scrollback.push(entry);
+              if (sess.scrollback.length > 24) sess.scrollback.shift();
+            }
+            if (metaBadge) {
+              const code = data.exitCode ?? 0;
+              const dur = data.durationMs ?? 8;
+              metaBadge.textContent = `[exit ${code} • ${dur}ms]`;
+            }
+            syncKonsoleViewport();
+            // If command was zoth-cot, also refresh CoT UI state
+            if (cmd.includes('cot') && typeof fetchCotState === 'function') {
+              fetchCotState();
+            }
             if (typeof window.autoCheckDojoFromCommand === 'function') {
               window.autoCheckDojoFromCommand(cmd);
             }
@@ -3761,12 +3968,14 @@ Type ANY Unix, Bash, Python, Kali Linux, Parrot OS, or Zoth command above and pr
           }
         } catch (_e) {}
 
-        term.textContent = `root@zothos:~# ${cmd}\n[OK] Executed in volatile RAM overlayfs (toram noswap).`;
+        sess.scrollback.push(`root@zothos:${sess.shortCwd}# ${cmd}\n[OK] Executed in volatile RAM overlayfs (toram noswap).`);
+        syncKonsoleViewport();
       }
 
       document.getElementById('clearTerminalBtn')?.addEventListener('click', () => {
-        const term = document.getElementById('terminalScreen');
-        if (term) term.textContent = 'root@zothos:~# _ (Terminal cleared — type any command or click a tool pill above)';
+        const sess = konsoleSessions[activeKonsoleTab] || konsoleSessions['tab-1'];
+        sess.scrollback = [];
+        syncKonsoleViewport();
         document.getElementById('terminalCmdInput')?.focus();
       });
 
@@ -3791,7 +4000,9 @@ Type ANY Unix, Bash, Python, Kali Linux, Parrot OS, or Zoth command above and pr
       document.getElementById('termContrastToggleBtn')?.addEventListener('click', (e) => {
         e.stopPropagation();
         const term = document.getElementById('terminalScreen');
+        const split = document.getElementById('terminalSplitSecondary');
         if (term) term.classList.toggle('ink-paper-mode');
+        if (split) split.classList.toggle('ink-paper-mode');
       });
 
       // Terminal Shelf Tabs (TOP, KALI, PARROT, REV, UNIX, ZOTH)
@@ -3805,7 +4016,7 @@ Type ANY Unix, Bash, Python, Kali Linux, Parrot OS, or Zoth command above and pr
           });
           scrambleTextElement(
             document.getElementById('tekniumTermHeaderTitle'),
-            `[>_] ${shelf} ARSENAL // BASH + KALI + PARROT + PYTHON SHELL`
+            `[>_] ZOTH KONSOLE 25.04 // ${shelf} ARSENAL (PTY ARMED)`
           );
           document.getElementById('terminalCmdInput')?.focus();
         });
@@ -3826,10 +4037,11 @@ Type ANY Unix, Bash, Python, Kali Linux, Parrot OS, or Zoth command above and pr
 
       document.getElementById('panicWipeRamBtn')?.addEventListener('click', async () => {
         const res = await apiPost('/api/amnesia/toggle', { key: 'panicWipe' });
-        const term = document.getElementById('terminalScreen');
-        if (term && res) {
+        const sess = konsoleSessions[activeKonsoleTab] || konsoleSessions['tab-1'];
+        if (res) {
           openOrRestoreWindow('winEnvGuard');
-          term.textContent = `root@zothos-lite-ram:~# sdmem -fllv && macchanger -r eth0\n[☢ PANIC WIPE COMPLETED] ${res.message || 'All volatile RAM_TMPFS packages zeroed; MAC rotated.'}`;
+          sess.scrollback.push(`root@zothos-lite-ram:~# sdmem -fllv && macchanger -r eth0\n[☢ PANIC WIPE COMPLETED] ${res.message || 'All volatile RAM_TMPFS packages zeroed; MAC rotated.'}`);
+          syncKonsoleViewport();
         }
       });
 
@@ -3860,7 +4072,7 @@ Type ANY Unix, Bash, Python, Kali Linux, Parrot OS, or Zoth command above and pr
       });
 
       document.getElementById('runTerminalCmdBtn')?.addEventListener('click', () => runTerminalCommand());
-      document.getElementById('terminalCmdInput')?.addEventListener('keydown', (e) => {
+      document.getElementById('terminalCmdInput')?.addEventListener('keydown', async (e) => {
         const inp = e.currentTarget;
         if (e.key === 'Enter') {
           e.preventDefault();
@@ -3882,15 +4094,44 @@ Type ANY Unix, Bash, Python, Kali Linux, Parrot OS, or Zoth command above and pr
           }
         } else if (e.key === 'Tab') {
           e.preventDefault();
-          const cur = inp.value.trim().toLowerCase();
-          if (cur) {
-            const match = AUTOCOMPLETE_CMDS.find((c) => c.toLowerCase().startsWith(cur));
-            if (match) inp.value = match;
-          }
+          const rawLine = inp.value;
+          const cur = rawLine.trim();
+          if (!cur) return;
+          try {
+            const res = await fetch('/api/terminal/complete', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ line: rawLine, sessionId: activeKonsoleTab })
+            });
+            const data = await res.json();
+            if (data && data.ok && Array.isArray(data.matches) && data.matches.length > 0) {
+              if (data.matches.length === 1) {
+                const parts = rawLine.split(/\s+/);
+                parts[parts.length - 1] = data.matches[0];
+                inp.value = parts.join(' ') + (data.matches[0].endsWith('/') ? '' : ' ');
+              } else {
+                const sess = konsoleSessions[activeKonsoleTab] || konsoleSessions['tab-1'];
+                sess.scrollback.push(`root@zothos:${sess.shortCwd}# ${rawLine}<TAB>\n${data.matches.join('   ')}`);
+                syncKonsoleViewport();
+              }
+              return;
+            }
+          } catch (_e) {}
+          const match = AUTOCOMPLETE_CMDS.find((c) => c.toLowerCase().startsWith(cur.toLowerCase()));
+          if (match) inp.value = match;
         } else if (e.ctrlKey && (e.key === 'l' || e.key === 'L')) {
           e.preventDefault();
-          const term = document.getElementById('terminalScreen');
-          if (term) term.textContent = 'root@zothos:~# _ (Terminal cleared)';
+          const sess = konsoleSessions[activeKonsoleTab] || konsoleSessions['tab-1'];
+          sess.scrollback = [];
+          syncKonsoleViewport();
+        } else if (e.ctrlKey && (e.key === 'c' || e.key === 'C')) {
+          if (inp.selectionStart === inp.selectionEnd) {
+            e.preventDefault();
+            const sess = konsoleSessions[activeKonsoleTab] || konsoleSessions['tab-1'];
+            sess.scrollback.push(`root@zothos:${sess.shortCwd}# ${inp.value}^C`);
+            inp.value = '';
+            syncKonsoleViewport();
+          }
         }
       });
 

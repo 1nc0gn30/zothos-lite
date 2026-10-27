@@ -1736,12 +1736,180 @@ print(json.dumps({"transcript": transcript, "peakDb": peak_db, "engine": engine}
   }
 
   // ---------------------------------------------------------------------------
+  // Native KDE Konsole 25.04 Desktop Window Launcher (/api/terminal/launch-konsole)
+  // ---------------------------------------------------------------------------
+  if (pathname === '/api/terminal/launch-konsole' && req.method === 'POST') {
+    const body = await readJsonBody(req);
+    const sessionId = String(body.sessionId || 'tab-1');
+    const sessions = global.zothKonsoleSessions || {};
+    const targetCwd = (sessions[sessionId] && sessions[sessionId].cwd) || global.zothTerminalCwd || __dirname;
+    const extraPath = [
+      path.join(__dirname, 'bin', 'kali-parrot-bin'),
+      path.join(__dirname, 'bin'),
+      '/opt/zothos-ai-env/bin',
+      '/usr/local/sbin',
+      '/usr/local/bin',
+      '/usr/sbin',
+      '/usr/bin',
+      '/sbin',
+      '/bin',
+      process.env.PATH || ''
+    ].join(':');
+
+    const konsoleBin = fs.existsSync('/usr/bin/konsole')
+      ? '/usr/bin/konsole'
+      : (fs.existsSync('/usr/bin/xterm') ? '/usr/bin/xterm' : null);
+
+    if (!konsoleBin) {
+      return sendJson(res, 200, {
+        ok: false,
+        launched: false,
+        message: 'Native /usr/bin/konsole binary not found; using embedded Zoth Konsole PTY.'
+      });
+    }
+
+    try {
+      const uid = typeof process.getuid === 'function' ? process.getuid() : 1000;
+      const runtimeDir = process.env.XDG_RUNTIME_DIR || `/run/user/${uid}`;
+      const homeDir = process.env.HOME || '/home/zoth';
+      const initBannerCmd = [
+        'clear',
+        'echo "╔══════════════════════════════════════════════════════════════════════════════╗"',
+        'echo "║ ⣿ ZOTHOS-LITE v1.0 // NATIVE KDE KONSOLE 25.04 TERMINAL (TORAM NOSWAP)     ⣿ ║"',
+        'echo "╠══════════════════════════════════════════════════════════════════════════════╣"',
+        'echo "║ • PATH Armed : bin/kali-parrot-bin + zoth-cot + zoth-lite-pkg + zoth-rayban ║"',
+        'echo "║ • Try        : zoth-cot status | anonsurf status | checksec --file=/bin/ls  ║"',
+        'echo "╚══════════════════════════════════════════════════════════════════════════════╝"',
+        'exec /bin/bash -i'
+      ].join('; ');
+
+      const args = konsoleBin.endsWith('konsole')
+        ? ['--workdir', targetCwd, '-p', 'tabtitle=ZothOS-Lite // Konsole', '-e', '/bin/bash', '-c', initBannerCmd]
+        : ['-T', 'ZothOS-Lite // Konsole', '-e', '/bin/bash', '-c', initBannerCmd];
+
+      const child = spawn(konsoleBin, args, {
+        cwd: targetCwd,
+        detached: true,
+        stdio: 'ignore',
+        env: {
+          ...process.env,
+          DISPLAY: process.env.DISPLAY || ':0',
+          WAYLAND_DISPLAY: process.env.WAYLAND_DISPLAY || 'wayland-0',
+          XDG_RUNTIME_DIR: runtimeDir,
+          XAUTHORITY: process.env.XAUTHORITY || path.join(homeDir, '.Xauthority'),
+          PATH: extraPath,
+          ZOTHOS_LITE_DIR: __dirname,
+          TERM: 'xterm-256color'
+        }
+      });
+      child.unref();
+
+      return sendJson(res, 200, {
+        ok: true,
+        launched: true,
+        binary: konsoleBin,
+        pid: child.pid,
+        cwd: targetCwd,
+        message: `[KDE KONSOLE 25.04] Spawned native window (PID ${child.pid}) at ${targetCwd} on DISPLAY=${process.env.DISPLAY || ':0'}`
+      });
+    } catch (err) {
+      return sendJson(res, 200, {
+        ok: false,
+        launched: false,
+        message: `Konsole launch error: ${err.message}`
+      });
+    }
+  }
+
+  // ---------------------------------------------------------------------------
+  // Konsole Tab Auto-Completion (/api/terminal/complete)
+  // ---------------------------------------------------------------------------
+  if (pathname === '/api/terminal/complete' && req.method === 'POST') {
+    const body = await readJsonBody(req);
+    const line = String(body.line || '');
+    const sessionId = String(body.sessionId || 'tab-1');
+    if (!global.zothKonsoleSessions) global.zothKonsoleSessions = {};
+    const cwd = (global.zothKonsoleSessions[sessionId] && global.zothKonsoleSessions[sessionId].cwd) || global.zothTerminalCwd || __dirname;
+
+    const tokens = line.split(/\s+/);
+    const lastToken = tokens[tokens.length - 1] || '';
+    const isFirstToken = tokens.length <= 1 && !line.endsWith(' ');
+
+    const matches = new Set();
+    try {
+      if (isFirstToken) {
+        const builtins = [
+          'help', 'clear', 'konsole', 'cd', 'ls', 'pwd', 'cat', 'grep', 'find', 'ps', 'ss', 'ip', 'df', 'free', 'uname',
+          'nmap', 'whatweb', 'wafw00f', 'searchsploit', 'nuclei', 'subfinder', 'sqlmap', 'nikto', 'ffuf', 'gobuster',
+          'msfconsole', 'masscan', 'dig', 'anonsurf', 'macchanger', 'mat2', 'exiftool', 'torsocks', 'firejail',
+          'tcpdump', 'tshark', 'checksec', 'ropper', 'r2', 'radare2', 'objdump', 'readelf', 'gdb', 'john', 'hashcat',
+          'hydra', 'aircrack-ng', 'linpeas', 'python3', 'node', 'rustc', 'go', 'git', 'openssl',
+          'zoth-rayban', 'zoth-envguard', 'zoth-ghostbyte', 'zoth-hexstrike', 'zoth-promptmaster',
+          'zoth-vaelor-coldsign', 'zoth-neuro-stdp', 'zoth-tor-guard', 'zoth-lite-pkg', 'zoth-cot', 'systemctl', 'vm'
+        ];
+        for (const b of builtins) {
+          if (b.startsWith(lastToken.toLowerCase())) matches.add(b);
+        }
+        for (const binDir of [path.join(__dirname, 'bin'), path.join(__dirname, 'bin', 'kali-parrot-bin')]) {
+          if (fs.existsSync(binDir)) {
+            for (const f of fs.readdirSync(binDir)) {
+              if (f.startsWith(lastToken)) matches.add(f);
+            }
+          }
+        }
+      } else {
+        const homeDir = process.env.HOME || '/home/zoth';
+        const expanded = lastToken.startsWith('~') ? path.join(homeDir, lastToken.slice(1)) : lastToken;
+        const searchDir = expanded.endsWith('/')
+          ? path.resolve(cwd, expanded)
+          : path.resolve(cwd, path.dirname(expanded === '' ? '.' : expanded));
+        const prefix = expanded.endsWith('/') ? '' : path.basename(expanded);
+        const dirPrefix = lastToken.includes('/') ? lastToken.slice(0, lastToken.lastIndexOf('/') + 1) : '';
+
+        if (fs.existsSync(searchDir) && fs.statSync(searchDir).isDirectory()) {
+          for (const entry of fs.readdirSync(searchDir)) {
+            if (entry.startsWith(prefix)) {
+              const fullEntry = path.join(searchDir, entry);
+              let suffix = '';
+              try {
+                if (fs.statSync(fullEntry).isDirectory()) suffix = '/';
+              } catch (_e) {}
+              matches.add(`${dirPrefix}${entry}${suffix}`);
+            }
+          }
+        }
+      }
+    } catch (_e) {}
+
+    const sorted = Array.from(matches).sort().slice(0, 32);
+    return sendJson(res, 200, {
+      ok: true,
+      token: lastToken,
+      matches: sorted
+    });
+  }
+
+  // ---------------------------------------------------------------------------
   // Live Armed ZothOS-Lite Terminal Executor (/api/terminal/exec)
   // Executes Core Security Tools, Package Manager, Daemons, Man Pages & KVM VM
   // ---------------------------------------------------------------------------
   if (pathname === '/api/terminal/exec' && req.method === 'POST') {
     const body = await readJsonBody(req);
     const rawCmd = String(body.command || 'help').trim();
+    const sessionId = String(body.sessionId || 'tab-1');
+    if (!global.zothKonsoleSessions) {
+      global.zothKonsoleSessions = {};
+    }
+    if (!global.zothKonsoleSessions[sessionId]) {
+      global.zothKonsoleSessions[sessionId] = {
+        cwd: __dirname,
+        seq: 0
+      };
+    }
+    const sessionObj = global.zothKonsoleSessions[sessionId];
+    sessionObj.seq += 1;
+    global.zothTerminalCwd = sessionObj.cwd;
+    const startExecMs = Date.now();
     const parts = rawCmd.split(/\s+/);
     const base = (parts[0] || '').toLowerCase();
     const arg1 = parts[1] || '';
@@ -2151,27 +2319,107 @@ print(json.dumps({"transcript": transcript, "peakDb": peak_db, "engine": engine}
       });
     }
 
-    // Real Live Bash + Kali Linux + Parrot OS + Python + Unix Executor
+    // Real Live Bash + Kali Linux + Parrot OS + Python + Unix + KDE Konsole Executor
     if (!global.zothTerminalCwd) {
       global.zothTerminalCwd = __dirname;
     }
+    const homeDir = process.env.HOME || '/home/zoth';
+    const formatShortCwd = (dirPath) => {
+      if (!dirPath) return '~';
+      if (dirPath === __dirname) return '~/zothos-lite';
+      if (dirPath.startsWith(__dirname + '/')) return '~/zothos-lite/' + dirPath.slice(__dirname.length + 1);
+      if (dirPath === homeDir) return '~';
+      if (dirPath.startsWith(homeDir + '/')) return '~/' + dirPath.slice(homeDir.length + 1);
+      return dirPath;
+    };
+
+    if (base === 'konsole') {
+      const extraPathKonsole = [
+        path.join(__dirname, 'bin', 'kali-parrot-bin'),
+        path.join(__dirname, 'bin'),
+        '/opt/zothos-ai-env/bin',
+        '/usr/local/sbin',
+        '/usr/local/bin',
+        '/usr/sbin',
+        '/usr/bin',
+        '/sbin',
+        '/bin',
+        process.env.PATH || ''
+      ].join(':');
+      const konsoleBin = fs.existsSync('/usr/bin/konsole') ? '/usr/bin/konsole' : null;
+      if (konsoleBin) {
+        try {
+          const uid = typeof process.getuid === 'function' ? process.getuid() : 1000;
+          const child = spawn(konsoleBin, ['--workdir', sessionObj.cwd, '-p', 'tabtitle=ZothOS-Lite // Konsole'], {
+            cwd: sessionObj.cwd,
+            detached: true,
+            stdio: 'ignore',
+            env: {
+              ...process.env,
+              DISPLAY: process.env.DISPLAY || ':0',
+              WAYLAND_DISPLAY: process.env.WAYLAND_DISPLAY || 'wayland-0',
+              XDG_RUNTIME_DIR: process.env.XDG_RUNTIME_DIR || `/run/user/${uid}`,
+              PATH: extraPathKonsole,
+              ZOTHOS_LITE_DIR: __dirname
+            }
+          });
+          child.unref();
+          return sendJson(res, 200, {
+            ok: true,
+            command: rawCmd,
+            sessionId,
+            cwd: sessionObj.cwd,
+            shortCwd: formatShortCwd(sessionObj.cwd),
+            durationMs: Date.now() - startExecMs,
+            output: [
+              '▓▒░ KDE KONSOLE 25.04.2 // NATIVE DESKTOP TERMINAL LAUNCHED ░▒▓',
+              `  • Binary    : ${konsoleBin} (PID ${child.pid})`,
+              `  • Workdir   : ${sessionObj.cwd}`,
+              `  • Display   : ${process.env.DISPLAY || ':0'} (Wayland/X11)`,
+              '  • Armed PATH: bin/kali-parrot-bin + zoth-cot + zoth-lite-pkg + zoth-rayban'
+            ].join('\n'),
+            snapshot: snap
+          });
+        } catch (err) {
+          return sendJson(res, 200, {
+            ok: true,
+            command: rawCmd,
+            sessionId,
+            cwd: sessionObj.cwd,
+            shortCwd: formatShortCwd(sessionObj.cwd),
+            output: `konsole: ${err.message}`,
+            snapshot: snap
+          });
+        }
+      }
+    }
+
     if (base === 'cd') {
-      const targetDir = rest ? rest.replace(/^~/, process.env.HOME || '/home/zoth') : (process.env.HOME || '/home/zoth');
-      const resolved = path.resolve(global.zothTerminalCwd, targetDir);
+      const targetDir = rest
+        ? (rest === '-' ? __dirname : rest.replace(/^~(?=$|\/)/, homeDir))
+        : __dirname;
+      const resolved = path.resolve(sessionObj.cwd, targetDir);
       if (fs.existsSync(resolved) && fs.statSync(resolved).isDirectory()) {
+        sessionObj.cwd = resolved;
         global.zothTerminalCwd = resolved;
         return sendJson(res, 200, {
           ok: true,
           command: rawCmd,
-          cwd: global.zothTerminalCwd,
-          output: `[cwd] -> ${global.zothTerminalCwd}`,
+          sessionId,
+          cwd: sessionObj.cwd,
+          shortCwd: formatShortCwd(sessionObj.cwd),
+          durationMs: Date.now() - startExecMs,
+          output: `[cwd] -> ${sessionObj.cwd} (${formatShortCwd(sessionObj.cwd)})`,
           snapshot: snap
         });
       }
       return sendJson(res, 200, {
         ok: true,
         command: rawCmd,
-        cwd: global.zothTerminalCwd,
+        sessionId,
+        cwd: sessionObj.cwd,
+        shortCwd: formatShortCwd(sessionObj.cwd),
+        durationMs: Date.now() - startExecMs,
         output: `bash: cd: ${targetDir}: No such file or directory`,
         snapshot: snap
       });
@@ -2195,10 +2443,11 @@ print(json.dumps({"transcript": transcript, "peakDb": peak_db, "engine": engine}
       let stderrBuf = '';
       let finished = false;
       const child = spawn('/bin/bash', ['-c', rawCmd], {
-        cwd: global.zothTerminalCwd,
+        cwd: sessionObj.cwd,
         env: {
           ...process.env,
           PATH: extraPath,
+          ZOTHOS_LITE_DIR: __dirname,
           TERM: 'xterm-256color',
           PYTHONIOENCODING: 'utf-8'
         }
@@ -2207,7 +2456,10 @@ print(json.dumps({"transcript": transcript, "peakDb": peak_db, "engine": engine}
         if (!finished) {
           finished = true;
           try { child.kill('SIGKILL'); } catch (_e) {}
-          resolve((stdoutBuf + (stderrBuf ? `\n${stderrBuf}` : '') + '\n[⏱ 6.0s interactive stream limit reached]').trim());
+          resolve({
+            exitCode: 124,
+            text: (stdoutBuf + (stderrBuf ? `\n${stderrBuf}` : '') + '\n[⏱ 6.0s interactive stream limit reached]').trim()
+          });
         }
       }, 6000);
       child.stdout.on('data', (chunk) => {
@@ -2220,15 +2472,20 @@ print(json.dumps({"transcript": transcript, "peakDb": peak_db, "engine": engine}
         if (!finished) {
           finished = true;
           clearTimeout(timer);
-          resolve(`bash: ${err.message}`);
+          resolve({ exitCode: 1, text: `bash: ${err.message}` });
         }
       });
       child.on('close', (code) => {
         if (!finished) {
           finished = true;
           clearTimeout(timer);
-          const combined = [stdoutBuf.trimEnd(), stderrBuf.trimEnd()].filter(Boolean).join('\n');
-          resolve(combined || `[exit ${code ?? 0}]`);
+          // Strip ANSI escape sequences so 1-bit monochrome Konsole stays razor-sharp
+          const stripAnsi = (s) => s.replace(/\x1B\[[0-?]*[ -/]*[@-~]/g, '');
+          const combined = stripAnsi([stdoutBuf.trimEnd(), stderrBuf.trimEnd()].filter(Boolean).join('\n'));
+          resolve({
+            exitCode: code ?? 0,
+            text: combined || `[exit ${code ?? 0}]`
+          });
         }
       });
     });
@@ -2236,8 +2493,12 @@ print(json.dumps({"transcript": transcript, "peakDb": peak_db, "engine": engine}
     return sendJson(res, 200, {
       ok: true,
       command: rawCmd,
-      cwd: global.zothTerminalCwd,
-      output: execResult,
+      sessionId,
+      cwd: sessionObj.cwd,
+      shortCwd: formatShortCwd(sessionObj.cwd),
+      exitCode: execResult.exitCode,
+      durationMs: Date.now() - startExecMs,
+      output: execResult.text,
       snapshot: snap
     });
   }
