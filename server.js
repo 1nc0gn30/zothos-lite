@@ -2394,7 +2394,7 @@ print(json.dumps({"transcript": transcript, "peakDb": peak_db, "engine": engine}
       }
     }
 
-    if (base === 'cd') {
+    if (base === 'cd' && !/[;&|]/.test(rest)) {
       const targetDir = rest
         ? (rest === '-' ? __dirname : rest.replace(/^~(?=$|\/)/, homeDir))
         : __dirname;
@@ -2438,11 +2438,13 @@ print(json.dumps({"transcript": transcript, "peakDb": peak_db, "engine": engine}
       process.env.PATH || ''
     ].join(':');
 
+    const wrappedCmd = `${rawCmd}\n__zoth_ec=$?\nprintf "\\n__ZOTH_PWD__:%s:__END_PWD__\\n" "$(pwd)"\nexit $__zoth_ec`;
+
     const execResult = await new Promise((resolve) => {
       let stdoutBuf = '';
       let stderrBuf = '';
       let finished = false;
-      const child = spawn('/bin/bash', ['-c', rawCmd], {
+      const child = spawn('/bin/bash', ['-c', wrappedCmd], {
         cwd: sessionObj.cwd,
         env: {
           ...process.env,
@@ -2452,9 +2454,11 @@ print(json.dumps({"transcript": transcript, "peakDb": peak_db, "engine": engine}
           PYTHONIOENCODING: 'utf-8'
         }
       });
+      sessionObj.activeChild = child;
       const timer = setTimeout(() => {
         if (!finished) {
           finished = true;
+          sessionObj.activeChild = null;
           try { child.kill('SIGKILL'); } catch (_e) {}
           resolve({
             exitCode: 124,
@@ -2463,7 +2467,7 @@ print(json.dumps({"transcript": transcript, "peakDb": peak_db, "engine": engine}
         }
       }, 6000);
       child.stdout.on('data', (chunk) => {
-        if (stdoutBuf.length < 32000) stdoutBuf += chunk.toString('utf8');
+        if (stdoutBuf.length < 36000) stdoutBuf += chunk.toString('utf8');
       });
       child.stderr.on('data', (chunk) => {
         if (stderrBuf.length < 16000) stderrBuf += chunk.toString('utf8');
@@ -2471,6 +2475,7 @@ print(json.dumps({"transcript": transcript, "peakDb": peak_db, "engine": engine}
       child.on('error', (err) => {
         if (!finished) {
           finished = true;
+          sessionObj.activeChild = null;
           clearTimeout(timer);
           resolve({ exitCode: 1, text: `bash: ${err.message}` });
         }
@@ -2478,13 +2483,23 @@ print(json.dumps({"transcript": transcript, "peakDb": peak_db, "engine": engine}
       child.on('close', (code) => {
         if (!finished) {
           finished = true;
+          sessionObj.activeChild = null;
           clearTimeout(timer);
+          const pwdMatch = stdoutBuf.match(/\n?__ZOTH_PWD__:([^\n]+):__END_PWD__\n?/);
+          if (pwdMatch && pwdMatch[1]) {
+            const newDir = pwdMatch[1].trim();
+            if (fs.existsSync(newDir)) {
+              sessionObj.cwd = newDir;
+              global.zothTerminalCwd = newDir;
+            }
+            stdoutBuf = stdoutBuf.replace(pwdMatch[0], '');
+          }
           // Strip ANSI escape sequences so 1-bit monochrome Konsole stays razor-sharp
           const stripAnsi = (s) => s.replace(/\x1B\[[0-?]*[ -/]*[@-~]/g, '');
           const combined = stripAnsi([stdoutBuf.trimEnd(), stderrBuf.trimEnd()].filter(Boolean).join('\n'));
           resolve({
             exitCode: code ?? 0,
-            text: combined || `[exit ${code ?? 0}]`
+            text: combined
           });
         }
       });
@@ -2501,6 +2516,20 @@ print(json.dumps({"transcript": transcript, "peakDb": peak_db, "engine": engine}
       output: execResult.text,
       snapshot: snap
     });
+  }
+
+  if (pathname === '/api/terminal/interrupt' && req.method === 'POST') {
+    const body = await readJsonBody(req);
+    const sessionId = String(body.sessionId || 'tab-1');
+    const sess = global.zothKonsoleSessions && global.zothKonsoleSessions[sessionId];
+    if (sess && sess.activeChild) {
+      try {
+        sess.activeChild.kill('SIGINT');
+      } catch (_e) {}
+      sess.activeChild = null;
+      return sendJson(res, 200, { ok: true, interrupted: true });
+    }
+    return sendJson(res, 200, { ok: true, interrupted: false });
   }
 
   if (pathname === '/api/vm/reboot' && req.method === 'POST') {
