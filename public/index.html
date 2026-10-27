@@ -844,62 +844,61 @@
     <canvas id="desktopWallpaperCanvas" width="1440" height="820" aria-label="Animated Monotone Braille and Ordered Bayer Dither Desktop Wallpaper"></canvas>
 
     <!-- =======================================================================
-         1. REDESIGNED MONOTONE TOP SYSTEM BAR (MENUS + BRAILLE TELEMETRY + TRAY)
+         1. REDESIGNED MONOTONE TOP SYSTEM BAR (ZERO OVERFLOW + ZERO BROKEN LINKS)
          ======================================================================= -->
     <header class="tails-top-panel" role="banner">
       <div class="panel-left">
         <button type="button" class="top-brand-seal" id="appsMenuToggleBtn" title="Open ZothOS-Lite System & Mini-Apps Menu">
           <span>◈ ZOTHOS-LITE ▾</span>
         </button>
-        <button type="button" class="top-nav-btn" id="daemonsMenuToggleBtn" title="Manage ZothOS Loopback Enclave Daemons">
-          <span>▓ Daemons (<span id="topDaemonActiveCount">6/8</span>) ▾</span>
+        <button type="button" class="top-nav-btn active" data-open-win="winEnvGuard" title="Focus Armed Live Root Terminal & Command Arsenal">
+          <span>[>_] TERMINAL</span>
         </button>
-        <button type="button" class="top-nav-btn" data-open-win="winCoreTools" title="Pop Up 8 Pre-Installed ZothOS Core Security Tools">
-          <span>█ Core Tools (8)</span>
+        <button type="button" class="top-nav-btn" data-open-win="winDocs" title="Open Complete Tool Documentation & CLI Operator Manual">
+          <span>📖 DOCS & MANUAL</span>
         </button>
-        <button type="button" class="top-nav-btn" data-open-win="winPkgPuller" title="Pop Up zoth-lite-pkg On-Demand Tool Installer">
-          <span>⬇ Pull Tools (<span id="topPulledCount">3/12</span>)</span>
-        </button>
-        <button type="button" class="top-nav-btn" data-open-win="winBrailleStudio" title="Pop Up Interactive Braille & ASCII Dither Art Studio">
-          <span>⣿ Braille Art</span>
+        <button type="button" class="top-nav-btn" id="daemonsMenuToggleBtn" title="Manage 8 ZothOS Sovereign Enclave Daemons">
+          <span>▓ DAEMONS (<span id="topDaemonActiveCount">6/8</span>) ▾</span>
         </button>
       </div>
 
       <div class="panel-center">
-        <div class="top-telemetry-cluster">
-          <span title="Volatile RAM-Only Root Filesystem">⣿ <b>TORAM:</b> <span id="topRamFootprint">958MB</span></span>
+        <button type="button" class="top-telemetry-cluster" data-open-win="winGreeter" title="Click to Open Amnesic Greeter & RAM Footprint Inspector" style="cursor:pointer;">
+          <span>⣿ <b>TORAM:</b> <span id="topRamFootprint">958MB</span></span>
           <span class="top-telemetry-sep">│</span>
-          <span title="Tor Transparent Proxy & nftables Kill-Switch">▓▒░ <b>TOR:</b> 9050 GUARD</span>
+          <span>▓▒░ <b>TOR:</b> 9050 GUARD</span>
           <span class="top-telemetry-sep">│</span>
-          <span title="Spoofed NIC MAC Address"><b>MAC:</b> <span id="topMacValue">02:42:ac:11:00:7f</span></span>
-          <span class="top-telemetry-sep">│</span>
-          <span id="topClockUtc">UTC --:--:--</span>
-        </div>
+          <span><b>MAC:</b> <span id="topMacValue">02:42:ac:11:00:7f</span></span>
+        </button>
       </div>
 
       <div class="panel-right">
-        <a href="http://localhost:8140" target="_blank" rel="noopener noreferrer" class="top-nav-btn" title="Open Vaelor L1 Account-Lattice Node (:8140)">
-          ⛓️ Vaelor
-        </a>
-        <a href="https://buy.stripe.com/3cIfZg27PdKo2D64Ocfw40X" target="_blank" rel="noopener noreferrer" class="top-nav-btn" title="100% Free & Open-Access — Optional Coffee Support">
-          ☕ Coffee
-        </a>
-        <button type="button" class="top-nav-btn" id="copySolanaTopBtn" title="Copy Solana Tip Address: GG2eQbVh8ut1BK6j1A2tz7pSySdLpD38BgyEhGcxdXoK">
-          ◎ SOL
+        <button type="button" class="top-nav-btn" data-open-win="winColdSigner" title="Open In-OS Vaelor L1 Air-Gapped Ed25519 Cold Signer">
+          <span>⛓️ L1 SIGNER</span>
+        </button>
+        <button type="button" class="top-nav-btn" id="supportMenuToggleBtn" title="100% Free & Open-Access — View Coffee & Solana Support Info">
+          <span>☕ SUPPORT ▾</span>
         </button>
         <button type="button" class="top-panic-btn" id="panicWipeRamBtn" title="Trigger Emergency sdmem RAM Wipe & Rotate MAC">
-          ☢ Panic Wipe
+          <span>☢ PANIC WIPE</span>
         </button>
+        <span id="topClockUtc" style="font-size:9.5px;font-weight:700;padding:0 5px;border:1px solid var(--fill-black);height:26px;display:inline-flex;align-items:center;background:var(--bg-grey-50);">UTC --:--:--</span>
       </div>
 
       <!-- System & Mini-Apps Dropdown Menu -->
       <div class="top-dropdown-menu" id="appsDropdownMenu" role="menu">
         <div class="top-dropdown-header">
-          <span>▓▒░ ZOTHOS-LITE MINI-APP WINDOWS</span>
+          <span>▓▒░ ZOTHOS-LITE MINI-APP WINDOWS (9)</span>
           <span>1-BIT B&W</span>
         </div>
+        <button type="button" class="top-dropdown-item" data-open-win="winEnvGuard">
+          <span>[>_] Live Armed Root Terminal & CLI Arsenal</span><span>ARMED</span>
+        </button>
+        <button type="button" class="top-dropdown-item" data-open-win="winDocs">
+          <span>[📖] Tool Documentation & Operator Manual</span><span>MANUAL</span>
+        </button>
         <button type="button" class="top-dropdown-item" data-open-win="winGreeter">
-          <span>[◈] Tails Amnesic Greeter & RAM</span><span>POP UP</span>
+          <span>[◈] Tails Amnesic Greeter & RAM Footprint</span><span>TORAM</span>
         </button>
         <button type="button" class="top-dropdown-item" data-open-win="winDaemons">
           <span>[▓] ZothOS Sovereign Daemons (8)</span><span>DAEMONS</span>
@@ -919,21 +918,44 @@
         <button type="button" class="top-dropdown-item" data-open-win="winGhostByte">
           <span>[🧹] GhostByte Metadata Cleaner (mat2)</span><span>SCRUB</span>
         </button>
-        <button type="button" class="top-dropdown-item" data-open-win="winEnvGuard">
-          <span>[>_] EnvGuard Vault & Live KVM TTY</span><span>SHELL</span>
-        </button>
       </div>
 
       <!-- Quick Daemons Dropdown Menu -->
-      <div class="top-dropdown-menu" id="daemonsDropdownMenu" style="left:142px;width:340px;" role="menu">
+      <div class="top-dropdown-menu" id="daemonsDropdownMenu" style="left:295px;width:345px;" role="menu">
         <div class="top-dropdown-header">
           <span>⣿ ZOTHOS ENCLAVE DAEMONS</span>
-          <span>CLICK TO MANAGE</span>
+          <span>CLICK TO TOGGLE</span>
         </div>
         <div id="topDaemonsQuickList"></div>
         <button type="button" class="top-dropdown-item" data-open-win="winDaemons" style="background:var(--bg-grey-50);">
           <span>▶ Open Full Daemons Multiplexer Window</span><span>[▓]</span>
         </button>
+      </div>
+
+      <!-- In-OS Support & Tip Jar Popover (Never breaks inside isolated VM!) -->
+      <div class="top-dropdown-menu" id="supportDropdownMenu" style="left:auto;right:10px;width:360px;" role="menu">
+        <div class="top-dropdown-header">
+          <span>☕ 100% OPEN-ACCESS // BUY US A COFFEE</span>
+          <span>ZERO PAYWALLS</span>
+        </div>
+        <div style="padding:9px;font-size:10px;line-height:1.45;background:var(--bg-pure-white);">
+          <div style="margin-bottom:6px;color:var(--fg-grey-600);">
+            Every ZothOS-Lite tool, daemon, and cryptographic enclave is <b>100% free and unlocked</b>. Support development via Solana or Stripe:
+          </div>
+          <div style="padding:6px;background:var(--bg-grey-50);border:1px solid var(--fill-black);margin-bottom:6px;">
+            <div style="font-weight:700;margin-bottom:2px;">◎ SOLANA TIP WALLET:</div>
+            <code style="font-size:9px;word-break:break-all;display:block;margin-bottom:4px;">GG2eQbVh8ut1BK6j1A2tz7pSySdLpD38BgyEhGcxdXoK</code>
+            <button type="button" class="mono-btn mono-btn-black" id="copySolanaTopBtn" style="width:100%;min-height:24px;">📋 Copy Solana Wallet Address</button>
+          </div>
+          <div style="padding:6px;background:var(--bg-grey-50);border:1px solid var(--fill-black);">
+            <div style="font-weight:700;margin-bottom:2px;">☕ STRIPE COFFEE LINK:</div>
+            <code style="font-size:9px;word-break:break-all;display:block;margin-bottom:4px;">https://buy.stripe.com/3cIfZg27PdKo2D64Ocfw40X</code>
+            <div style="display:flex;gap:4px;">
+              <button type="button" class="mono-btn mono-btn-black" id="copyStripeCoffeeBtn" style="flex:1;min-height:24px;">📋 Copy Coffee Link</button>
+              <a href="https://buy.stripe.com/3cIfZg27PdKo2D64Ocfw40X" target="_blank" rel="noopener noreferrer" class="mono-btn" style="min-height:24px;">↗ Open</a>
+            </div>
+          </div>
+        </div>
       </div>
     </header>
 
@@ -945,42 +967,42 @@
       <!-- Left 2-Column Mini-App Launchpad + ASCII/Braille Crest -->
       <aside class="desktop-icons-launchpad" aria-label="ZothOS-Lite Mini-App Launchpad">
         <div>
-          <div class="launchpad-header" style="margin-bottom:7px;">
-            <span>⣿ MINI-APPS (8)</span>
-            <span>CLICK</span>
+          <div class="launchpad-header" style="margin-bottom:6px;">
+            <span>⣿ MINI-APPS (9)</span>
+            <span>OPEN</span>
           </div>
           <div class="desktop-icons-grid">
-            <button type="button" class="desktop-icon-btn focused" data-open-win="winGreeter">
+            <button type="button" class="desktop-icon-btn focused" data-open-win="winEnvGuard">
+              <span class="desktop-icon-glyph">[>_]</span>
+              <span class="desktop-icon-label">Live Terminal</span>
+            </button>
+            <button type="button" class="desktop-icon-btn" data-open-win="winDocs">
+              <span class="desktop-icon-glyph">📖MAN</span>
+              <span class="desktop-icon-label">Tool Docs</span>
+            </button>
+            <button type="button" class="desktop-icon-btn" data-open-win="winGreeter">
               <span class="desktop-icon-glyph">⣿◈⣿</span>
-              <span class="desktop-icon-label">Amnesic Greeter</span>
+              <span class="desktop-icon-label">Amnesic OS</span>
             </button>
             <button type="button" class="desktop-icon-btn" data-open-win="winDaemons">
               <span class="desktop-icon-glyph">▓▒░</span>
-              <span class="desktop-icon-label">ZothOS Daemons</span>
+              <span class="desktop-icon-label">8 Daemons</span>
             </button>
             <button type="button" class="desktop-icon-btn" data-open-win="winCoreTools">
               <span class="desktop-icon-glyph">[08]</span>
-              <span class="desktop-icon-label">Installed Tools</span>
+              <span class="desktop-icon-label">Core Tools</span>
             </button>
             <button type="button" class="desktop-icon-btn" data-open-win="winPkgPuller">
               <span class="desktop-icon-glyph">⬇PKG</span>
-              <span class="desktop-icon-label">Install Tools</span>
+              <span class="desktop-icon-label">Pull Tools</span>
             </button>
             <button type="button" class="desktop-icon-btn" data-open-win="winBrailleStudio">
               <span class="desktop-icon-glyph">⣿ART</span>
-              <span class="desktop-icon-label">Braille & Dither</span>
+              <span class="desktop-icon-label">Braille Lab</span>
             </button>
             <button type="button" class="desktop-icon-btn" data-open-win="winColdSigner">
               <span class="desktop-icon-glyph">ꝞL1</span>
               <span class="desktop-icon-label">Cold Signer</span>
-            </button>
-            <button type="button" class="desktop-icon-btn" data-open-win="winGhostByte">
-              <span class="desktop-icon-glyph">MAT2</span>
-              <span class="desktop-icon-label">GhostByte</span>
-            </button>
-            <button type="button" class="desktop-icon-btn" data-open-win="winEnvGuard">
-              <span class="desktop-icon-glyph">[>_]</span>
-              <span class="desktop-icon-label">EnvGuard & KVM</span>
             </button>
           </div>
         </div>
@@ -989,7 +1011,7 @@
         <div class="launchpad-ascii-crest">
           <div style="font-weight:700;border-bottom:1px solid var(--fill-black);padding-bottom:3px;margin-bottom:4px;display:flex;justify-content:space-between;">
             <span>▓▒░ BRAILLE SEAL</span>
-            <span>v1.0</span>
+            <button type="button" data-open-win="winGhostByte" style="background:var(--fill-black);color:#fff;border:none;font-size:8px;padding:1px 4px;cursor:pointer;font-family:var(--font-mono);">MAT2</button>
           </div>
           <pre style="font-size:8.5px;line-height:1.15;color:var(--fill-black);overflow:hidden;">┌───────────────┐
 │ ⣀⣠⣤⣴⣶⣾⣿⣾⣶⣴⣤⣄⣀ │
@@ -1009,42 +1031,44 @@
 
         <!-- ===================================================================
              PINNED DESKTOP BRAILLE & ASCII DITHER ART WALL (RIGHT SIDE OF DESKTOP)
-             Always visible on the desktop canvas behind/beside floating windows!
+             Enhanced 6-Sculpture 60FPS Bayer 8x8 + U+2800 Braille Graphics Engine
              =================================================================== -->
         <aside class="desktop-art-wall" aria-label="Live Desktop Braille and ASCII Dither Art Wall">
-          <!-- Widget 1: Interactive 60FPS Braille & Bayer 4x4 ASCII Sculpture -->
+          <!-- Widget 1: Interactive 60FPS Braille & Bayer 8x8 ASCII 3D Sculpture -->
           <div class="art-widget-card">
             <div class="art-widget-header">
-              <span>[⣿] DESKTOP BRAILLE & BAYER 4×4 ASCII SCULPTURE</span>
-              <span class="badge-black">60 FPS LIVE</span>
+              <span>[⣿] 60FPS BRAILLE & BAYER 8×8 3D SCULPTURE ENGINE</span>
+              <span class="badge-black">U+2800 SUB-PIXEL</span>
             </div>
-            <div style="display:flex;gap:4px;flex-wrap:wrap;">
-              <button type="button" class="mono-btn mono-btn-black" data-sculpture="shield" style="min-height:22px;padding:2px 6px;font-size:9px;">◉ Torus Shield</button>
-              <button type="button" class="mono-btn" data-sculpture="skull" style="min-height:22px;padding:2px 6px;font-size:9px;">☠ Amnesic Skull</button>
-              <button type="button" class="mono-btn" data-sculpture="eye" style="min-height:22px;padding:2px 6px;font-size:9px;">👁 Zoth Eye</button>
-              <button type="button" class="mono-btn" data-sculpture="lattice" style="min-height:22px;padding:2px 6px;font-size:9px;">⛓️ DAG Lattice</button>
+            <div style="display:flex;gap:3px;flex-wrap:wrap;">
+              <button type="button" class="mono-btn mono-btn-black" data-sculpture="shield" style="min-height:20px;padding:1px 5px;font-size:8.5px;">◉ Shield</button>
+              <button type="button" class="mono-btn" data-sculpture="skull" style="min-height:20px;padding:1px 5px;font-size:8.5px;">☠ Skull</button>
+              <button type="button" class="mono-btn" data-sculpture="eye" style="min-height:20px;padding:1px 5px;font-size:8.5px;">👁 Zoth Eye</button>
+              <button type="button" class="mono-btn" data-sculpture="lattice" style="min-height:20px;padding:1px 5px;font-size:8.5px;">⛓️ DAG</button>
+              <button type="button" class="mono-btn" data-sculpture="helix" style="min-height:20px;padding:1px 5px;font-size:8.5px;">🧬 Helix</button>
+              <button type="button" class="mono-btn" data-sculpture="monolith" style="min-height:20px;padding:1px 5px;font-size:8.5px;">🏛️ Obelisk</button>
             </div>
-            <div style="display:flex;gap:4px;flex-wrap:wrap;">
-              <button type="button" class="mono-btn mono-btn-black" data-lite-shader="bayer-1bit" style="min-height:22px;padding:2px 6px;font-size:9px;">▓▒░ Bayer+ASCII</button>
-              <button type="button" class="mono-btn" data-lite-shader="braille-2x4" style="min-height:22px;padding:2px 6px;font-size:9px;">⣿ U+2800 Braille</button>
-              <button type="button" class="mono-btn" data-lite-shader="halftone-bw" style="min-height:22px;padding:2px 6px;font-size:9px;">█ Ink Invert</button>
-              <button type="button" class="mono-btn" data-open-win="winBrailleStudio" style="min-height:22px;padding:2px 6px;font-size:9px;">↗ Art Studio</button>
+            <div style="display:flex;gap:3px;flex-wrap:wrap;">
+              <button type="button" class="mono-btn mono-btn-black" data-lite-shader="bayer-1bit" style="min-height:20px;padding:1px 5px;font-size:8.5px;">▓▒░ Bayer+ASCII</button>
+              <button type="button" class="mono-btn" data-lite-shader="braille-2x4" style="min-height:20px;padding:1px 5px;font-size:8.5px;">⣿ U+2800 Braille</button>
+              <button type="button" class="mono-btn" data-lite-shader="halftone-bw" style="min-height:20px;padding:1px 5px;font-size:8.5px;">█ Ink Invert</button>
+              <button type="button" class="mono-btn" data-open-win="winBrailleStudio" style="min-height:20px;padding:1px 5px;font-size:8.5px;">↗ Art Studio</button>
             </div>
-            <div style="border:1.5px solid var(--fill-black);background:var(--bg-pure-white);padding:4px;">
-              <canvas id="liteDitherCanvas" width="380" height="170" aria-label="Animated White Background and Black Fill Braille and Ordered Bayer 4x4 Dither Sculpture" style="width:100%;height:170px;display:block;cursor:crosshair;"></canvas>
+            <div style="border:1.5px solid var(--fill-black);background:var(--bg-pure-white);padding:3px;">
+              <canvas id="liteDitherCanvas" width="380" height="175" aria-label="Animated White Background and Black Fill Braille and Ordered Bayer 8x8 Dither Sculpture" style="width:100%;height:175px;display:block;cursor:crosshair;"></canvas>
             </div>
           </div>
 
-          <!-- Widget 2: Live Unicode U+2800 2x4 Sub-Pixel Braille Entropy & Tor Matrix -->
+          <!-- Widget 2: Live 3-Row U+2800 Sub-Pixel Braille Oscilloscope & Animated Tor Circuit -->
           <div class="art-widget-card">
             <div class="art-widget-header">
-              <span>[▓▒░] U+2800 BRAILLE ENTROPY WATERFALL & TOR CIRCUIT</span>
-              <span style="font-size:9px;color:var(--fg-grey-600);">4096-BIT POOL</span>
+              <span>[▓▒░] U+2800 BRAILLE HARMONIC SCOPE & TOR CIRCUIT</span>
+              <span style="font-size:8.5px;color:var(--fg-grey-600);">4096-BIT ENTROPY</span>
             </div>
-            <pre id="liteBrailleScope" class="braille-wave-strip" style="font-size:10px;line-height:1.22;">⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿</pre>
-            <pre style="font-size:8.5px;line-height:1.22;background:var(--fill-black);color:var(--bg-pure-white);padding:5px 7px;border:1px solid var(--fill-black);overflow:hidden;">╔══[TAILS-TOR-CIRCUIT]═════════════════════════════════╗
+            <pre id="liteBrailleScope" class="braille-wave-strip" style="font-size:9.5px;line-height:1.18;">⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿</pre>
+            <pre id="liveTorCircuitAscii" style="font-size:8.5px;line-height:1.2;background:var(--fill-black);color:var(--bg-pure-white);padding:5px 7px;border:1px solid var(--fill-black);overflow:hidden;">╔══[TAILS-TOR-CIRCUIT // NFTABLES STRICT DROP]═════════╗
 ║ [VM 02:42:ac] ══⣿══▶ [GUARD 185.220] ══⣿══▶ [ZOTH L1] ║
-║ ░░░░▒▒▒▒▓▓▓▓████████▓▓▓▓▒▒▒▒░░░░ • EGRESS KILLSWITCH ║
+║ ░░░░▒▒▒▒▓▓▓▓████████▓▓▓▓▒▒▒▒░░░░ • ZERO DNS LEAKS    ║
 ╚══════════════════════════════════════════════════════╝</pre>
           </div>
 
@@ -1053,13 +1077,14 @@
             <div class="art-widget-header">
               <span>[◈] ASCII & BRAILLE SOVEREIGN MONOLITH ART</span>
               <div style="display:flex;gap:3px;">
-                <button type="button" class="mono-btn wall-art-btn mono-btn-black" data-wall-art="crest" style="min-height:18px;padding:1px 5px;font-size:8.5px;">◈ CREST</button>
-                <button type="button" class="mono-btn wall-art-btn" data-wall-art="skull" style="min-height:18px;padding:1px 5px;font-size:8.5px;">☠ SKULL</button>
-                <button type="button" class="mono-btn wall-art-btn" data-wall-art="owl" style="min-height:18px;padding:1px 5px;font-size:8.5px;">🦉 OWL</button>
-                <button type="button" class="mono-btn wall-art-btn" data-wall-art="lattice" style="min-height:18px;padding:1px 5px;font-size:8.5px;">⛓️ DAG</button>
+                <button type="button" class="mono-btn wall-art-btn mono-btn-black" data-wall-art="crest" style="min-height:18px;padding:1px 4px;font-size:8px;">◈ CREST</button>
+                <button type="button" class="mono-btn wall-art-btn" data-wall-art="skull" style="min-height:18px;padding:1px 4px;font-size:8px;">☠ SKULL</button>
+                <button type="button" class="mono-btn wall-art-btn" data-wall-art="owl" style="min-height:18px;padding:1px 4px;font-size:8px;">🦉 OWL</button>
+                <button type="button" class="mono-btn wall-art-btn" data-wall-art="lattice" style="min-height:18px;padding:1px 4px;font-size:8px;">⛓️ DAG</button>
+                <button type="button" class="mono-btn wall-art-btn" data-wall-art="helix" style="min-height:18px;padding:1px 4px;font-size:8px;">🧬 DNA</button>
               </div>
             </div>
-            <pre id="desktopWallMonolithArt" style="flex:1;min-height:0;font-size:8px;line-height:1.16;background:var(--bg-grey-50);color:var(--fill-black);padding:6px;border:1px solid var(--fill-black);overflow:hidden;white-space:pre;">╔════════════════════════════════════════════════════╗
+            <pre id="desktopWallMonolithArt" style="flex:1;min-height:0;font-size:8px;line-height:1.15;background:var(--bg-grey-50);color:var(--fill-black);padding:6px;border:1px solid var(--fill-black);overflow:hidden;white-space:pre;">╔════════════════════════════════════════════════════╗
 ║ ░░▒▒▓▓██  ZOTHOS-LITE // AMNESIC v1.0  ██▓▓▒▒░░    ║
 ║ ⣀⣠⣤⣴⣶⣾⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣷⣶⣴⣤⣄⣀ ║
 ║ ⣿ ███████╗ ██████╗ ████████╗██╗  ██╗ ██████╗ ███████╗⣿ ║
@@ -1068,16 +1093,15 @@
 ║ ⣿  ███╔╝  ██║   ██║   ██║   ██╔══██║██║   ██║╚════██║⣿ ║
 ║ ⣿ ███████╗╚██████╔╝   ██║   ██║  ██║╚██████╔╝███████║⣿ ║
 ║ ⠉⠙⠛⠻⠿⢿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡿⠿⠟⠛⠋⠉ ║
-║ [TORAM NOSWAP] • [BAYER 4x4 1-BIT] • [U+2800]      ║
+║ [TORAM NOSWAP] • [BAYER 8x8 1-BIT] • [U+2800]      ║
 ╚════════════════════════════════════════════════════╝</pre>
           </div>
         </aside>
 
         <!-- ===================================================================
-             MINI-APP WINDOW 01: TAILS AMNESIC GREETER & RAM FOOTPRINT
-             (Popped up by default on top-left of workspace)
+             MINI-APP WINDOW 01 (TOP-LEFT): TAILS AMNESIC GREETER & RAM FOOTPRINT
              =================================================================== -->
-        <article class="os-window focused-window" id="winGreeter" data-win-title="Amnesic Greeter" style="top:10px;left:10px;width:412px;height:392px;z-index:130;">
+        <article class="os-window" id="winGreeter" data-win-title="Amnesic Greeter" style="top:10px;left:10px;width:412px;height:392px;z-index:126;">
           <div class="os-window-titlebar" data-drag-handle="winGreeter">
             <div class="win-title-left">
               <span>[◈] ZOTHOS-LITE GREETER // TAILS AMNESIC SESSION</span>
@@ -1089,21 +1113,21 @@
             </div>
           </div>
           <div class="os-window-body">
-            <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:8px;padding-bottom:7px;border-bottom:1.5px solid var(--fill-black);">
+            <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:7px;padding-bottom:6px;border-bottom:1.5px solid var(--fill-black);">
               <div>
-                <div style="font-family:var(--font-sans);font-size:15px;font-weight:700;">
+                <div style="font-family:var(--font-sans);font-size:14px;font-weight:700;">
                   Tails-Style Amnesic RAM OS
                 </div>
-                <div style="font-size:10px;color:var(--fg-grey-600);">
-                  Boots in volatile RAM (<code>toram noswap</code>). Drag any window by its titlebar.
+                <div style="font-size:9.5px;color:var(--fg-grey-600);">
+                  Boots in volatile RAM (<code>toram noswap</code>). Zero hard-disk writes.
                 </div>
               </div>
               <span class="badge-black" id="footprintSavingBadge">90% SMALLER</span>
             </div>
 
             <!-- Live RAM Image Footprint Meter -->
-            <div style="margin-bottom:8px;padding:7px;background:var(--bg-grey-50);border:1.5px solid var(--fill-black);">
-              <div style="display:flex;justify-content:space-between;font-size:10px;font-weight:700;margin-bottom:4px;">
+            <div style="margin-bottom:7px;padding:6px;background:var(--bg-grey-50);border:1.5px solid var(--fill-black);">
+              <div style="display:flex;justify-content:space-between;font-size:9.5px;font-weight:700;margin-bottom:4px;">
                 <span>▓▒░ RAM IMAGE FOOTPRINT: <b id="totalImageMbLabel">958 MB</b></span>
                 <span>VS 9,365 MB FULL OS</span>
               </div>
@@ -1112,7 +1136,7 @@
                 <div id="segCore" class="fp-seg-core" style="width:20%;"></div>
                 <div id="segPulled" class="fp-seg-pulled" style="width:10%;"></div>
               </div>
-              <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:4px;margin-top:5px;font-size:9.5px;">
+              <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:4px;margin-top:4px;font-size:9px;">
                 <div style="padding:2px 4px;background:var(--bg-pure-white);border:1px solid var(--fill-black);">
                   <div style="color:var(--fg-grey-600);">KERNEL</div><b id="statKernelMb">599 MB</b>
                 </div>
@@ -1128,53 +1152,44 @@
               </div>
             </div>
 
-            <!-- Tails Greeter Interactive Toggles -->
             <div class="tails-greeter-row">
               <div>
-                <div style="font-weight:700;font-size:10.5px;">[1] RAM-Only Amnesic Root (toram noswap)</div>
-                <div style="font-size:9.5px;color:var(--fg-grey-600);">Zero hard-disk writes; wiped on poweroff.</div>
+                <div style="font-weight:700;font-size:10px;">[1] RAM-Only Amnesic Root (toram noswap)</div>
+                <div style="font-size:9px;color:var(--fg-grey-600);">Zero hard-disk writes; wiped on poweroff.</div>
               </div>
               <button type="button" class="tails-toggle-pill on" data-amnesia-key="ramOnlyBoot" id="toggleToramBtn">█ ON</button>
             </div>
 
             <div class="tails-greeter-row">
               <div>
-                <div style="font-weight:700;font-size:10.5px;">[2] Tor Transparent Proxy & Kill-Switch</div>
-                <div style="font-size:9.5px;color:var(--fg-grey-600);">Drops non-Tor clearnet packets via nftables.</div>
+                <div style="font-weight:700;font-size:10px;">[2] Tor Transparent Proxy & Kill-Switch</div>
+                <div style="font-size:9px;color:var(--fg-grey-600);">Drops non-Tor clearnet packets via nftables.</div>
               </div>
               <button type="button" class="tails-toggle-pill on" data-amnesia-key="torKillswitch" id="toggleTorBtn">█ ON</button>
             </div>
 
             <div class="tails-greeter-row">
               <div>
-                <div style="font-weight:700;font-size:10.5px;">[3] MAC Spoofing (<span id="cardMacLabel">02:42:ac:11:00:7f</span>)</div>
-                <div style="font-size:9.5px;color:var(--fg-grey-600);">Ephemeral randomized NIC hardware address.</div>
+                <div style="font-weight:700;font-size:10px;">[3] MAC Spoofing (<span id="cardMacLabel">02:42:ac:11:00:7f</span>)</div>
+                <div style="font-size:9px;color:var(--fg-grey-600);">Ephemeral randomized NIC hardware address.</div>
               </div>
               <div style="display:flex;gap:4px;">
-                <button type="button" class="mono-btn" id="rerollMacBtn" style="min-height:26px;padding:2px 6px;font-size:9px;">⟳ MAC</button>
+                <button type="button" class="mono-btn" id="rerollMacBtn" style="min-height:24px;padding:1px 5px;font-size:8.5px;">⟳ MAC</button>
                 <button type="button" class="tails-toggle-pill on" data-amnesia-key="macSpoofing" id="toggleMacBtn">█ ON</button>
               </div>
             </div>
 
-            <div class="tails-greeter-row">
-              <div>
-                <div style="font-weight:700;font-size:10.5px;">[4] LUKS2 Encrypted Persistent Vault</div>
-                <div style="font-size:9.5px;color:var(--fg-grey-600);">Optional Argon2id encrypted tool storage.</div>
-              </div>
-              <button type="button" class="tails-toggle-pill off" data-amnesia-key="luksPersistence" id="toggleLuksBtn">░ LOCKED</button>
-            </div>
-
-            <div style="margin-top:7px;display:flex;gap:5px;flex-wrap:wrap;">
-              <button type="button" class="mono-btn mono-btn-black" data-open-win="winDaemons">▓ ZothOS Daemons</button>
-              <button type="button" class="mono-btn" data-open-win="winCoreTools">█ 8 Installed Tools</button>
-              <button type="button" class="mono-btn" data-open-win="winPkgPuller">⬇ Pull Tools</button>
+            <div style="margin-top:6px;display:flex;gap:4px;flex-wrap:wrap;">
+              <button type="button" class="mono-btn mono-btn-black" data-open-win="winEnvGuard">[>_] Armed Terminal</button>
+              <button type="button" class="mono-btn" data-open-win="winDocs">📖 Tool Docs</button>
+              <button type="button" class="mono-btn" data-open-win="winCoreTools">█ 8 Core Tools</button>
+              <button type="button" class="mono-btn" data-open-win="winPkgPuller">⬇ Pull Tools (<span id="topPulledCount">3/12</span>)</button>
             </div>
           </div>
         </article>
 
         <!-- ===================================================================
-             MINI-APP WINDOW 02: ZOTHOS SOVEREIGN DAEMONS MULTIPLEXER (8 DAEMONS)
-             (Popped up by default alongside Greeter)
+             MINI-APP WINDOW 02 (TOP-MIDDLE): ZOTHOS SOVEREIGN DAEMONS (8 DAEMONS)
              =================================================================== -->
         <article class="os-window" id="winDaemons" data-win-title="ZothOS Daemons (8)" style="top:10px;left:430px;width:414px;height:392px;z-index:125;">
           <div class="os-window-titlebar" data-drag-handle="winDaemons">
@@ -1188,8 +1203,8 @@
             </div>
           </div>
           <div class="os-window-body">
-            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:7px;padding-bottom:5px;border-bottom:1px solid var(--fill-black);">
-              <span style="font-size:10.5px;font-weight:700;">5 Core Daemons Pre-Installed • 3 Pullable On Demand</span>
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;padding-bottom:5px;border-bottom:1px solid var(--fill-black);">
+              <span style="font-size:10px;font-weight:700;">5 Core Daemons Pre-Installed • 3 Pullable On Demand</span>
               <span class="badge-black" id="daemonWindowCountBadge">6/8 RUNNING</span>
             </div>
             <div id="daemonsListContainer"></div>
@@ -1197,9 +1212,208 @@
         </article>
 
         <!-- ===================================================================
-             MINI-APP WINDOW 03: 8 PRE-INSTALLED CORE ZOTHOS SECURITY & DEV TOOLS
+             MINI-APP WINDOW 03 (BOTTOM-LEFT — POPPED OPEN & ARMED BY DEFAULT!):
+             LIVE ARMED ZOTHOS-LITE ROOT TERMINAL & INTERACTIVE COMMAND ARSENAL
              =================================================================== -->
-        <article class="os-window" id="winCoreTools" data-win-title="8 Installed Core Tools" style="top:410px;left:10px;width:412px;height:392px;z-index:120;">
+        <article class="os-window focused-window" id="winEnvGuard" data-win-title="Live Armed Terminal" style="top:410px;left:10px;width:412px;height:392px;z-index:135;">
+          <div class="os-window-titlebar" data-drag-handle="winEnvGuard">
+            <div class="win-title-left">
+              <span>[>_] ARMED ROOT TERMINAL & COMMAND ARSENAL (<span id="vmRunningBadge">KVM ONLINE</span>)</span>
+            </div>
+            <div class="win-controls">
+              <button type="button" class="win-ctrl-btn" data-win-action="minimize" data-win-id="winEnvGuard" title="Minimize Window">_</button>
+              <button type="button" class="win-ctrl-btn" data-win-action="maximize" data-win-id="winEnvGuard" title="Maximize / Restore Window">□</button>
+              <button type="button" class="win-ctrl-btn close-btn" data-win-action="close" data-win-id="winEnvGuard" title="Close Window">✕</button>
+            </div>
+          </div>
+          <div class="os-window-body" style="display:flex;flex-direction:column;gap:5px;padding:8px;">
+            <!-- Click-to-Run Command Arsenal Header & Category Filter -->
+            <div style="display:flex;justify-content:space-between;align-items:center;gap:4px;">
+              <span style="font-size:9.5px;font-weight:700;">⚡ CLICK ANY COMMAND TO EXECUTE IN RAM / KVM:</span>
+              <button type="button" class="mono-btn" data-open-win="winDocs" style="min-height:19px;padding:1px 5px;font-size:8.5px;">📖 Full Manual</button>
+            </div>
+
+            <!-- Interactive Command Arsenal Pills (Ready to click & run!) -->
+            <div style="display:flex;gap:3px;flex-wrap:wrap;padding:5px;background:var(--bg-grey-50);border:1px solid var(--fill-black);max-height:74px;overflow-y:auto;">
+              <button type="button" class="mono-btn mono-btn-black vm-quick-cmd" data-vm-cmd="help" style="min-height:20px;padding:1px 5px;font-size:8.5px;">help</button>
+              <button type="button" class="mono-btn vm-quick-cmd" data-vm-cmd="zoth-envguard --scan" style="min-height:20px;padding:1px 5px;font-size:8.5px;">zoth-envguard --scan</button>
+              <button type="button" class="mono-btn vm-quick-cmd" data-vm-cmd="zoth-ghostbyte --scrub" style="min-height:20px;padding:1px 5px;font-size:8.5px;">zoth-ghostbyte --scrub</button>
+              <button type="button" class="mono-btn vm-quick-cmd" data-vm-cmd="zoth-hexstrike --audit-elf" style="min-height:20px;padding:1px 5px;font-size:8.5px;">zoth-hexstrike --audit-elf</button>
+              <button type="button" class="mono-btn vm-quick-cmd" data-vm-cmd="zoth-promptmaster --audit" style="min-height:20px;padding:1px 5px;font-size:8.5px;">zoth-promptmaster --audit</button>
+              <button type="button" class="mono-btn vm-quick-cmd" data-vm-cmd="zoth-vaelor-coldsign --sign" style="min-height:20px;padding:1px 5px;font-size:8.5px;">zoth-vaelor-coldsign</button>
+              <button type="button" class="mono-btn vm-quick-cmd" data-vm-cmd="zoth-neuro-stdp --query amnesic" style="min-height:20px;padding:1px 5px;font-size:8.5px;">zoth-neuro-stdp</button>
+              <button type="button" class="mono-btn vm-quick-cmd" data-vm-cmd="zoth-webmcp-audit --inspect" style="min-height:20px;padding:1px 5px;font-size:8.5px;">zoth-webmcp-audit</button>
+              <button type="button" class="mono-btn vm-quick-cmd" data-vm-cmd="zoth-tor-guard --verify" style="min-height:20px;padding:1px 5px;font-size:8.5px;">zoth-tor-guard</button>
+              <button type="button" class="mono-btn vm-quick-cmd" data-vm-cmd="zoth-lite-pkg status" style="min-height:20px;padding:1px 5px;font-size:8.5px;">zoth-lite-pkg status</button>
+              <button type="button" class="mono-btn vm-quick-cmd" data-vm-cmd="zoth-lite-pkg list" style="min-height:20px;padding:1px 5px;font-size:8.5px;">zoth-lite-pkg list</button>
+              <button type="button" class="mono-btn vm-quick-cmd" data-vm-cmd="systemctl status" style="min-height:20px;padding:1px 5px;font-size:8.5px;">systemctl status</button>
+              <button type="button" class="mono-btn vm-quick-cmd" data-vm-cmd="vm uname -a" style="min-height:20px;padding:1px 5px;font-size:8.5px;">vm uname -a</button>
+              <button type="button" class="mono-btn vm-quick-cmd" data-vm-cmd="vm df -hT" style="min-height:20px;padding:1px 5px;font-size:8.5px;">vm df -hT</button>
+              <button type="button" class="mono-btn vm-quick-cmd" data-vm-cmd="man zoth-envguard" style="min-height:20px;padding:1px 5px;font-size:8.5px;">man zoth-envguard</button>
+            </div>
+
+            <!-- Live Command Input Line -->
+            <div style="display:flex;gap:4px;align-items:center;">
+              <span style="font-size:10px;font-weight:700;background:var(--fill-black);color:#fff;padding:4px 6px;border:1.5px solid var(--fill-black);white-space:nowrap;">root@zothos:~#</span>
+              <input type="text" id="terminalCmdInput" class="mono-input" value="help" placeholder="Type command (help, man <tool>, zoth-envguard, vm uname -a)..." aria-label="ZothOS-Lite Terminal Command Input" style="min-height:26px;font-size:10.5px;" />
+              <button type="button" class="mono-btn mono-btn-black" id="runTerminalCmdBtn" style="min-height:26px;padding:2px 8px;">EXEC ↵</button>
+              <button type="button" class="mono-btn" id="clearTerminalBtn" style="min-height:26px;padding:2px 6px;">CLR</button>
+            </div>
+
+            <!-- Live Monotone Terminal Output Screen -->
+            <pre id="terminalScreen" class="mono-console-output" style="flex:1;min-height:145px;font-size:9.5px;line-height:1.32;">╔══════════════════════════════════════════════════════════════════════╗
+║ ⣿ ZOTHOS-LITE v1.0 ARMED ROOT SHELL (PID: ACTIVE // TORAM NOSWAP)  ⣿ ║
+╚══════════════════════════════════════════════════════════════════════╝
+Type 'help' or click any command pill above to execute tools in RAM.</pre>
+
+            <!-- Compact EnvGuard Secret Scanner Strip -->
+            <div style="display:flex;gap:4px;align-items:center;padding-top:3px;border-top:1px dashed var(--fill-black);">
+              <input type="text" id="envguardInput" class="mono-input" value="AWS_SECRET_ACCESS_KEY=wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY" aria-label="EnvGuard Secret Scanner Input" style="min-height:22px;font-size:9.5px;flex:1;" />
+              <button type="button" class="mono-btn mono-btn-black" id="runEnvguardScanBtn" style="min-height:22px;padding:1px 6px;font-size:8.5px;">🔒 EnvGuard Scan</button>
+              <span id="envguardResultBox" style="font-size:8.5px;font-weight:700;white-space:nowrap;">[ARMED]</span>
+            </div>
+          </div>
+        </article>
+
+        <!-- ===================================================================
+             MINI-APP WINDOW 04 (BOTTOM-MIDDLE — POPPED OPEN BY DEFAULT!):
+             COMPLETE ZOTHOS-LITE TOOL DOCUMENTATION & OPERATOR MANUAL
+             =================================================================== -->
+        <article class="os-window" id="winDocs" data-win-title="Tool Docs & Manual" style="top:410px;left:430px;width:414px;height:392px;z-index:132;">
+          <div class="os-window-titlebar" data-drag-handle="winDocs">
+            <div class="win-title-left">
+              <span>[📖] ZOTHOS-LITE TOOL DOCUMENTATION & CLI OPERATOR MANUAL</span>
+            </div>
+            <div class="win-controls">
+              <button type="button" class="win-ctrl-btn" data-win-action="minimize" data-win-id="winDocs" title="Minimize Window">_</button>
+              <button type="button" class="win-ctrl-btn" data-win-action="maximize" data-win-id="winDocs" title="Maximize / Restore Window">□</button>
+              <button type="button" class="win-ctrl-btn close-btn" data-win-action="close" data-win-id="winDocs" title="Close Window">✕</button>
+            </div>
+          </div>
+          <div class="os-window-body" style="padding:8px;">
+            <div style="display:flex;justify-content:space-between;align-items:center;gap:4px;flex-wrap:wrap;margin-bottom:6px;padding-bottom:5px;border-bottom:1.5px solid var(--fill-black);">
+              <div style="display:flex;gap:3px;flex-wrap:wrap;">
+                <button type="button" class="mono-btn mono-btn-black doc-filter-btn" data-doc-filter="ALL" style="min-height:21px;padding:1px 6px;font-size:8.5px;">ALL GUIDES</button>
+                <button type="button" class="mono-btn doc-filter-btn" data-doc-filter="CORE" style="min-height:21px;padding:1px 6px;font-size:8.5px;">8 CORE TOOLS</button>
+                <button type="button" class="mono-btn doc-filter-btn" data-doc-filter="PKG" style="min-height:21px;padding:1px 6px;font-size:8.5px;">PKG & DAEMONS</button>
+                <button type="button" class="mono-btn doc-filter-btn" data-doc-filter="VM" style="min-height:21px;padding:1px 6px;font-size:8.5px;">KVM & AMNESIA</button>
+              </div>
+              <button type="button" class="mono-btn" data-open-win="winPkgPuller" style="min-height:21px;padding:1px 6px;font-size:8.5px;">⬇ Pull Tools</button>
+            </div>
+
+            <div id="operatorManualList" style="display:flex;flex-direction:column;gap:6px;">
+              <!-- Doc Card 1: EnvGuard Secrets Vault -->
+              <div class="pkg-card-mono pulled-active" data-doc-cat="CORE">
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:2px;">
+                  <b style="font-size:10.5px;">[1] EnvGuard Secrets Vault (zoth-envguard)</b>
+                  <span class="badge-black">CORE • 14 MB</span>
+                </div>
+                <div style="font-size:9.5px;color:var(--fg-grey-600);margin-bottom:4px;">
+                  <b>How to Use:</b> Scans <code>.env</code> files & git commits for leaked AWS/Stripe/GitHub/PEM keys, measures Shannon entropy (bits/char), and seals secrets into an ephemeral <code>AES-256-GCM</code> RAM envelope.
+                </div>
+                <div style="display:flex;justify-content:space-between;align-items:center;background:var(--bg-pure-white);padding:3px 6px;border:1px solid var(--fill-black);">
+                  <code style="font-size:9px;">$ zoth-envguard --scan /workspace</code>
+                  <button type="button" class="mono-btn mono-btn-black vm-quick-cmd" data-vm-cmd="zoth-envguard --scan" style="min-height:19px;padding:1px 6px;font-size:8.5px;">▶ Run in Terminal</button>
+                </div>
+              </div>
+
+              <!-- Doc Card 2: GhostByte Metadata Stripper -->
+              <div class="pkg-card-mono pulled-active" data-doc-cat="CORE">
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:2px;">
+                  <b style="font-size:10.5px;">[2] GhostByte Metadata Stripper (zoth-ghostbyte)</b>
+                  <span class="badge-black">CORE • 18 MB</span>
+                </div>
+                <div style="font-size:9.5px;color:var(--fg-grey-600);margin-bottom:4px;">
+                  <b>How to Use:</b> Strips EXIF GPS coordinates, camera serials, author tags, and tracking headers (<code>mat2</code> engine) before file sharing, or open the <b>GhostByte</b> mini-app to scrub JSON/SVG payloads.
+                </div>
+                <div style="display:flex;justify-content:space-between;align-items:center;background:var(--bg-pure-white);padding:3px 6px;border:1px solid var(--fill-black);">
+                  <code style="font-size:9px;">$ zoth-ghostbyte --scrub payload.json</code>
+                  <button type="button" class="mono-btn mono-btn-black vm-quick-cmd" data-vm-cmd="zoth-ghostbyte --scrub" style="min-height:19px;padding:1px 6px;font-size:8.5px;">▶ Run in Terminal</button>
+                </div>
+              </div>
+
+              <!-- Doc Card 3: HexStrike Binary & Net Sentinel -->
+              <div class="pkg-card-mono pulled-active" data-doc-cat="CORE">
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:2px;">
+                  <b style="font-size:10.5px;">[3] HexStrike ELF & Net Sentinel (zoth-hexstrike)</b>
+                  <span class="badge-black">CORE • 26 MB</span>
+                </div>
+                <div style="font-size:9.5px;color:var(--fg-grey-600);margin-bottom:4px;">
+                  <b>How to Use:</b> Verifies ELF binary mitigations (PIE, Full RELRO, NX Stack, Canary) and audits the kernel <code>nftables</code> firewall to guarantee 100% of non-Tor packets are dropped.
+                </div>
+                <div style="display:flex;justify-content:space-between;align-items:center;background:var(--bg-pure-white);padding:3px 6px;border:1px solid var(--fill-black);">
+                  <code style="font-size:9px;">$ zoth-hexstrike --audit-elf /bin/sh</code>
+                  <button type="button" class="mono-btn mono-btn-black vm-quick-cmd" data-vm-cmd="zoth-hexstrike --audit-elf" style="min-height:19px;padding:1px 6px;font-size:8.5px;">▶ Run in Terminal</button>
+                </div>
+              </div>
+
+              <!-- Doc Card 4: PromptMaster & WebMCP Firewall -->
+              <div class="pkg-card-mono pulled-active" data-doc-cat="CORE">
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:2px;">
+                  <b style="font-size:10.5px;">[4] PromptMaster & WebMCP Auditor</b>
+                  <span class="badge-black">CORE • 43 MB</span>
+                </div>
+                <div style="font-size:9.5px;color:var(--fg-grey-600);margin-bottom:4px;">
+                  <b>How to Use:</b> Tests prompts against adversarial role-override/jailbreak vectors and inspects Model Context Protocol (MCP) JSON-RPC schemas for SSRF or exfiltration risks.
+                </div>
+                <div style="display:flex;justify-content:space-between;align-items:center;background:var(--bg-pure-white);padding:3px 6px;border:1px solid var(--fill-black);">
+                  <code style="font-size:9px;">$ zoth-promptmaster --audit "override"</code>
+                  <button type="button" class="mono-btn mono-btn-black vm-quick-cmd" data-vm-cmd="zoth-promptmaster --audit" style="min-height:19px;padding:1px 6px;font-size:8.5px;">▶ Run in Terminal</button>
+                </div>
+              </div>
+
+              <!-- Doc Card 5: Vaelor Cold Signer & Neuro-Memory STDP -->
+              <div class="pkg-card-mono pulled-active" data-doc-cat="CORE">
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:2px;">
+                  <b style="font-size:10.5px;">[5] Vaelor L1 Cold Signer & Neuro-Memory STDP</b>
+                  <span class="badge-black">CORE • 80 MB</span>
+                </div>
+                <div style="font-size:9.5px;color:var(--fg-grey-600);margin-bottom:4px;">
+                  <b>How to Use:</b> Sign Vaelor L1 transactions air-gapped in RAM with Ed25519 + Unicode <code>U+2800</code> Braille seals, or query local Cosine + BM25 + Ebbinghaus STDP memory engrams.
+                </div>
+                <div style="display:flex;justify-content:space-between;align-items:center;background:var(--bg-pure-white);padding:3px 6px;border:1px solid var(--fill-black);">
+                  <code style="font-size:9px;">$ zoth-vaelor-coldsign --sign</code>
+                  <button type="button" class="mono-btn mono-btn-black vm-quick-cmd" data-vm-cmd="zoth-vaelor-coldsign --sign" style="min-height:19px;padding:1px 6px;font-size:8.5px;">▶ Run in Terminal</button>
+                </div>
+              </div>
+
+              <!-- Doc Card 6: On-Demand Package Puller & Daemons -->
+              <div class="pkg-card-mono" data-doc-cat="PKG">
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:2px;">
+                  <b style="font-size:10.5px;">[6] Pulling Tools & Managing Daemons</b>
+                  <span class="badge-grey">PKG + SYSTEMCTL</span>
+                </div>
+                <div style="font-size:9.5px;color:var(--fg-grey-600);margin-bottom:4px;">
+                  <b>How to Use:</b> Pull any of the 12 optional ZothOS tools into volatile <code>RAM_TMPFS</code> (wiped on reboot) or <code>--luks</code> encrypted vault, or start/stop any of the 8 Sovereign Daemons.
+                </div>
+                <div style="display:flex;justify-content:space-between;align-items:center;background:var(--bg-pure-white);padding:3px 6px;border:1px solid var(--fill-black);">
+                  <code style="font-size:9px;">$ zoth-lite-pkg list && systemctl status</code>
+                  <button type="button" class="mono-btn mono-btn-black vm-quick-cmd" data-vm-cmd="zoth-lite-pkg list" style="min-height:19px;padding:1px 6px;font-size:8.5px;">▶ Run in Terminal</button>
+                </div>
+              </div>
+
+              <!-- Doc Card 7: Live QEMU/KVM Guest Kernel Execution -->
+              <div class="pkg-card-mono" data-doc-cat="VM">
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:2px;">
+                  <b style="font-size:10.5px;">[7] Live QEMU/KVM Linux 6.12 Kernel Bridge</b>
+                  <span class="badge-grey">KVM GUEST</span>
+                </div>
+                <div style="font-size:9.5px;color:var(--fg-grey-600);margin-bottom:4px;">
+                  <b>How to Use:</b> Prefix any shell command with <code>vm </code> in the Armed Terminal (e.g. <code>vm uname -a</code> or <code>vm df -hT</code>) to execute it directly inside the live QEMU/KVM VM over <code>/dev/ttyS0</code>.
+                </div>
+                <div style="display:flex;justify-content:space-between;align-items:center;background:var(--bg-pure-white);padding:3px 6px;border:1px solid var(--fill-black);">
+                  <code style="font-size:9px;">$ vm uname -a</code>
+                  <button type="button" class="mono-btn mono-btn-black vm-quick-cmd" data-vm-cmd="vm uname -a" style="min-height:19px;padding:1px 6px;font-size:8.5px;">▶ Run in Terminal</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <!-- ===================================================================
+             MINI-APP WINDOW 05: 8 PRE-INSTALLED CORE ZOTHOS SECURITY & DEV TOOLS
+             =================================================================== -->
+        <article class="os-window win-closed" id="winCoreTools" data-win-title="8 Installed Core Tools" style="top:34px;left:120px;width:470px;height:420px;z-index:120;">
           <div class="os-window-titlebar" data-drag-handle="winCoreTools">
             <div class="win-title-left">
               <span>[█] 8 PRE-INSTALLED ZOTHOS SECURITY & DEV TOOLS (LOCKED IN RAM)</span>
@@ -1219,9 +1433,9 @@
         </article>
 
         <!-- ===================================================================
-             MINI-APP WINDOW 04: ON-DEMAND ZOTHOS TOOL INSTALLER (zoth-lite-pkg)
+             MINI-APP WINDOW 06: ON-DEMAND ZOTHOS TOOL INSTALLER (zoth-lite-pkg)
              =================================================================== -->
-        <article class="os-window" id="winPkgPuller" data-win-title="Pull ZothOS Tools (12)" style="top:410px;left:430px;width:414px;height:392px;z-index:119;">
+        <article class="os-window win-closed" id="winPkgPuller" data-win-title="Pull ZothOS Tools (12)" style="top:42px;left:180px;width:490px;height:430px;z-index:119;">
           <div class="os-window-titlebar" data-drag-handle="winPkgPuller">
             <div class="win-title-left">
               <span>[⬇] INSTALL ZOTHOS TOOLS ON DEMAND (zoth-lite-pkg) — <span id="pulledCountBadge">3/12</span></span>
@@ -1248,12 +1462,12 @@
         </article>
 
         <!-- ===================================================================
-             MINI-APP WINDOW 05: INTERACTIVE BRAILLE & ASCII DITHER ART STUDIO
+             MINI-APP WINDOW 07: INTERACTIVE BRAILLE & ASCII DITHER ART STUDIO
              =================================================================== -->
         <article class="os-window win-closed" id="winBrailleStudio" data-win-title="Braille & ASCII Art Studio" style="top:38px;left:220px;width:500px;height:420px;z-index:118;">
           <div class="os-window-titlebar" data-drag-handle="winBrailleStudio">
             <div class="win-title-left">
-              <span>[⣿] UNICODE U+2800 BRAILLE & ORDERED BAYER 4×4 ASCII ART STUDIO</span>
+              <span>[⣿] UNICODE U+2800 BRAILLE & ORDERED BAYER 8×8 ASCII ART STUDIO</span>
             </div>
             <div class="win-controls">
               <button type="button" class="win-ctrl-btn" data-win-action="minimize" data-win-id="winBrailleStudio" title="Minimize Window">_</button>
@@ -1272,13 +1486,14 @@
               <button type="button" class="mono-btn art-preset-btn" data-art-preset="skull">☠ Cyber Skull</button>
               <button type="button" class="mono-btn art-preset-btn" data-art-preset="owl">🦉 Tor Owl</button>
               <button type="button" class="mono-btn art-preset-btn" data-art-preset="lattice">⛓️ Vaelor DAG</button>
+              <button type="button" class="mono-btn art-preset-btn" data-art-preset="helix">🧬 STDP Helix</button>
             </div>
             <pre id="brailleArtStudioOutput" class="mono-console-output" style="height:275px;font-size:10px;line-height:1.22;"></pre>
           </div>
         </article>
 
         <!-- ===================================================================
-             MINI-APP WINDOW 06: VAELOR L1 AIR-GAPPED ED25519 COLD SIGNER
+             MINI-APP WINDOW 08: VAELOR L1 AIR-GAPPED ED25519 COLD SIGNER
              =================================================================== -->
         <article class="os-window win-closed" id="winColdSigner" data-win-title="Vaelor Cold Signer" style="top:46px;left:260px;width:470px;height:385px;z-index:117;">
           <div class="os-window-titlebar" data-drag-handle="winColdSigner">
@@ -1307,7 +1522,7 @@
         </article>
 
         <!-- ===================================================================
-             MINI-APP WINDOW 07: GHOSTBYTE METADATA CLEANER (mat2)
+             MINI-APP WINDOW 09: GHOSTBYTE METADATA CLEANER (mat2)
              =================================================================== -->
         <article class="os-window win-closed" id="winGhostByte" data-win-title="GhostByte mat2" style="top:52px;left:300px;width:460px;height:375px;z-index:116;">
           <div class="os-window-titlebar" data-drag-handle="winGhostByte">
@@ -1334,49 +1549,6 @@
           </div>
         </article>
 
-        <!-- ===================================================================
-             MINI-APP WINDOW 08: ENVGUARD SECRETS VAULT + LIVE QEMU/KVM VM SHELL
-             =================================================================== -->
-        <article class="os-window win-closed" id="winEnvGuard" data-win-title="EnvGuard & KVM Shell" style="top:58px;left:340px;width:490px;height:420px;z-index:115;">
-          <div class="os-window-titlebar" data-drag-handle="winEnvGuard">
-            <div class="win-title-left">
-              <span>[>_] ENVGUARD SECRETS VAULT & LIVE QEMU/KVM SHELL (<span id="vmRunningBadge">KVM ONLINE</span>)</span>
-            </div>
-            <div class="win-controls">
-              <button type="button" class="win-ctrl-btn" data-win-action="minimize" data-win-id="winEnvGuard" title="Minimize Window">_</button>
-              <button type="button" class="win-ctrl-btn" data-win-action="maximize" data-win-id="winEnvGuard" title="Maximize / Restore Window">□</button>
-              <button type="button" class="win-ctrl-btn close-btn" data-win-action="close" data-win-id="winEnvGuard" title="Close Window">✕</button>
-            </div>
-          </div>
-          <div class="os-window-body">
-            <div style="margin-bottom:8px;padding-bottom:8px;border-bottom:1px dashed var(--fill-black);">
-              <div style="font-weight:700;font-size:10.5px;margin-bottom:4px;">▓▒░ EnvGuard Zero-Leakage Secret Scanner</div>
-              <textarea id="envguardInput" class="mono-input" rows="2" aria-label="EnvGuard Secret Scanner Input" style="margin-bottom:5px;">AWS_SECRET_ACCESS_KEY=wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY
-VAELOR_NODE_MODE=amnesic_toram</textarea>
-              <div style="display:flex;gap:5px;margin-bottom:5px;">
-                <button type="button" class="mono-btn mono-btn-black" id="runEnvguardScanBtn" style="flex:1;">Scan & Seal in RAM</button>
-                <button type="button" class="mono-btn" id="loadCleanEnvSampleBtn">Clean Sample</button>
-              </div>
-              <pre id="envguardResultBox" class="mono-console-output" style="max-height:72px;">[::] EnvGuard Ready — Zero Disk Persistence.</pre>
-            </div>
-
-            <div>
-              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
-                <span style="font-weight:700;font-size:10.5px;">[>_] Live Amnesic Shell (PID: <b id="vmPidVal">ACTIVE</b>)</span>
-                <div style="display:flex;gap:4px;">
-                  <button type="button" class="mono-btn vm-quick-cmd" data-vm-cmd="zoth-lite-pkg status" style="min-height:22px;padding:1px 5px;font-size:9px;">▶ pkg status</button>
-                  <button type="button" class="mono-btn vm-quick-cmd" data-vm-cmd="zoth-amnesia" style="min-height:22px;padding:1px 5px;font-size:9px;">▶ amnesia</button>
-                </div>
-              </div>
-              <div style="display:flex;gap:5px;margin-bottom:5px;">
-                <input type="text" id="terminalCmdInput" class="mono-input" value="zoth-lite-pkg status" aria-label="ZothOS-Lite Terminal Command Input" />
-                <button type="button" class="mono-btn mono-btn-black" id="runTerminalCmdBtn">EXEC ↵</button>
-              </div>
-              <pre id="terminalScreen" class="mono-console-output" style="height:125px;">Loading ZothOS-Lite v1.0 amnesic shell...</pre>
-            </div>
-          </div>
-        </article>
-
       </div>
     </main>
 
@@ -1385,22 +1557,23 @@ VAELOR_NODE_MODE=amnesic_toram</textarea>
          ======================================================================= -->
     <footer class="tails-bottom-dock" role="contentinfo">
       <div class="dock-tasks" id="bottomTaskbarList">
-        <button type="button" class="dock-task-btn win-open win-focused" data-task-win="winGreeter">● [◈] Greeter</button>
+        <button type="button" class="dock-task-btn win-open win-focused" data-task-win="winEnvGuard">● [>_] Terminal</button>
+        <button type="button" class="dock-task-btn win-open" data-task-win="winDocs">● [📖] Tool Docs</button>
+        <button type="button" class="dock-task-btn win-open" data-task-win="winGreeter">● [◈] Greeter</button>
         <button type="button" class="dock-task-btn win-open" data-task-win="winDaemons">● [▓] Daemons (8)</button>
-        <button type="button" class="dock-task-btn" data-task-win="winCoreTools">○ [█] Core Tools (8)</button>
-        <button type="button" class="dock-task-btn" data-task-win="winPkgPuller">○ [⬇] Pull Tools (12)</button>
-        <button type="button" class="dock-task-btn" data-task-win="winBrailleStudio">○ [⣿] Braille Art</button>
-        <button type="button" class="dock-task-btn" data-task-win="winColdSigner">○ [Ꝟ] Cold Signer</button>
-        <button type="button" class="dock-task-btn" data-task-win="winGhostByte">○ [🧹] GhostByte</button>
-        <button type="button" class="dock-task-btn" data-task-win="winEnvGuard">○ [>_] EnvGuard/KVM</button>
+        <button type="button" class="dock-task-btn" data-task-win="winCoreTools">○ [█] Core (8)</button>
+        <button type="button" class="dock-task-btn" data-task-win="winPkgPuller">○ [⬇] Pull (12)</button>
+        <button type="button" class="dock-task-btn" data-task-win="winBrailleStudio">○ [⣿] Braille</button>
+        <button type="button" class="dock-task-btn" data-task-win="winColdSigner">○ [Ꝟ] Signer</button>
+        <button type="button" class="dock-task-btn" data-task-win="winGhostByte">○ [🧹] mat2</button>
       </div>
 
       <div class="dock-wm-controls">
         <button type="button" class="mono-btn" id="cascadeWindowsBtn" style="min-height:26px;padding:2px 7px;font-size:9.5px;" title="Cascade Open Mini-App Windows">❐ Cascade</button>
-        <button type="button" class="mono-btn" id="tileWindowsBtn" style="min-height:26px;padding:2px 7px;font-size:9.5px;" title="Tile Open Mini-App Windows">⊞ Tile</button>
+        <button type="button" class="mono-btn" id="tileWindowsBtn" style="min-height:26px;padding:2px 7px;font-size:9.5px;" title="Tile 4 Main Windows">⊞ Tile 2×2</button>
         <button type="button" class="mono-btn" id="minimizeAllBtn" style="min-height:26px;padding:2px 7px;font-size:9.5px;" title="Show Desktop Art Wall">_ Desktop</button>
-        <span style="font-size:10px;color:var(--fg-grey-600);margin-left:3px;">
-          <b>Neal Frazier Tech (@1nc0gn30)</b> • <a href="https://nullai.tech" target="_blank" rel="noopener noreferrer" style="color:var(--fill-black);font-weight:700;">NullAI</a>
+        <span style="font-size:9.5px;color:var(--fg-grey-600);margin-left:3px;">
+          <b>Neal Frazier Tech (@1nc0gn30)</b> • NullAI
         </span>
       </div>
     </footer>
@@ -1544,20 +1717,32 @@ VAELOR_NODE_MODE=amnesic_toram</textarea>
         });
       });
 
-      // Top Bar Dropdown Menus
+      // Top Bar Dropdown Menus (Apps, Daemons, Support)
       document.getElementById('appsMenuToggleBtn')?.addEventListener('click', (e) => {
         e.stopPropagation();
         document.getElementById('daemonsDropdownMenu')?.classList.remove('open');
+        document.getElementById('supportDropdownMenu')?.classList.remove('open');
         document.getElementById('appsDropdownMenu')?.classList.toggle('open');
       });
       document.getElementById('daemonsMenuToggleBtn')?.addEventListener('click', (e) => {
         e.stopPropagation();
         document.getElementById('appsDropdownMenu')?.classList.remove('open');
+        document.getElementById('supportDropdownMenu')?.classList.remove('open');
         document.getElementById('daemonsDropdownMenu')?.classList.toggle('open');
+      });
+      document.getElementById('supportMenuToggleBtn')?.addEventListener('click', (e) => {
+        e.stopPropagation();
+        document.getElementById('appsDropdownMenu')?.classList.remove('open');
+        document.getElementById('daemonsDropdownMenu')?.classList.remove('open');
+        document.getElementById('supportDropdownMenu')?.classList.toggle('open');
+      });
+      document.getElementById('supportDropdownMenu')?.addEventListener('click', (e) => {
+        e.stopPropagation();
       });
       document.addEventListener('click', () => {
         document.getElementById('appsDropdownMenu')?.classList.remove('open');
         document.getElementById('daemonsDropdownMenu')?.classList.remove('open');
+        document.getElementById('supportDropdownMenu')?.classList.remove('open');
       });
 
       // Cascade, Tile, and Minimize All
@@ -1577,37 +1762,21 @@ VAELOR_NODE_MODE=amnesic_toram</textarea>
         );
         visible.forEach((w, idx) => {
           w.classList.remove('win-maximized');
-          w.style.top = `${14 + idx * 28}px`;
-          w.style.left = `${14 + idx * 36}px`;
-          w.style.width = '450px';
-          w.style.height = '410px';
+          w.style.top = `${12 + idx * 26}px`;
+          w.style.left = `${12 + idx * 34}px`;
+          w.style.width = '440px';
+          w.style.height = '400px';
           focusWindow(w.id);
         });
       });
 
       document.getElementById('tileWindowsBtn')?.addEventListener('click', () => {
-        const visible = Array.from(document.querySelectorAll('.os-window')).filter(
-          (w) => !w.classList.contains('win-closed') && !w.classList.contains('win-minimized')
-        );
-        if (visible.length === 0) {
-          openOrRestoreWindow('winGreeter');
-          openOrRestoreWindow('winDaemons');
-          return;
-        }
-        const leftWin = visible[0];
-        leftWin.classList.remove('win-maximized');
-        leftWin.style.top = '12px';
-        leftWin.style.left = '12px';
-        leftWin.style.width = '430px';
-        leftWin.style.height = '425px';
-        if (visible.length > 1) {
-          const rightWin = visible[1];
-          rightWin.classList.remove('win-maximized');
-          rightWin.style.top = '28px';
-          rightWin.style.left = '452px';
-          rightWin.style.width = '440px';
-          rightWin.style.height = '415px';
-        }
+        openOrRestoreWindow('winGreeter');
+        openOrRestoreWindow('winDaemons');
+        openOrRestoreWindow('winEnvGuard');
+        openOrRestoreWindow('winDocs');
+        layoutInitialWindowsForViewport();
+        focusWindow('winEnvGuard');
       });
 
       // Draggable Window Titlebars
@@ -1645,8 +1814,19 @@ VAELOR_NODE_MODE=amnesic_toram</textarea>
       });
 
       // =======================================================================
-      // 2. ANIMATED BRAILLE & BAYER 4x4 ASCII DITHER DESKTOP WALLPAPER + SCULPTURES
+      // 2. ENHANCED BRAILLE (U+2800), BAYER 8x8 & ASCII 3D SCULPTURE ENGINE
       // =======================================================================
+      const BAYER_8X8 = [
+        [ 0, 32,  8, 40,  2, 34, 10, 42],
+        [48, 16, 56, 24, 50, 18, 58, 26],
+        [12, 44,  4, 36, 14, 46,  6, 38],
+        [60, 28, 52, 20, 62, 30, 54, 22],
+        [ 3, 35, 11, 43,  1, 33,  9, 41],
+        [51, 19, 59, 27, 49, 17, 57, 25],
+        [15, 47,  7, 39, 13, 45,  5, 37],
+        [63, 31, 55, 23, 61, 29, 53, 21]
+      ];
+
       const wpCanvas = document.getElementById('desktopWallpaperCanvas');
       const wpCtx = wpCanvas ? wpCanvas.getContext('2d') : null;
 
@@ -1656,22 +1836,22 @@ VAELOR_NODE_MODE=amnesic_toram</textarea>
         const h = wpCanvas.height;
         wpCtx.clearRect(0, 0, w, h);
 
-        const t = frameTick * 0.028;
-        const stepX = 24;
-        const stepY = 24;
+        const t = frameTick * 0.03;
+        const stepX = 22;
+        const stepY = 22;
         wpCtx.font = '11px "IBM Plex Mono", monospace';
         wpCtx.textBaseline = 'middle';
 
         for (let y = stepY; y < h; y += stepY) {
           for (let x = stepX; x < w; x += stepX) {
-            const nx = (x - w * 0.45) / (w * 0.42);
+            const nx = (x - w * 0.44) / (w * 0.42);
             const ny = (y - h * 0.5) / (h * 0.42);
             const dist = Math.sqrt(nx * nx + ny * ny);
-            const wave = Math.sin(dist * 7.5 - t) * Math.cos(nx * 4.5 + t * 0.7);
-            const bayer = BAYER_4X4[(y / stepY | 0) & 3][(x / stepX | 0) & 3] / 16.0;
-            if (wave + 0.38 > bayer) {
-              wpCtx.fillStyle = wave > 0.42 ? 'rgba(10,10,10,0.20)' : 'rgba(82,82,76,0.12)';
-              const charCode = 0x2800 + (((x + y + (frameTick >> 1)) * 19) & 0xff);
+            const contour = Math.sin(dist * 8.5 - t) * Math.cos(nx * 5.0 + t * 0.65);
+            const bayer = BAYER_8X8[(y / stepY | 0) & 7][(x / stepX | 0) & 7] / 64.0;
+            if (contour + 0.42 > bayer) {
+              wpCtx.fillStyle = contour > 0.44 ? 'rgba(10,10,10,0.22)' : 'rgba(82,82,76,0.13)';
+              const charCode = 0x2800 + (((x + y + (frameTick >> 1)) * 23) & 0xff);
               wpCtx.fillText(String.fromCharCode(charCode), x, y);
             }
           }
@@ -1692,45 +1872,66 @@ VAELOR_NODE_MODE=amnesic_toram</textarea>
       }
 
       function computeSculptureLuminance(nx, ny, t) {
-        const dx = nx - (pointerX - 0.5) * 0.8;
-        const dy = ny - (pointerY - 0.5) * 0.8;
+        const dx = nx - (pointerX - 0.5) * 0.75;
+        const dy = ny - (pointerY - 0.5) * 0.75;
         const dist = Math.sqrt(dx * dx + dy * dy);
         const angle = Math.atan2(dy, dx);
 
         if (activeSculpture === 'skull') {
-          // Procedural Cyber Skull SDF in Bayer/Braille
-          const cranium = Math.exp(-Math.pow(Math.sqrt(dx * dx + Math.pow(dy + 0.18, 2)) - 0.42, 2) * 18.0);
-          const leftEye = Math.exp(-(Math.pow(dx + 0.22, 2) + Math.pow(dy + 0.12, 2)) * 48.0);
-          const rightEye = Math.exp(-(Math.pow(dx - 0.22, 2) + Math.pow(dy + 0.12, 2)) * 48.0);
-          const jaw = Math.abs(dx) < 0.26 && dy > 0.18 && dy < 0.55 ? (0.6 + 0.4 * Math.cos(dx * 32.0)) : 0;
-          const pulse = 0.5 + 0.5 * Math.sin(dist * 10.0 - t * 2.4);
-          return Math.max(0, Math.min(1, (cranium * 0.85 + jaw * 0.75 - (leftEye + rightEye) * 0.9) + pulse * 0.12));
+          const cranium = Math.exp(-Math.pow(Math.sqrt(dx * dx + Math.pow(dy + 0.18, 2)) - 0.43, 2) * 20.0);
+          const domeFill = (dx * dx + Math.pow(dy + 0.16, 2)) < 0.22 ? 0.55 : 0;
+          const leftEye = Math.exp(-(Math.pow(dx + 0.21, 2) + Math.pow(dy + 0.11, 2)) * 52.0);
+          const rightEye = Math.exp(-(Math.pow(dx - 0.21, 2) + Math.pow(dy + 0.11, 2)) * 52.0);
+          const jaw = Math.abs(dx) < 0.27 && dy > 0.17 && dy < 0.56 ? (0.65 + 0.35 * Math.cos(dx * 34.0)) : 0;
+          const pulse = 0.5 + 0.5 * Math.sin(dist * 11.0 - t * 2.5);
+          return Math.max(0, Math.min(1, (cranium * 0.88 + domeFill + jaw * 0.78 - (leftEye + rightEye) * 1.1) + pulse * 0.12));
         }
 
         if (activeSculpture === 'eye') {
-          // Sovereign All-Seeing Eye SDF
-          const eyelid = Math.exp(-Math.pow(Math.abs(dy) - (0.48 - dx * dx * 0.95), 2) * 32.0) * (Math.abs(dx) < 0.72 ? 1 : 0);
-          const iris = Math.exp(-Math.pow(dist - 0.24, 2) * 45.0);
-          const pupil = Math.exp(-dist * dist * 55.0) * (0.6 + 0.4 * Math.sin(t * 3.0));
-          const rays = (0.5 + 0.5 * Math.cos(angle * 12.0 + t * 1.6)) * Math.exp(-dist * 1.8) * 0.35;
-          return Math.max(0, Math.min(1, eyelid * 0.85 + iris * 0.9 + pupil + rays));
+          const eyelid = Math.exp(-Math.pow(Math.abs(dy) - (0.48 - dx * dx * 0.95), 2) * 34.0) * (Math.abs(dx) < 0.74 ? 1 : 0);
+          const iris = Math.exp(-Math.pow(dist - 0.25, 2) * 48.0);
+          const pupil = Math.exp(-dist * dist * 58.0) * (0.65 + 0.35 * Math.sin(t * 3.2));
+          const rays = (0.5 + 0.5 * Math.cos(angle * 14.0 + t * 1.7)) * Math.exp(-dist * 1.65) * 0.38;
+          return Math.max(0, Math.min(1, eyelid * 0.88 + iris * 0.92 + pupil + rays));
         }
 
         if (activeSculpture === 'lattice') {
-          // Vaelor Account-Lattice Hexagonal DAG Grid
-          const gx = Math.abs(Math.sin((dx * 5.5 + t * 0.3) * Math.PI));
-          const gy = Math.abs(Math.sin((dy * 5.5 - t * 0.25) * Math.PI));
-          const gd = Math.abs(Math.sin(((dx + dy) * 4.0 + t * 0.4) * Math.PI));
-          const nodes = Math.pow(gx * gy * gd, 0.45);
-          return Math.max(0, Math.min(1, nodes * Math.exp(-dist * 0.55)));
+          const gx = Math.abs(Math.sin((dx * 5.8 + t * 0.32) * Math.PI));
+          const gy = Math.abs(Math.sin((dy * 5.8 - t * 0.26) * Math.PI));
+          const gd = Math.abs(Math.sin(((dx + dy) * 4.2 + t * 0.42) * Math.PI));
+          const nodes = Math.pow(gx * gy * gd, 0.42);
+          return Math.max(0, Math.min(1, nodes * Math.exp(-dist * 0.52)));
         }
 
-        // Default: Rotating Tails Amnesic Torus Shield
-        const outerRing = Math.exp(-Math.pow(dist - 0.62, 2) * 20.0);
-        const innerCore = Math.exp(-Math.pow(dist - 0.23, 2) * 30.0);
-        const spokes = 0.5 + 0.5 * Math.cos(angle * 6.0 - t * 2.1 + dist * 5.0);
-        const scanWave = 0.5 + 0.5 * Math.sin(ny * 9.0 - t * 2.6);
-        return Math.max(0, Math.min(1, (outerRing * 0.74 + innerCore * 0.88) * (0.42 + 0.58 * spokes) + scanWave * 0.09));
+        if (activeSculpture === 'helix') {
+          // 3D Rotating STDP Double-Helix DNA Strand
+          const strandA = Math.sin(ny * 4.8 - t * 2.4) * 0.48;
+          const strandB = Math.sin(ny * 4.8 - t * 2.4 + Math.PI) * 0.48;
+          const dA = Math.exp(-Math.pow(dx - strandA, 2) * 45.0);
+          const dB = Math.exp(-Math.pow(dx - strandB, 2) * 45.0);
+          const rung = (Math.abs(Math.sin((ny * 9.6 - t * 4.8))) > 0.82 && dx > Math.min(strandA, strandB) && dx < Math.max(strandA, strandB)) ? 0.65 : 0;
+          return Math.max(0, Math.min(1, dA * 0.95 + dB * 0.95 + rung));
+        }
+
+        if (activeSculpture === 'monolith') {
+          // 3D Rotating Isometric Pantheon Obelisk + Bayer Horizon Grid
+          const rot = Math.sin(t * 1.1) * 0.16;
+          const colW = Math.max(0.06, 0.26 - (dy + 0.6) * 0.12 + Math.abs(rot) * 0.08);
+          const insidePillar = Math.abs(dx) < colW && dy > -0.68 && dy < 0.62;
+          const shade = insidePillar ? (dx < rot ? 0.92 : 0.58) : 0;
+          const horizon = dy > 0.42 ? (0.35 + 0.35 * Math.sin(dx * 18.0 + t * 2.0) * Math.cos(dy * 22.0 - t * 2.5)) : 0;
+          const halo = Math.exp(-Math.pow(Math.sqrt(dx * dx + Math.pow(dy + 0.38, 2)) - 0.34, 2) * 26.0) * 0.55;
+          return Math.max(0, Math.min(1, shade + halo + horizon));
+        }
+
+        // Default: Rotating Tails Amnesic Torus Shield + Orbiting Braille Satellites
+        const outerRing = Math.exp(-Math.pow(dist - 0.62, 2) * 22.0);
+        const innerCore = Math.exp(-Math.pow(dist - 0.24, 2) * 32.0);
+        const spokes = 0.5 + 0.5 * Math.cos(angle * 6.0 - t * 2.2 + dist * 5.2);
+        const satX = Math.cos(t * 1.8) * 0.62;
+        const satY = Math.sin(t * 1.8) * 0.62;
+        const sat = Math.exp(-(Math.pow(dx - satX, 2) + Math.pow(dy - satY, 2)) * 65.0) * 0.85;
+        return Math.max(0, Math.min(1, (outerRing * 0.76 + innerCore * 0.9) * (0.42 + 0.58 * spokes) + sat));
       }
 
       function renderDitherCanvas() {
@@ -1745,20 +1946,20 @@ VAELOR_NODE_MODE=amnesic_toram</textarea>
 
         dCtx.strokeStyle = isInverted ? 'rgba(255,255,255,0.08)' : 'rgba(10,10,10,0.06)';
         dCtx.lineWidth = 1;
-        for (let gx = 0; gx < w; gx += 24) {
+        for (let gx = 0; gx < w; gx += 20) {
           dCtx.beginPath(); dCtx.moveTo(gx, 0); dCtx.lineTo(gx, h); dCtx.stroke();
         }
-        for (let gy = 0; gy < h; gy += 24) {
+        for (let gy = 0; gy < h; gy += 20) {
           dCtx.beginPath(); dCtx.moveTo(0, gy); dCtx.lineTo(w, gy); dCtx.stroke();
         }
 
-        const cols = 54;
-        const rows = 19;
+        const cols = 58;
+        const rows = 20;
         const cellW = w / cols;
         const cellH = h / rows;
-        const t = frameTick * 0.045;
+        const t = frameTick * 0.048;
 
-        dCtx.font = '700 10px "IBM Plex Mono", monospace';
+        dCtx.font = '700 9.5px "IBM Plex Mono", monospace';
         dCtx.textBaseline = 'top';
 
         for (let r = 0; r < rows; r++) {
@@ -1766,96 +1967,119 @@ VAELOR_NODE_MODE=amnesic_toram</textarea>
             const nx = (c / cols - 0.5) * 2.2;
             const ny = (r / rows - 0.5) * 1.9;
             const lum = computeSculptureLuminance(nx, ny, t);
-            const bayerThreshold = (BAYER_4X4[r & 3][c & 3] + 0.5) / 16.0;
+            const bayerThreshold = (BAYER_8X8[r & 7][c & 7] + 0.5) / 64.0;
 
             if (shaderMode === 'bayer-1bit') {
               if (lum > bayerThreshold) {
                 const glyphIdx = Math.min(ASCII_RAMP.length - 1, Math.floor(lum * ASCII_RAMP.length));
-                dCtx.fillStyle = lum > 0.56 ? (isInverted ? '#FFFFFF' : '#0A0A0A') : (isInverted ? '#A8A8A0' : '#52524C');
+                dCtx.fillStyle = lum > 0.54 ? (isInverted ? '#FFFFFF' : '#0A0A0A') : (isInverted ? '#A8A8A0' : '#4A4A44');
                 dCtx.fillText(ASCII_RAMP[glyphIdx], c * cellW, r * cellH);
-              } else if (lum > bayerThreshold * 0.52) {
-                dCtx.fillStyle = isInverted ? '#4A4A44' : '#C8C8C0';
+              } else if (lum > bayerThreshold * 0.48) {
+                dCtx.fillStyle = isInverted ? '#4A4A44' : '#C2C2BA';
                 dCtx.fillText('·', c * cellW, r * cellH);
               }
             } else if (shaderMode === 'braille-2x4') {
-              if (lum > bayerThreshold * 0.7) {
+              if (lum > bayerThreshold * 0.65) {
                 let mask = 0;
                 for (let bit = 0; bit < 8; bit++) {
-                  const subMod = Math.sin(t * 2.0 + c * 0.35 + r * 0.5 + bit * 0.75) * 0.14;
-                  if (lum + subMod > 0.32 + (bit * 0.055)) mask |= (1 << bit);
+                  const subMod = Math.sin(t * 2.1 + c * 0.35 + r * 0.5 + bit * 0.75) * 0.14;
+                  if (lum + subMod > 0.30 + (bit * 0.055)) mask |= (1 << bit);
                 }
-                dCtx.fillStyle = lum > 0.55 ? '#0A0A0A' : '#52524C';
+                dCtx.fillStyle = lum > 0.52 ? '#0A0A0A' : '#52524C';
                 dCtx.fillText(String.fromCharCode(0x2800 + mask), c * cellW, r * cellH);
               }
             } else {
               if (lum > bayerThreshold) {
                 dCtx.fillStyle = isInverted ? '#FFFFFF' : '#0A0A0A';
-                dCtx.fillRect(c * cellW + 1, r * cellH + 1, cellW - 1.5, cellH - 1.5);
+                dCtx.fillRect(c * cellW + 0.8, r * cellH + 0.8, cellW - 1.2, cellH - 1.2);
               }
             }
           }
         }
 
+        // Top-Left & Bottom-Right 1-Bit HUD Overlays inside Canvas
         dCtx.fillStyle = '#0A0A0A';
-        dCtx.fillRect(6, 6, 235, 18);
+        dCtx.fillRect(5, 5, 226, 16);
         dCtx.fillStyle = '#FFFFFF';
-        dCtx.font = '700 9.5px "IBM Plex Mono", monospace';
-        dCtx.fillText(`▓▒░ ${activeSculpture.toUpperCase()} // ${shaderMode.toUpperCase()}`, 11, 10);
+        dCtx.font = '700 9px "IBM Plex Mono", monospace';
+        dCtx.fillText(`▓▒░ ${activeSculpture.toUpperCase()} // ${shaderMode.toUpperCase()}`, 9, 8);
+
+        dCtx.fillStyle = '#0A0A0A';
+        dCtx.fillRect(w - 134, h - 19, 129, 15);
+        dCtx.fillStyle = '#FFFFFF';
+        dCtx.fillText(`⣿ BAYER 8×8 • 60FPS`, w - 129, h - 16);
       }
 
       function renderBrailleScope() {
         const el = document.getElementById('liteBrailleScope');
-        if (!el) return;
-        const widthChars = 48;
-        const rows = 2;
-        const dotMap = [
-          [0x01, 0x08],
-          [0x02, 0x10],
-          [0x04, 0x20],
-          [0x40, 0x80]
-        ];
-        const t = frameTick * 0.08;
-        const lines = [];
+        if (el) {
+          const widthChars = 48;
+          const rows = 2;
+          const dotMap = [
+            [0x01, 0x08],
+            [0x02, 0x10],
+            [0x04, 0x20],
+            [0x40, 0x80]
+          ];
+          const t = frameTick * 0.085;
+          const lines = [];
 
-        for (let r = 0; r < rows; r++) {
-          let line = '';
-          for (let c = 0; c < widthChars; c++) {
-            let mask = 0;
-            for (let dx = 0; dx < 2; dx++) {
-              const x = c * 2 + dx;
-              const wave = Math.sin(x * 0.14 - t * 1.8) * 0.42 + Math.cos(x * 0.29 + t * 1.1) * 0.32;
-              const normY = (wave + 1.0) * 0.5 * (rows * 4 - 1);
-              for (let dy = 0; dy < 4; dy++) {
-                const globalY = r * 4 + dy;
-                if (Math.abs(globalY - normY) < 1.15) {
-                  mask |= dotMap[dy][dx];
+          for (let r = 0; r < rows; r++) {
+            let line = '';
+            for (let c = 0; c < widthChars; c++) {
+              let mask = 0;
+              for (let dx = 0; dx < 2; dx++) {
+                const x = c * 2 + dx;
+                const waveA = Math.sin(x * 0.14 - t * 1.9) * 0.44 + Math.cos(x * 0.29 + t * 1.2) * 0.34;
+                const waveB = Math.cos(x * 0.19 + t * 1.4) * 0.38;
+                const normYA = (waveA + 1.0) * 0.5 * (rows * 4 - 1);
+                const normYB = (waveB + 1.0) * 0.5 * (rows * 4 - 1);
+                for (let dy = 0; dy < 4; dy++) {
+                  const globalY = r * 4 + dy;
+                  if (Math.abs(globalY - normYA) < 1.15 || Math.abs(globalY - normYB) < 0.9) {
+                    mask |= dotMap[dy][dx];
+                  }
                 }
               }
+              line += String.fromCharCode(0x2800 + mask);
             }
-            line += String.fromCharCode(0x2800 + mask);
+            lines.push(line);
           }
-          lines.push(line);
+          el.textContent = lines.join('\n');
         }
-        el.textContent = lines.join('\n');
+
+        // Animate Tor Circuit Packet Flow
+        const torEl = document.getElementById('liveTorCircuitAscii');
+        if (torEl) {
+          const phase = (frameTick >> 1) % 4;
+          const hops = ['══⣿══▶', '──⣿──▶', '══⣾══▶', '──⣽──▶'];
+          const h1 = hops[phase];
+          const h2 = hops[(phase + 2) % 4];
+          torEl.textContent = [
+            '╔══[TAILS-TOR-CIRCUIT // NFTABLES STRICT DROP]═════════╗',
+            `║ [VM 02:42:ac] ${h1} [GUARD 185.220] ${h2} [ZOTH L1] ║`,
+            '║ ░░░░▒▒▒▒▓▓▓▓████████▓▓▓▓▒▒▒▒░░░░ • ZERO DNS LEAKS    ║',
+            '╚══════════════════════════════════════════════════════╝'
+          ].join('\n');
+        }
       }
 
       // =======================================================================
-      // 3. BRAILLE & ASCII DITHER ART STUDIO GENERATOR
+      // 3. BRAILLE & ASCII DITHER ART STUDIO GENERATOR + PRESETS
       // =======================================================================
       const ART_PRESETS = {
         crest: [
-          '╔══════════════════════════════════════════════════════════╗',
-          '║ ░░░░▒▒▒▒▓▓▓▓████  ZOTHOS-LITE // v1.0  ████▓▓▓▓▒▒▒▒░░░░ ║',
-          '║ ⣀⣠⣤⣴⣶⣾⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣷⣶⣴⣤⣄⣀ ║',
-          '║ ⣿  ███████╗ ██████╗ ████████╗██╗  ██╗ ██████╗ ███████╗ ⣿ ║',
-          '║ ⣿  ╚══███╔╝██╔═══██╗╚══██╔══╝██║  ██║██╔═══██╗██╔════╝ ⣿ ║',
-          '║ ⣿    ███╔╝ ██║   ██║   ██║   ███████║██║   ██║███████╗ ⣿ ║',
-          '║ ⣿   ███╔╝  ██║   ██║   ██║   ██╔══██║██║   ██║╚════██║ ⣿ ║',
-          '║ ⣿  ███████╗╚██████╔╝   ██║   ██║  ██║╚██████╔╝███████║ ⣿ ║',
-          '║ ⣿  ╚══════╝ ╚═════╝    ╚═╝   ╚═╝  ╚═╝ ╚═════╝ ╚══════╝ ⣿ ║',
-          '║ ⠉⠙⠛⠻⠿⢿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡿⠿⠟⠛⠋⠉ ║',
-          '║ [TORAM NOSWAP] • [BAYER 4x4 1-BIT] • [U+2800 BRAILLE]    ║',
-          '╚══════════════════════════════════════════════════════════╝'
+          '╔════════════════════════════════════════════════════╗',
+          '║ ░░▒▒▓▓██  ZOTHOS-LITE // AMNESIC v1.0  ██▓▓▒▒░░    ║',
+          '║ ⣀⣠⣤⣴⣶⣾⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣷⣶⣴⣤⣄⣀ ║',
+          '║ ⣿ ███████╗ ██████╗ ████████╗██╗  ██╗ ██████╗ ███████╗⣿ ║',
+          '║ ⣿ ╚══███╔╝██╔═══██╗╚══██╔══╝██║  ██║██╔═══██╗██╔════╝⣿ ║',
+          '║ ⣿   ███╔╝ ██║   ██║   ██║   ███████║██║   ██║███████╗⣿ ║',
+          '║ ⣿  ███╔╝  ██║   ██║   ██║   ██╔══██║██║   ██║╚════██║⣿ ║',
+          '║ ⣿ ███████╗╚██████╔╝   ██║   ██║  ██║╚██████╔╝███████║⣿ ║',
+          '║ ⠉⠙⠛⠻⠿⢿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡿⠿⠟⠛⠋⠉ ║',
+          '║ [TORAM NOSWAP] • [BAYER 8x8 1-BIT] • [U+2800]      ║',
+          '╚════════════════════════════════════════════════════╝'
         ].join('\n'),
         skull: [
           '      ⣀⣠⣤⣴⣶⣾⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣷⣶⣴⣤⣄⣀      ',
@@ -1868,7 +2092,6 @@ VAELOR_NODE_MODE=amnesic_toram</textarea>
           '  ⠻⣿⣿⣿⣿⣿⣿⣿⣿⣿⠋ ⣠⣄ ⠙⣿⣿⣿⣿⣿⣿⣿⣿⣿⠟  ',
           '    ⠈⠻⢿⣿⣿⣿⣿⣿⣷⣾⣿⣿⣷⣾⣿⣿⣿⣿⣿⡿⠟⠁    ',
           '       ⢸⣿⣿ ⢸⣿⣿ ⢸⣿⣿ ⢸⣿⣿⡇       ',
-          '       ⠈⠛⠛ ⠈⠛⠛ ⠈⠛⠛ ⠈⠛⠛⠁       ',
           '  [::] AMNESIC ZERO-TRACE ENCLAVE // SDMEM ARMED [::]  '
         ].join('\n'),
         owl: [
@@ -1893,6 +2116,17 @@ VAELOR_NODE_MODE=amnesic_toram</textarea>
           '      ║                     ║                     ║      ',
           '  [ED25519]══════⣿══════▶[POUW-LLM]═══════⣿══════▶[BFT]   ',
           '  ░░░░▒▒▒▒▓▓▓▓████████▓▓▓▓▒▒▒▒░░░░▒▒▒▒▓▓▓▓████████▓▓▓▓  '
+        ].join('\n'),
+        helix: [
+          '  ╭──────────────────────────────────────────────────╮  ',
+          '  │  ⣿⣾⣽⣻═══[COSINE 0.96]═══▶⢿⡿⣟⣯   STDP ENGRAM #01 │  ',
+          '  │    ╲                         ╱                   │  ',
+          '  │     ⣿⣾══[BM25 + EBBINGHAUS]══⢿⡿  STDP ENGRAM #02 │  ',
+          '  │    ╱                         ╲                   │  ',
+          '  │  ⣟⣯⣷⣿═══[RAM TMPFS ONLY]══▶⣾⣽⣻⢿   STDP ENGRAM #03 │  ',
+          '  │    ╲                         ╱                   │  ',
+          '  │     ⢿⡿══[ZERO DISK TRACE]════⣿⣾  STDP ENGRAM #04 │  ',
+          '  ╰──────────────────────────────────────────────────╯  '
         ].join('\n')
       };
 
@@ -1900,19 +2134,19 @@ VAELOR_NODE_MODE=amnesic_toram</textarea>
         const clean = String(text || 'ZOTHOS-LITE').toUpperCase().slice(0, 32);
         let brailleRow1 = '';
         let brailleRow2 = '';
-        for (let i = 0; i < 54; i++) {
+        for (let i = 0; i < 48; i++) {
           const ch = clean.charCodeAt(i % clean.length) || 65;
           brailleRow1 += String.fromCharCode(0x2800 + ((ch * (i + 3)) & 0xff));
           brailleRow2 += String.fromCharCode(0x2800 + (((ch ^ 0x5a) * (i + 7)) & 0xff));
         }
         return [
-          '┌──────────────────────────────────────────────────────────┐',
-          `│ ▓▒░ ${clean.padEnd(48, ' ')} ░▒▓ │`,
-          '├──────────────────────────────────────────────────────────┤',
+          '┌────────────────────────────────────────────────────┐',
+          `│ ▓▒░ ${clean.padEnd(42, ' ')} ░▒▓ │`,
+          '├────────────────────────────────────────────────────┤',
           `│ ${brailleRow1}   │`,
-          `│ ░░▒▒▓▓██  ${clean.padEnd(36, ' ')}  ██▓▓▒▒░░ │`,
+          `│ ░░▒▒▓▓██  ${clean.padEnd(32, ' ')}██▓▓▒▒░░ │`,
           `│ ${brailleRow2}   │`,
-          '└──────────────────────────────────────────────────────────┘',
+          '└────────────────────────────────────────────────────┘',
           ART_PRESETS.crest
         ].join('\n');
       }
@@ -1939,8 +2173,21 @@ VAELOR_NODE_MODE=amnesic_toram</textarea>
         setTimeout(() => { b.textContent = 'COPY'; }, 1400);
       });
 
+      // Documentation Filter Tabs inside winDocs
+      document.querySelectorAll('.doc-filter-btn').forEach((btn) => {
+        btn.addEventListener('click', () => {
+          document.querySelectorAll('.doc-filter-btn').forEach((b) => b.classList.remove('mono-btn-black'));
+          btn.classList.add('mono-btn-black');
+          const cat = btn.getAttribute('data-doc-filter') || 'ALL';
+          document.querySelectorAll('#operatorManualList [data-doc-cat]').forEach((card) => {
+            const c = card.getAttribute('data-doc-cat');
+            card.style.display = (cat === 'ALL' || c === cat) ? 'block' : 'none';
+          });
+        });
+      });
+
       // =======================================================================
-      // 4. RENDER DAEMONS, 8 CORE TOOLS & 12 ON-DEMAND TOOLS
+      // 4. RENDER DAEMONS, 8 CORE TOOLS, 12 ON-DEMAND TOOLS & LIVE TERMINAL
       // =======================================================================
       function renderSystemState(raw) {
         const data = raw && raw.snapshot ? raw.snapshot : raw;
@@ -1974,7 +2221,6 @@ VAELOR_NODE_MODE=amnesic_toram</textarea>
         syncToggle('toggleToramBtn', ac.ramOnlyBoot !== false);
         syncToggle('toggleTorBtn', ac.torKillswitch !== false);
         syncToggle('toggleMacBtn', ac.macSpoofing !== false);
-        syncToggle('toggleLuksBtn', Boolean(ac.luksPersistence), '█ UNLOCKED', '░ LOCKED');
 
         // Render ZothOS Daemons (Window + Top Dropdown)
         const daemons = data.daemons || [];
@@ -1987,15 +2233,15 @@ VAELOR_NODE_MODE=amnesic_toram</textarea>
           daemonBox.innerHTML = daemons.map((d) => `
             <div class="pkg-card-mono ${d.running ? 'pulled-active' : ''}">
               <div style="display:flex;justify-content:space-between;align-items:center;gap:6px;margin-bottom:3px;">
-                <b style="font-size:11px;">${d.running ? '●' : '○'} ${d.name} <span style="font-weight:400;color:var(--fg-grey-600);">(:${d.port})</span></b>
+                <b style="font-size:10.5px;">${d.running ? '●' : '○'} ${d.name} <span style="font-weight:400;color:var(--fg-grey-600);">(:${d.port})</span></b>
                 <span class="${d.preinstalled ? 'badge-black' : 'badge-grey'}">
                   ${d.preinstalled ? 'PRE-INSTALLED' : 'ON-DEMAND'} • ${d.ramMb} MB
                 </span>
               </div>
-              <div style="font-size:10px;color:var(--fg-grey-600);margin-bottom:5px;">${d.description}</div>
+              <div style="font-size:9.5px;color:var(--fg-grey-600);margin-bottom:4px;">${d.description}</div>
               <div style="display:flex;justify-content:space-between;align-items:center;">
-                <code style="font-size:9.5px;color:var(--fg-grey-600);">${d.unit}</code>
-                <button type="button" class="mono-btn ${d.running ? 'mono-btn-black' : ''} daemon-toggle-btn" data-daemon-id="${d.id}" style="min-height:22px;padding:1px 7px;font-size:9px;">
+                <code style="font-size:9px;color:var(--fg-grey-600);">${d.unit}</code>
+                <button type="button" class="mono-btn ${d.running ? 'mono-btn-black' : ''} daemon-toggle-btn" data-daemon-id="${d.id}" style="min-height:20px;padding:1px 6px;font-size:8.5px;">
                   ${d.running ? '█ RUNNING (STOP)' : '▶ START IN RAM'}
                 </button>
               </div>
@@ -2041,7 +2287,7 @@ VAELOR_NODE_MODE=amnesic_toram</textarea>
               <div style="display:flex;justify-content:space-between;align-items:center;">
                 <code style="font-size:9.5px;color:var(--fg-grey-600);">${t.binary}</code>
                 <button type="button" class="mono-btn core-Verify-btn" data-bin="${t.binary}" style="min-height:22px;padding:1px 7px;font-size:9px;">
-                  ▶ Run in Shell
+                  ▶ Run in Terminal
                 </button>
               </div>
             </div>
@@ -2145,39 +2391,43 @@ VAELOR_NODE_MODE=amnesic_toram</textarea>
           const data = await res.json();
           if (data && data.ok) {
             renderSystemState(data);
-            runTerminalCommand('zoth-lite-pkg status');
+            runTerminalCommand('help');
             executeEnvguardScan();
             executeColdSign(false);
           }
         } catch (_e) {}
       }
 
-      function runTerminalCommand(cmdStr) {
+      async function runTerminalCommand(cmdStr) {
         const inputEl = document.getElementById('terminalCmdInput');
         if (inputEl && cmdStr) inputEl.value = cmdStr;
-        const cmd = (cmdStr || (inputEl ? inputEl.value : '') || 'zoth-lite-pkg status').trim();
+        const cmd = (cmdStr || (inputEl ? inputEl.value : '') || 'help').trim();
         const term = document.getElementById('terminalScreen');
-        if (!term || !currentState) return;
-        const fp = currentState.footprint || {};
-        const pulled = (currentState.optionalTools || []).filter((p) => p.pulled);
-        let out = `root@zothos-lite:~# ${cmd}\n`;
-        if (cmd.includes('status')) {
-          out += `[::] ZOTHOS-LITE v1.0 // TAILS-STYLE AMNESIC DESKTOP GUI\n`;
-          out += `[::] Boot Mode  : toram noswap (Zero Disk Writes)\n`;
-          out += `[::] Footprint  : ${fp.totalIsoMb || 958} MB (${fp.coreSecurityDevMb || 268} MB Core + ${fp.pulledRamMb || 0} MB Pulled)\n`;
-          out += `[::] Installed  : ${pulled.map((p) => p.id).join(', ') || 'none'}`;
-        } else if (cmd.startsWith('zoth-lite-pkg pull ')) {
-          const pkg = cmd.split(/\s+/)[2] || 'module';
-          out += `[▓▒░] Pulling ${pkg} over isolated Tor SOCKS5 circuit (9050)...\n`;
-          out += `[███] Verified Ed25519 signature -> Mounted in volatile RAM_TMPFS.`;
-        } else if (cmd.startsWith('zoth-lite-pkg purge ')) {
-          const pkg = cmd.split(/\s+/)[2] || 'module';
-          out += `[░▒▓] Unmounted ${pkg} and zeroed RAM pages via sdmem.`;
-        } else {
-          out += `[OK] Enclave binary verified in RAM (${cmd}) — SHA-256 integrity intact.`;
-        }
-        term.textContent = out;
+        if (!term) return;
+
+        openOrRestoreWindow('winEnvGuard');
+
+        try {
+          const res = await fetch('/api/terminal/exec', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ command: cmd })
+          });
+          const data = await res.json();
+          if (data && data.ok) {
+            if (data.snapshot) renderSystemState(data.snapshot);
+            term.textContent = `root@zothos-lite-ram:~# ${cmd}\n${data.output}`;
+            return;
+          }
+        } catch (_e) {}
+
+        term.textContent = `root@zothos-lite-ram:~# ${cmd}\n[OK] Executed in volatile RAM overlayfs (toram noswap).`;
       }
+
+      document.getElementById('clearTerminalBtn')?.addEventListener('click', () => {
+        const term = document.getElementById('terminalScreen');
+        if (term) term.textContent = 'root@zothos-lite-ram:~# _ (Terminal cleared — click any command pill above)';
+      });
 
       // Wire Greeter Toggles
       document.querySelectorAll('[data-amnesia-key]').forEach((btn) => {
@@ -2189,10 +2439,16 @@ VAELOR_NODE_MODE=amnesic_toram</textarea>
 
       document.getElementById('rerollMacBtn')?.addEventListener('click', () => {
         apiPost('/api/amnesia/toggle', { key: 'rotateMac' });
+        runTerminalCommand('zoth-tor-guard --verify');
       });
 
-      document.getElementById('panicWipeRamBtn')?.addEventListener('click', () => {
-        apiPost('/api/amnesia/toggle', { key: 'panicWipe' });
+      document.getElementById('panicWipeRamBtn')?.addEventListener('click', async () => {
+        const res = await apiPost('/api/amnesia/toggle', { key: 'panicWipe' });
+        const term = document.getElementById('terminalScreen');
+        if (term && res) {
+          openOrRestoreWindow('winEnvGuard');
+          term.textContent = `root@zothos-lite-ram:~# sdmem -fllv && macchanger -r eth0\n[☢ PANIC WIPE COMPLETED] ${res.message || 'All volatile RAM_TMPFS packages zeroed; MAC rotated.'}`;
+        }
       });
 
       // Wire Sculpture & Shader Mode Buttons
@@ -2237,20 +2493,15 @@ VAELOR_NODE_MODE=amnesic_toram</textarea>
           });
           const data = await res.json();
           if (data && data.ok && box) {
-            const verdict = data.clean
-              ? '[CLEAN // 0 LEAKS]'
-              : `[ALERT // ${data.findingsCount} SECRET(S) REDACTED]`;
-            box.textContent = `${verdict} • Entropy: ${data.shannonEntropyBits} bits/char\nSeal: ${data.sealedEnvelope}`;
+            box.textContent = data.clean
+              ? `[CLEAN • ${data.shannonEntropyBits}b]`
+              : `[${data.findingsCount} SECRET REDACTED • ${data.shannonEntropyBits}b]`;
           }
         } catch (_e) {}
       }
-      document.getElementById('runEnvguardScanBtn')?.addEventListener('click', executeEnvguardScan);
-      document.getElementById('loadCleanEnvSampleBtn')?.addEventListener('click', () => {
-        const el = document.getElementById('envguardInput');
-        if (el) {
-          el.value = 'ZOTHOS_LITE_EDITION=1.0-monotone\nZOTH_BOOT_FLAGS=toram noswap\nTOR_SOCKS_PORT=9050';
-          executeEnvguardScan();
-        }
+      document.getElementById('runEnvguardScanBtn')?.addEventListener('click', () => {
+        executeEnvguardScan();
+        runTerminalCommand('zoth-envguard --scan');
       });
 
       document.getElementById('exportCustomIsoBtn')?.addEventListener('click', () => {
@@ -2277,7 +2528,15 @@ VAELOR_NODE_MODE=amnesic_toram</textarea>
         const btn = e.currentTarget;
         navigator.clipboard?.writeText('GG2eQbVh8ut1BK6j1A2tz7pSySdLpD38BgyEhGcxdXoK');
         const orig = btn.textContent;
-        btn.textContent = '✓ SOL';
+        btn.textContent = '✓ Copied Solana Address!';
+        setTimeout(() => { btn.textContent = orig; }, 1600);
+      });
+
+      document.getElementById('copyStripeCoffeeBtn')?.addEventListener('click', (e) => {
+        const btn = e.currentTarget;
+        navigator.clipboard?.writeText('https://buy.stripe.com/3cIfZg27PdKo2D64Ocfw40X');
+        const orig = btn.textContent;
+        btn.textContent = '✓ Copied Coffee Link!';
         setTimeout(() => { btn.textContent = orig; }, 1600);
       });
 
@@ -2336,9 +2595,7 @@ VAELOR_NODE_MODE=amnesic_toram</textarea>
           const d = await res.json();
           if (d && d.ok) {
             const badge = document.getElementById('vmRunningBadge');
-            const pidEl = document.getElementById('vmPidVal');
-            if (badge) badge.textContent = d.running ? `KVM PID ${d.pid}` : 'VM STANDBY';
-            if (pidEl) pidEl.textContent = d.running ? String(d.pid) : 'STANDBY';
+            if (badge) badge.textContent = d.running ? `KVM PID ${d.pid}` : 'KVM ARMED';
           }
         } catch (_e) {}
       }
@@ -2384,7 +2641,8 @@ VAELOR_NODE_MODE=amnesic_toram</textarea>
         });
       });
 
-      // Responsive 2x2 Window Grid Auto-Fit on Load (so 1440x900 and 1280x800 QEMU VM have zero overlap)
+      // Responsive 2x2 Window Grid Auto-Fit on Load:
+      // Top-Left: Greeter | Top-Middle: Daemons | Bottom-Left: Live Armed Terminal | Bottom-Middle: Tool Docs & Manual
       function layoutInitialWindowsForViewport() {
         if (window.innerWidth <= 960) return;
         const stage = document.getElementById('osWindowStage');
@@ -2409,8 +2667,8 @@ VAELOR_NODE_MODE=amnesic_toram</textarea>
         };
         setBox('winGreeter', 10, 10, colW, rowH);
         setBox('winDaemons', 10, 18 + colW, colW, rowH);
-        setBox('winCoreTools', 18 + rowH, 10, colW, rowH);
-        setBox('winPkgPuller', 18 + rowH, 18 + colW, colW, rowH);
+        setBox('winEnvGuard', 18 + rowH, 10, colW, rowH);
+        setBox('winDocs', 18 + rowH, 18 + colW, colW, rowH);
       }
 
       layoutInitialWindowsForViewport();
