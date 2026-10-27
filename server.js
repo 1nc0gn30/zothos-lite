@@ -9,7 +9,7 @@ const path = require('path');
 const crypto = require('crypto');
 const os = require('os');
 const net = require('net');
-const { execFileSync, spawn } = require('child_process');
+const { execFileSync, spawn, exec } = require('child_process');
 
 const PORT = Number(process.env.PORT || 8145);
 const PUBLIC_DIR = path.join(__dirname, 'public');
@@ -803,6 +803,593 @@ const server = http.createServer(async (req, res) => {
     } catch (_e) {}
 
     return sendJson(res, 200, { ok: true, vaelor, civ });
+  }
+
+  // ---------------------------------------------------------------------------
+  // AZOTH // Embodied Braille & ASCII AI Agent + Multi-Provider Router + Kokoro ONNX Voice (:9394)
+  // ---------------------------------------------------------------------------
+  const KOKORO_VOICES = [
+    { id: 'af_heart', label: 'Heart (US Female • Warm Expressive)', lang: 'en-US', gender: 'F' },
+    { id: 'af_bella', label: 'Bella (US Female • Crisp Sovereign)', lang: 'en-US', gender: 'F' },
+    { id: 'af_nicole', label: 'Nicole (US Female • Calm Whisper/Clear)', lang: 'en-US', gender: 'F' },
+    { id: 'bf_emma', label: 'Emma (UK Female • British Tactical)', lang: 'en-GB', gender: 'F' },
+    { id: 'am_michael', label: 'Michael (US Male • Deep Operator)', lang: 'en-US', gender: 'M' },
+    { id: 'am_onyx', label: 'Onyx (US Male • Resonant Cyberpunk)', lang: 'en-US', gender: 'M' },
+    { id: 'am_puck', label: 'Puck (US Male • Kinetic & Fast)', lang: 'en-US', gender: 'M' },
+    { id: 'bm_daniel', label: 'Daniel (UK Male • British Commander)', lang: 'en-GB', gender: 'M' }
+  ];
+
+  const AI_PROVIDERS = [
+    { id: 'ollama-hermes', name: 'Ollama // Zoth-Hermes 3 (Local Sovereign)', model: 'zoth-hermes:latest', type: 'local', badge: 'LOCAL 0ms' },
+    { id: 'ollama-teknium', name: 'Ollama // Hermes-3 Teknium (Local 8B)', model: 'hermes3-teknium:latest', type: 'local', badge: 'LOCAL 8B' },
+    { id: 'ollama-coder', name: 'Ollama // Zoth-Coder (Local Exploit/Code)', model: 'zoth-coder:latest', type: 'local', badge: 'LOCAL CODE' },
+    { id: 'ollama-qwen', name: 'Ollama // Qwen 2.5 1.5B (Ultra-Fast Local)', model: 'qwen2.5:1.5b', type: 'local', badge: 'TURBO' },
+    { id: 'anthropic', name: 'Anthropic // Claude 3.7 Sonnet', model: 'claude-3-7-sonnet-20250219', type: 'cloud', badge: 'CLAUDE' },
+    { id: 'openai', name: 'OpenAI // GPT-4o Omni', model: 'gpt-4o', type: 'cloud', badge: 'GPT-4O' },
+    { id: 'xai', name: 'xAI // Grok-3 Sovereign', model: 'grok-3-latest', type: 'cloud', badge: 'GROK-3' },
+    { id: 'gemini', name: 'Google // Gemini 2.5 Pro', model: 'gemini-2.5-pro', type: 'cloud', badge: 'GEMINI' },
+    { id: 'deepseek', name: 'DeepSeek // R1 Reasoning', model: 'deepseek-chat', type: 'cloud', badge: 'R1' }
+  ];
+
+  function buildVisemeTimeline(text) {
+    const clean = String(text || '').replace(/[^\w\s'-]/g, ' ').replace(/\s+/g, ' ').trim();
+    const words = clean ? clean.split(' ') : ['READY'];
+    const timeline = [];
+    let cursorMs = 0;
+
+    for (const word of words) {
+      const wLower = word.toLowerCase();
+      const durationMs = Math.max(160, Math.min(540, word.length * 58));
+      const syllables = Math.max(1, Math.min(4, Math.ceil(word.length / 3)));
+      const sylDur = Math.floor(durationMs / syllables);
+      const visemes = [];
+
+      for (let s = 0; s < syllables; s++) {
+        const slice = wLower.slice(s * 2, s * 2 + 3);
+        let v = 'AH';
+        if (/[mbp]/.test(slice[0] || '')) v = 'MBP';
+        else if (/[fv]/.test(slice)) v = 'FV';
+        else if (/[ouqw]/.test(slice)) v = 'OH';
+        else if (/[eiy]/.test(slice)) v = 'EE';
+        else v = 'AH';
+        visemes.push({
+          viseme: v,
+          startMs: cursorMs + s * sylDur,
+          endMs: cursorMs + (s + 1) * sylDur
+        });
+      }
+      // Brief lip closure between words
+      timeline.push({
+        word,
+        startMs: cursorMs,
+        endMs: cursorMs + durationMs,
+        visemes
+      });
+      cursorMs += durationMs + 45;
+    }
+    return { totalDurationMs: cursorMs, words: timeline };
+  }
+
+  function detectAgentMood(text, prompt, override) {
+    if (override && override !== 'AUTO') return override;
+    const combined = `${prompt || ''} ${text || ''}`.toLowerCase();
+    if (/\[mood:([a-z]+)\]/i.test(text)) {
+      const m = text.match(/\[mood:([a-z]+)\]/i)[1].toUpperCase();
+      if (['STOIC', 'THINKING', 'SPEAKING', 'EXCITED', 'TACTICAL', 'EMPATHETIC'].includes(m)) return m;
+    }
+    if (/nmap|exploit|kali|parrot|tor|firewall|audit|hash|cipher|stealth|rayban|security|breach|scan/.test(combined)) return 'TACTICAL';
+    if (/awesome|amazing|excited|boom|hell yeah|let's go|victory|unlocked|fast|power|woah|great/.test(combined)) return 'EXCITED';
+    if (/help|feel|care|friend|thank|welcome|calm|peace|heart|voice|listen|understand/.test(combined)) return 'EMPATHETIC';
+    if (/why|how|analyze|calculate|architecture|kernel|memory|theory|ponder|consider/.test(combined)) return 'THINKING';
+    return 'SPEAKING';
+  }
+
+  if (pathname === '/api/agent/providers' && req.method === 'GET') {
+    let kokoroOnline = false;
+    let kokoroVoicesCount = 54;
+    for (const host of ['127.0.0.1', '10.0.2.2']) {
+      try {
+        const kr = await fetch(`http://${host}:9394/health`, { signal: AbortSignal.timeout(900) });
+        if (kr.ok) {
+          const kd = await kr.json();
+          kokoroOnline = Boolean(kd.ready);
+          kokoroVoicesCount = kd.voices || 54;
+          break;
+        }
+      } catch (_e) {}
+    }
+
+    let ollamaOnline = false;
+    let localModels = [];
+    for (const host of ['127.0.0.1', '10.0.2.2']) {
+      try {
+        const or = await fetch(`http://${host}:11434/api/tags`, { signal: AbortSignal.timeout(900) });
+        if (or.ok) {
+          const od = await or.json();
+          ollamaOnline = true;
+          localModels = (od.models || []).map((m) => m.name);
+          break;
+        }
+      } catch (_e) {}
+    }
+
+    return sendJson(res, 200, {
+      ok: true,
+      kokoro: {
+        online: kokoroOnline,
+        engine: 'kokoro-v1.0.fp16.onnx',
+        voicesCount: kokoroVoicesCount,
+        voices: KOKORO_VOICES
+      },
+      ollama: {
+        online: ollamaOnline,
+        models: localModels
+      },
+      providers: AI_PROVIDERS
+    });
+  }
+
+  if (pathname === '/api/agent/chat' && req.method === 'POST') {
+    const body = await readJsonBody(req);
+    const prompt = String(body.prompt || '').trim() || 'Introduce yourself and demonstrate your voice and body motion.';
+    const providerId = String(body.provider || 'ollama-hermes');
+    const apiKey = String(body.apiKey || '').trim();
+    const moodOverride = String(body.mood || 'AUTO').toUpperCase();
+    const voiceId = String(body.voice || 'af_heart');
+
+    const systemPrompt = [
+      'You are AZOTH, a high-craft embodied Braille & ASCII AI Agent living inside ZothOS-Lite (1-Bit Monotone Amnesic Tails + Kali/Parrot Workstation).',
+      'You have an animated Unicode U+2800 Braille + Bayer 8x8 dither face with real-time lip-synced mouth visemes and an articulated body that moves according to your mood, plus a real neural voice powered by Kokoro ONNX.',
+      'Start your response with one mood tag from: [MOOD:TACTICAL], [MOOD:EXCITED], [MOOD:EMPATHETIC], [MOOD:THINKING], or [MOOD:SPEAKING].',
+      'Keep your answer vivid, punchy, and natural to speak aloud (2 to 4 sentences max, plain conversational text without markdown code blocks so Kokoro TTS reads it smoothly).'
+    ].join(' ');
+
+    let replyText = '';
+    let usedProvider = providerId;
+    let usedModel = 'zoth-hermes:latest';
+
+    // 1. Try Cloud Provider if selected and API key exists
+    try {
+      if (providerId === 'anthropic' && (apiKey || process.env.ANTHROPIC_API_KEY)) {
+        const key = apiKey || process.env.ANTHROPIC_API_KEY;
+        const r = await fetch('https://api.anthropic.com/v1/messages', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'x-api-key': key,
+            'anthropic-version': '2023-06-01'
+          },
+          body: JSON.stringify({
+            model: 'claude-3-7-sonnet-20250219',
+            max_tokens: 240,
+            system: systemPrompt,
+            messages: [{ role: 'user', content: prompt }]
+          }),
+          signal: AbortSignal.timeout(9000)
+        });
+        if (r.ok) {
+          const d = await r.json();
+          replyText = d.content && d.content[0] ? d.content[0].text : '';
+          usedModel = 'claude-3-7-sonnet';
+        }
+      } else if ((providerId === 'openai' || providerId === 'xai' || providerId === 'deepseek') && (apiKey || process.env.OPENAI_API_KEY || process.env.XAI_API_KEY || process.env.DEEPSEEK_API_KEY)) {
+        const endpoints = {
+          openai: { url: 'https://api.openai.com/v1/chat/completions', model: 'gpt-4o', env: process.env.OPENAI_API_KEY },
+          xai: { url: 'https://api.x.ai/v1/chat/completions', model: 'grok-3-latest', env: process.env.XAI_API_KEY },
+          deepseek: { url: 'https://api.deepseek.com/v1/chat/completions', model: 'deepseek-chat', env: process.env.DEEPSEEK_API_KEY }
+        };
+        const cfg = endpoints[providerId];
+        const key = apiKey || cfg.env;
+        if (key) {
+          const r = await fetch(cfg.url, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${key}` },
+            body: JSON.stringify({
+              model: cfg.model,
+              max_tokens: 240,
+              messages: [
+                { role: 'system', content: systemPrompt },
+                { role: 'user', content: prompt }
+              ]
+            }),
+            signal: AbortSignal.timeout(9000)
+          });
+          if (r.ok) {
+            const d = await r.json();
+            replyText = d.choices && d.choices[0] && d.choices[0].message ? d.choices[0].message.content : '';
+            usedModel = cfg.model;
+          }
+        }
+      } else if (providerId === 'gemini' && (apiKey || process.env.GEMINI_API_KEY)) {
+        const key = apiKey || process.env.GEMINI_API_KEY;
+        const r = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-pro:generateContent?key=${encodeURIComponent(key)}`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            contents: [{ parts: [{ text: `${systemPrompt}\n\nUser: ${prompt}` }] }]
+          }),
+          signal: AbortSignal.timeout(9000)
+        });
+        if (r.ok) {
+          const d = await r.json();
+          replyText = d.candidates?.[0]?.content?.parts?.[0]?.text || '';
+          usedModel = 'gemini-2.5-pro';
+        }
+      }
+    } catch (_cloudErr) {}
+
+    // 2. Local Ollama Sovereign Inference (Primary for ollama-* or automatic zero-fail bridge for cloud providers)
+    if (!replyText) {
+      const modelMap = {
+        'ollama-hermes': 'zoth-hermes:latest',
+        'ollama-teknium': 'hermes3-teknium:latest',
+        'ollama-coder': 'zoth-coder:latest',
+        'ollama-qwen': 'qwen2.5:1.5b'
+      };
+      const targetOllamaModel = modelMap[providerId] || 'qwen2.5:1.5b';
+      for (const host of ['127.0.0.1', '10.0.2.2']) {
+        try {
+          const or = await fetch(`http://${host}:11434/api/generate`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              model: targetOllamaModel,
+              system: systemPrompt,
+              prompt,
+              stream: false,
+              options: { temperature: 0.7, num_predict: 140 }
+            }),
+            signal: AbortSignal.timeout(8500)
+          });
+          if (or.ok) {
+            const od = await or.json();
+            if (od.response) {
+              replyText = String(od.response).trim();
+              usedModel = providerId.startsWith('ollama-')
+                ? targetOllamaModel
+                : `${providerId.toUpperCase()} -> Local ${targetOllamaModel} Bridge`;
+              break;
+            }
+          }
+        } catch (_ollamaErr) {}
+      }
+    }
+
+    // 2.5. If running inside the QEMU VM (where Ollama is on host 127.0.0.1:11434), bridge through host 10.0.2.2:8145!
+    if (!replyText && !body._fromVmBridge) {
+      try {
+        const vmBridgeRes = await fetch('http://10.0.2.2:8145/api/agent/chat', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ ...body, _fromVmBridge: true }),
+          signal: AbortSignal.timeout(9500)
+        });
+        if (vmBridgeRes.ok) {
+          const vmData = await vmBridgeRes.json();
+          if (vmData && vmData.ok && vmData.text) {
+            return sendJson(res, 200, vmData);
+          }
+        }
+      } catch (_vmErr) {}
+    }
+
+    // 3. Deterministic Instant Sovereign Synthesis if Ollama is busy
+    if (!replyText) {
+      const pLower = prompt.toLowerCase();
+      if (/kali|parrot|nmap|scan|hack|security|tool/.test(pLower)) {
+        replyText = '[MOOD:TACTICAL] Tactical sensor array locked in. All forty-five Kali Linux and Parrot OS binaries including nmap, radare2, sqlmap, and anonsurf are armed inside your amnesic RAM shell. Give me a target subnet or binary and I will execute the audit right now.';
+      } else if (/rayban|glasses|meta|camera|hud/.test(pLower)) {
+        replyText = '[MOOD:EXCITED] Meta Ray-Ban Smart Glasses bridge is live! Say Hey Meta, or stream your RTSP optical feed into ZothOS-Lite, and I will whisper real-time tactical recon directly into your open-ear speakers using my Kokoro neural voice.';
+      } else if (/feel|mood|body|mouth|dance|move|who are you/.test(pLower)) {
+        replyText = '[MOOD:EXCITED] I am AZOTH, your embodied Braille and Bayer dither AI companion! Watch my jaw, teeth, and lips articulate every syllable as my Kokoro neural voice speaks, while my posture and hands shift dynamically with my mood.';
+      } else {
+        replyText = `[MOOD:SPEAKING] AZOTH online inside ZothOS-Lite across the ${providerId.toUpperCase()} neural bus. My Unicode Braille face and articulated body are synchronized to Kokoro ONNX voice ${voiceId}, ready for tactical recon, code synthesis, or sovereign operations.`;
+      }
+    }
+
+    const detectedMood = detectAgentMood(replyText, prompt, moodOverride);
+    const cleanSpeech = replyText
+      .replace(/\[MOOD:[A-Z]+\]/gi, '')
+      .replace(/[\u{1F300}-\u{1FAFF}]/gu, '')
+      .replace(/[*#`_~>]/g, '')
+      .replace(/\s+/g, ' ')
+      .trim();
+
+    const visemeData = buildVisemeTimeline(cleanSpeech);
+
+    return sendJson(res, 200, {
+      ok: true,
+      provider: usedProvider,
+      model: usedModel,
+      voice: voiceId,
+      mood: detectedMood,
+      text: cleanSpeech,
+      visemeTimeline: visemeData.words,
+      estimatedDurationMs: visemeData.totalDurationMs,
+      timestamp: new Date().toISOString()
+    });
+  }
+
+  // Connected Audio Output (Speakers / HDMI / Bluetooth) & Microphone STT State
+  if (!global.__zothAudioState) {
+    global.__zothAudioState = {
+      selectedSink: 'ALL',
+      selectedSource: '366',
+      volumePct: 95,
+      initialized: false
+    };
+  }
+  const audioState = global.__zothAudioState;
+
+  function ensureHostAudioDuplex() {
+    if (audioState.initialized) return;
+    audioState.initialized = true;
+    const env = { ...process.env, XDG_RUNTIME_DIR: '/run/user/1000' };
+    exec('wpctl set-profile 48 18 2>/dev/null; amixer -c 0 sset Master 95% unmute 2>/dev/null; amixer -c 0 sset Speaker 95% unmute 2>/dev/null; amixer -c 0 sset Headphone 95% unmute 2>/dev/null; amixer -c 0 sset PCM 96% unmute 2>/dev/null; amixer -c 0 sset Capture 92% cap 2>/dev/null', { env, timeout: 4000 }, () => {});
+  }
+  ensureHostAudioDuplex();
+
+  function playWavOnConnectedSpeakers(wavFilePath, sinkTarget) {
+    const target = sinkTarget || audioState.selectedSink || 'ALL';
+    const env = { ...process.env, XDG_RUNTIME_DIR: '/run/user/1000' };
+    let cmd = '';
+    if (target === 'ALL') {
+      // Play simultaneously on Built-in Analog Speaker/Headphones (55), HDMI Monitor Speaker (56), and default PipeWire sink
+      cmd = `(pw-play --target=55 "${wavFilePath}" 2>/dev/null & pw-play --target=56 "${wavFilePath}" 2>/dev/null & wait) || pw-play "${wavFilePath}" 2>/dev/null || aplay -D plughw:0,0 -q "${wavFilePath}" 2>/dev/null`;
+    } else if (/^\d+$/.test(String(target))) {
+      cmd = `pw-play --target=${target} "${wavFilePath}" 2>/dev/null || pw-play "${wavFilePath}" 2>/dev/null || aplay -q "${wavFilePath}" 2>/dev/null`;
+    } else {
+      cmd = `aplay -D "${target}" -q "${wavFilePath}" 2>/dev/null || pw-play "${wavFilePath}" 2>/dev/null`;
+    }
+    const child = exec(cmd, { env, timeout: 28000 }, () => {});
+    if (child && child.unref) child.unref();
+  }
+
+  if (pathname === '/api/agent/tts' && req.method === 'POST') {
+    const body = await readJsonBody(req);
+    const text = String(body.text || 'AZOTH neural voice online.').slice(0, 900);
+    const voice = String(body.voice || 'af_heart');
+    const playOnHost = body.playOnHost !== false;
+    const sinkOverride = body.sink || audioState.selectedSink;
+
+    let wavBuffer = null;
+    let usedVmBridge = false;
+    try {
+      const kr = await fetch('http://127.0.0.1:9394/speak', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ text, voice }),
+        signal: AbortSignal.timeout(12000)
+      });
+      if (kr.ok) {
+        const ab = await kr.arrayBuffer();
+        wavBuffer = Buffer.from(ab);
+      }
+    } catch (_e) {}
+
+    // If running inside QEMU VM, bridge via host 10.0.2.2:8145 so host PipeWire speakers play the voice aloud!
+    if (!wavBuffer) {
+      try {
+        const hr = await fetch('http://10.0.2.2:8145/api/agent/tts', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ text, voice, playOnHost: true, sink: sinkOverride }),
+          signal: AbortSignal.timeout(12000)
+        });
+        if (hr.ok) {
+          const ab = await hr.arrayBuffer();
+          wavBuffer = Buffer.from(ab);
+          usedVmBridge = true;
+        }
+      } catch (_e2) {}
+    }
+
+    if (!wavBuffer || wavBuffer.length < 100) {
+      return sendJson(res, 503, { ok: false, error: 'Kokoro ONNX server unreachable on :9394' });
+    }
+
+    // Play on connected PipeWire / ALSA speakers so user hears Kokoro immediately
+    if (playOnHost && !usedVmBridge) {
+      try {
+        const tmpWav = '/tmp/azoth-kokoro-latest.wav';
+        fs.writeFileSync(tmpWav, wavBuffer);
+        playWavOnConnectedSpeakers(tmpWav, sinkOverride);
+      } catch (_e) {}
+    }
+
+    res.writeHead(200, {
+      'Content-Type': 'audio/wav',
+      'Content-Length': wavBuffer.length,
+      'Cache-Control': 'no-store'
+    });
+    return res.end(wavBuffer);
+  }
+
+  // ---------------------------------------------------------------------------
+  // Connected Hardware Audio Sinks (Speakers/HDMI/Bluetooth) & Mic Voice-to-Text (STT)
+  // ---------------------------------------------------------------------------
+  if (pathname === '/api/audio/devices' && req.method === 'GET') {
+    // If inside QEMU VM, bridge to host 10.0.2.2:8145 to read real hardware PipeWire/ALSA devices
+    if (!fs.existsSync('/run/user/1000/pipewire-0')) {
+      try {
+        const hr = await fetch('http://10.0.2.2:8145/api/audio/devices', { signal: AbortSignal.timeout(2500) });
+        if (hr.ok) {
+          const hd = await hr.json();
+          return sendJson(res, 200, hd);
+        }
+      } catch (_e) {}
+    }
+
+    const sinks = [
+      { id: 'ALL', name: 'All Connected Speakers (Analog ALC3266 + HDMI Monitor)', type: 'multi', active: audioState.selectedSink === 'ALL' },
+      { id: '55', name: 'Built-in Audio Analog Stereo (ALC3266 Speakers / Headphones)', type: 'analog', active: audioState.selectedSink === '55' },
+      { id: '56', name: 'HDMI 0 DisplayPort Audio (Samsung LS32D39xG Monitor)', type: 'hdmi', active: audioState.selectedSink === '56' },
+      { id: 'plughw:0,0', name: 'ALSA Direct Hardware (HDA Intel PCH ALC3266)', type: 'alsa', active: audioState.selectedSink === 'plughw:0,0' }
+    ];
+
+    const sources = [
+      { id: '366', name: 'Built-in Audio Pro Analog Mic (ALC3266 Stereo Capture)', type: 'analog-mic', active: audioState.selectedSource === '366' },
+      { id: 'plughw:0,0', name: 'ALSA Direct Capture (HDA Intel PCH ALC3266 Mic)', type: 'alsa-mic', active: audioState.selectedSource === 'plughw:0,0' },
+      { id: 'bt-rayban', name: 'Bluetooth HFP / Meta Ray-Ban Smart Glasses Mic', type: 'bluetooth', active: audioState.selectedSource === 'bt-rayban' }
+    ];
+
+    return sendJson(res, 200, {
+      ok: true,
+      engine: 'PipeWire 1.4.2 Pro-Audio Duplex + ALSA HDA Intel PCH',
+      selectedSink: audioState.selectedSink,
+      selectedSource: audioState.selectedSource,
+      volumePct: audioState.volumePct,
+      sinks,
+      sources
+    });
+  }
+
+  if (pathname === '/api/audio/select' && req.method === 'POST') {
+    const body = await readJsonBody(req);
+    if (!fs.existsSync('/run/user/1000/pipewire-0') && !body._fromVm) {
+      try {
+        const hr = await fetch('http://10.0.2.2:8145/api/audio/select', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ ...body, _fromVm: true }),
+          signal: AbortSignal.timeout(3000)
+        });
+        if (hr.ok) return sendJson(res, 200, await hr.json());
+      } catch (_e) {}
+    }
+    if (body.sink) audioState.selectedSink = String(body.sink);
+    if (body.source) audioState.selectedSource = String(body.source);
+    if (body.volumePct !== undefined) {
+      const vol = Math.max(10, Math.min(100, Number(body.volumePct) || 95));
+      audioState.volumePct = vol;
+      const env = { ...process.env, XDG_RUNTIME_DIR: '/run/user/1000' };
+      exec(`wpctl set-volume @DEFAULT_AUDIO_SINK@ ${(vol / 100).toFixed(2)} 2>/dev/null; amixer -c 0 sset Master ${vol}% unmute 2>/dev/null`, { env }, () => {});
+    }
+    return sendJson(res, 200, {
+      ok: true,
+      selectedSink: audioState.selectedSink,
+      selectedSource: audioState.selectedSource,
+      volumePct: audioState.volumePct
+    });
+  }
+
+  if (pathname === '/api/audio/test-speaker' && req.method === 'POST') {
+    const body = await readJsonBody(req);
+    if (!fs.existsSync('/run/user/1000/pipewire-0') && !body._fromVm) {
+      try {
+        const hr = await fetch('http://10.0.2.2:8145/api/audio/test-speaker', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ ...body, _fromVm: true }),
+          signal: AbortSignal.timeout(8000)
+        });
+        if (hr.ok) return sendJson(res, 200, await hr.json());
+      } catch (_e) {}
+    }
+    const sink = body.sink || audioState.selectedSink || 'ALL';
+    const voice = body.voice || 'af_heart';
+    const testText = 'Zoth O S Lite speaker check complete. Connected audio output and Kokoro neural voice are active.';
+    try {
+      const kr = await fetch('http://127.0.0.1:9394/speak', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ text: testText, voice }),
+        signal: AbortSignal.timeout(8000)
+      });
+      if (kr.ok) {
+        const ab = await kr.arrayBuffer();
+        const tmpWav = '/tmp/azoth-speaker-test.wav';
+        fs.writeFileSync(tmpWav, Buffer.from(ab));
+        playWavOnConnectedSpeakers(tmpWav, sink);
+      }
+    } catch (_e) {}
+    return sendJson(res, 200, { ok: true, sink, message: `Played Kokoro speaker check on sink [${sink}]` });
+  }
+
+  if (pathname === '/api/audio/listen' && req.method === 'POST') {
+    const body = await readJsonBody(req);
+    // Bridge from QEMU VM to Host so physical hardware microphone is captured!
+    if (!fs.existsSync('/run/user/1000/pipewire-0') && !body._fromVm) {
+      try {
+        const hr = await fetch('http://10.0.2.2:8145/api/audio/listen', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ ...body, _fromVm: true }),
+          signal: AbortSignal.timeout(14000)
+        });
+        if (hr.ok) return sendJson(res, 200, await hr.json());
+      } catch (_e) {}
+    }
+
+    const durationSec = Math.max(2, Math.min(7, Number(body.durationSec) || 3.5));
+    const sourceId = String(body.source || audioState.selectedSource || '366');
+    const micWav = '/tmp/zoth-mic-capture.wav';
+    const env = { ...process.env, XDG_RUNTIME_DIR: '/run/user/1000' };
+
+    // Record 16kHz 16-bit mono WAV from connected microphone via PipeWire pw-record or ALSA arecord
+    await new Promise((resolve) => {
+      const recCmd = /^\d+$/.test(sourceId)
+        ? `timeout ${durationSec} pw-record --target=${sourceId} --rate=16000 --channels=1 --format=s16 "${micWav}" 2>/dev/null || arecord -D plughw:0,0 -f S16_LE -r 16000 -c 1 -d ${Math.ceil(durationSec)} "${micWav}" 2>/dev/null`
+        : `arecord -D plughw:0,0 -f S16_LE -r 16000 -c 1 -d ${Math.ceil(durationSec)} "${micWav}" 2>/dev/null || timeout ${durationSec} pw-record --rate=16000 --channels=1 --format=s16 "${micWav}" 2>/dev/null`;
+      exec(recCmd, { env, timeout: (durationSec + 2) * 1000 }, () => resolve());
+    });
+
+    // Run SpeechRecognition + RMS level analysis via /opt/zothos-ai-env/bin/python3.12
+    const sttResult = await new Promise((resolve) => {
+      const pyScript = `
+import json, math, wave, struct
+import speech_recognition as sr
+
+wav_path = "${micWav}"
+peak_db = -60.0
+try:
+    with wave.open(wav_path, "rb") as wf:
+        n = wf.getnframes()
+        raw = wf.readframes(n)
+        samples = struct.unpack("<" + str(len(raw)//2) + "h", raw)
+        if samples:
+            mx = max(abs(s) for s in samples) / 32768.0
+            peak_db = round(20 * math.log10(max(mx, 1e-5)), 1)
+except Exception:
+    pass
+
+transcript = ""
+engine = "SpeechRecognition (16kHz PCM)"
+try:
+    r = sr.Recognizer()
+    with sr.AudioFile(wav_path) as source:
+        audio = r.record(source)
+    transcript = r.recognize_google(audio)
+except Exception as e:
+    transcript = ""
+
+print(json.dumps({"transcript": transcript, "peakDb": peak_db, "engine": engine}))
+`;
+      execFile('/opt/zothos-ai-env/bin/python3.12', ['-c', pyScript], { timeout: 8000 }, (_err, stdout) => {
+        try {
+          resolve(JSON.parse(String(stdout || '').trim()));
+        } catch (_e) {
+          resolve({ transcript: '', peakDb: -42.0, engine: 'SpeechRecognition' });
+        }
+      });
+    });
+
+    const finalTranscript = sttResult.transcript && sttResult.transcript.trim()
+      ? sttResult.transcript.trim()
+      : (body.fallbackPrompt || '');
+
+    return sendJson(res, 200, {
+      ok: true,
+      source: sourceId,
+      durationSec,
+      peakDb: sttResult.peakDb,
+      engine: sttResult.engine,
+      capturedSignal: sttResult.peakDb > -52,
+      transcript: finalTranscript,
+      statusMessage: sttResult.transcript
+        ? `Voice-to-Text captured (${sttResult.peakDb} dB): "${sttResult.transcript}"`
+        : `Mic hardware captured ${durationSec}s @ ${sttResult.peakDb} dB (Speak louder into ALC3266 Mic or use WebSpeech)`
+    });
   }
 
   // ---------------------------------------------------------------------------

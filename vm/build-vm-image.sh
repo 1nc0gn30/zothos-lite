@@ -322,16 +322,20 @@ export PATH="/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
 export HOME="/tmp/zoth-home"
 mkdir -p "$HOME" /tmp/.X11-unix /run/udev
 
-# Start udevd so Xorg discovers DRM modesetting + USB tablet mouse + keyboard
-/lib/systemd/systemd-udevd --daemon 2>/dev/null || true
-udevadm trigger 2>/dev/null || true
-udevadm settle --timeout=3 2>/dev/null || true
+# Start udevd so Xorg discovers DRM modesetting + USB tablet mouse + keyboard inside chroot
+chmod 666 /dev/input/event* /dev/input/mouse* /dev/input/mice 2>/dev/null || true
+/lib/systemd/systemd-udevd --daemon 2>/dev/null || /usr/lib/systemd/systemd-udevd --daemon 2>/dev/null || true
+SYSTEMD_IGNORE_CHROOT=1 udevadm control --reload-rules 2>/dev/null || true
+SYSTEMD_IGNORE_CHROOT=1 udevadm trigger --type=subsystems --action=add 2>/dev/null || true
+SYSTEMD_IGNORE_CHROOT=1 udevadm trigger --type=devices --action=add 2>/dev/null || true
+for f in /sys/class/input/*/uevent; do echo add > "$f" 2>/dev/null || true; done
+SYSTEMD_IGNORE_CHROOT=1 udevadm settle --timeout=3 2>/dev/null || true
 
 # Start ZothOS-Lite v1.0 daemon inside the VM on 127.0.0.1:8145
-PORT=8145 node /home/zoth/NullAITech/zothos-lite/server.js >/tmp/zothos-lite-server.log 2>&1 &
+PORT=8145 node /home/zoth/NullAITech/zothos-lite/server.js >/tmp/zothos-lite-server.log 2>/dev/null &
 sleep 1
 
-# Create Xorg config for 1280x800 resolution inside QEMU
+# Create Xorg config for 1280x800 resolution inside QEMU with SWCursor enabled
 mkdir -p /etc/X11
 cat > /etc/X11/xorg-zoth-lite.conf << 'XCONF'
 Section "ServerFlags"
@@ -347,6 +351,7 @@ EndSection
 Section "Device"
     Identifier "QemuCard"
     Driver "modesetting"
+    Option "SWCursor" "true"
 EndSection
 
 Section "Screen"
@@ -364,6 +369,9 @@ XCONF
 Xorg :0 vt1 -noreset -nolisten tcp -config /etc/X11/xorg-zoth-lite.conf >/tmp/xorg.log 2>&1 &
 sleep 2
 export DISPLAY=:0
+SYSTEMD_IGNORE_CHROOT=1 udevadm trigger --type=devices --action=add --subsystem-match=input 2>/dev/null || true
+for f in /sys/class/input/*/uevent; do echo add > "$f" 2>/dev/null || true; done
+xsetroot -cursor_name left_ptr 2>/dev/null || true
 xrandr --output Virtual-1 --mode 1280x800 2>/dev/null || xrandr -s 1280x800 2>/dev/null || true
 
 # Launch the ZothOS-Lite 1-Bit Black & White Graphical Desktop inside the VM!
