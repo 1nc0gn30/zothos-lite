@@ -190,7 +190,7 @@ chmod +x "$ROOTFS/usr/local/bin/zoth-lite-pkg"
 
 cat > "$ROOTFS/usr/local/bin/zoth-envguard" << 'EOF'
 #!/bin/sh
-INPUT="${*:-AWS_SECRET_ACCESS_KEY=wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY}"
+INPUT="${*:-AWS_SECRET_ACCESS_KEY=ZOTH_SAMPLE_VAULT_SECRET_9f8a7b6c5d4e3f2a1b0c9d8e7f}"
 HASH=$(printf "%s" "$INPUT" | sha256sum | cut -d' ' -f1)
 echo "┌──[ ZOTH ENVGUARD // ZERO-LEAKAGE SECRET FIREWALL ]───────────────────────┐"
 echo "│ Input Bytes : $(printf "%s" "$INPUT" | wc -c) B"

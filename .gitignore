@@ -1,3 +1,11 @@
-vm/rootfs/
-vm/iso_root/
-vm/*.iso
+node_modules/
+.env
+.env.*
+*.log
+/data/cot_memory.json
+/vm/iso_root/
+/vm/rootfs/
+/vm/*.iso
+/vm/*.img
+/vm/*.qcow2
+.DS_Store
