@@ -344,12 +344,13 @@
       min-width: 0;
       height: calc(100vh - 84px);
       overflow: hidden;
-      display: grid;
-      grid-template-columns: 184px minmax(0, 1fr);
+      display: flex;
     }
 
     /* Left 2-Column Mini-App Icon Launchpad */
     .desktop-icons-launchpad {
+      width: 184px;
+      flex-shrink: 0;
       height: 100%;
       padding: 10px;
       display: flex;
@@ -435,6 +436,7 @@
        ========================================================================= */
     .os-window-stage {
       position: relative;
+      flex: 1;
       width: 100%;
       max-width: 100%;
       min-width: 0;
@@ -1006,33 +1008,87 @@
     <canvas id="desktopWallpaperCanvas" width="1440" height="820" aria-label="Animated Monotone Braille and Ordered Bayer Dither Desktop Wallpaper"></canvas>
 
     <!-- =======================================================================
-         1. MINIMALIST MONOTONE TOP SYSTEM BAR (DECLUTTERED — APPS & TOOLS IN MENU)
+         1. ULTRA-MINIMAL MONOTONE TOP SYSTEM BAR (ZERO OVERFLOW — ALL OPTIONS IN MENU)
          ======================================================================= -->
-    <header class="tails-top-panel" role="banner">
-      <div class="panel-left">
-        <button type="button" class="top-brand-seal" id="appsMenuToggleBtn" title="Open ZothOS-Lite System, Mini-Apps, Daemons & Tools Menu">
-          <span>◈ ZOTHOS-LITE MENU ▾</span>
-        </button>
-        <button type="button" class="top-nav-btn active" data-open-win="winAgent" id="topAgentBtn" title="Focus AZOTH Embodied Braille & ASCII AI Agent + Kokoro Voice">
-          <span>◉ AZOTH AI</span>
+    <header class="tails-top-panel" role="banner" style="justify-content:space-between;overflow:visible;">
+      <div class="panel-left" style="gap:6px;">
+        <button type="button" class="top-brand-seal" id="appsMenuToggleBtn" title="Open ZothOS-Lite System, All 11 Mini-Apps, Audio/Mic, Daemons & Tools Menu">
+          <span>◈ ZOTHOS ▾</span>
         </button>
       </div>
 
       <div class="panel-center">
-        <button type="button" class="top-telemetry-cluster" data-open-win="winGreeter" title="Click to Open Amnesic Greeter & RAM Footprint Inspector" style="cursor:pointer;">
-          <span>⣿ <b>TORAM:</b> <span id="topRamFootprint">958MB</span></span>
+        <button type="button" class="top-telemetry-cluster" id="audioMenuToggleBtn" title="Click to Configure Connected Speakers, Headphones, Bluetooth & Microphone Voice-to-Text" style="cursor:pointer;padding:0 10px;">
+          <span>⣿ <b id="topRamFootprint">958M</b></span>
           <span class="top-telemetry-sep">│</span>
-          <span>▓ <b>TOR:</b> 9050</span>
-          <span class="top-telemetry-sep">│</span>
-          <span id="topAudioStatusLabel">♫ <b>OUT:</b> ANALOG+HDMI • <b>MIC:</b> ALC3266</span>
+          <span id="topAudioStatusLabel">♫ <b>AUDIO & MIC</b> ▾</span>
         </button>
       </div>
 
-      <div class="panel-right">
-        <button type="button" class="top-nav-btn" id="audioMenuToggleBtn" title="Configure Connected Speakers, Headphones, Bluetooth & Microphone Voice-to-Text" style="background:#000000;color:#FFFFFF !important;">
-          <span>♫ SOUND & MIC ▾</span>
+      <div class="panel-right" style="gap:6px;">
+        <!-- VERY NICHE SOVEREIGN HOROLOGY CHRONOMETER (Braille Binary BCD + Hex-Chron + Swatch .beats + Sidereal) -->
+        <button type="button" id="topClockUtc" title="Sovereign Horology Chronometer — Click for Braille Binary Matrix, 16-Bit Hex-Chron, Swatch .beats & Sidereal Time" style="font-family:var(--font-mono);font-size:11.5px;font-weight:700;padding:0 9px;border:2px solid #000000;box-shadow:2px 2px 0px #000000;height:26px;display:inline-flex;align-items:center;gap:6px;background:#FFFFFF;color:#000000;cursor:pointer;white-space:nowrap;">
+          <span id="nicheClockBrailleBits" style="background:#000000;color:#FFFFFF !important;padding:0 4px;letter-spacing:1px;">⣿⣾⣴</span>
+          <span id="nicheClockReadout">@000.0 • 0x0000 • 00:00Z</span>
         </button>
-        <span id="topClockUtc" style="font-size:11px;font-weight:700;padding:0 7px;border:1.5px solid var(--fill-black);height:26px;display:inline-flex;align-items:center;background:var(--bg-grey-50);">UTC --:--:--</span>
+      </div>
+
+      <!-- Sovereign Horology & Temporal Enclave Dropdown Popover (Clicked from Niche Clock) -->
+      <div class="top-dropdown-menu" id="clockDropdownMenu" style="left:auto;right:8px;width:405px;" role="menu">
+        <div class="top-dropdown-header">
+          <span>⏳ SOVEREIGN HOROLOGY // NICHE TEMPORAL ENCLAVE</span>
+          <span id="nicheClockLunarBadge">◐ SIDEREAL</span>
+        </div>
+        <div style="padding:10px;background:#FFFFFF;display:flex;flex-direction:column;gap:8px;font-size:11.5px;">
+          <!-- Live 2x4 Sub-Pixel Braille Binary BCD Matrix Display -->
+          <div style="padding:8px;background:var(--bg-grey-50);border:2px solid #000000;box-shadow:2px 2px 0px #000000;">
+            <div style="display:flex;justify-content:space-between;font-size:10.5px;font-weight:700;border-bottom:1.5px solid #000000;padding-bottom:3px;margin-bottom:5px;">
+              <span>[⣿] U+2800 8-DOT BRAILLE BINARY BCD MATRIX</span>
+              <span id="nicheSubsecSpinner">⠋ 20HZ</span>
+            </div>
+            <pre id="nicheBrailleClockAscii" style="font-size:11.5px;line-height:1.25;font-weight:700;color:#000000;margin:0;white-space:pre;">┌──────────────────────────────────────────┐
+│ HRS [00] : ⠀ (00000000b)  ░░░░░░░░       │
+│ MIN [00] : ⠀ (00000000b)  ░░░░░░░░       │
+│ SEC [00] : ⠀ (00000000b)  ░░░░░░░░       │
+└──────────────────────────────────────────┘</pre>
+          </div>
+
+          <!-- 4 Niche Horology Readout Cards -->
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;">
+            <div style="padding:6px;border:1.5px solid #000000;background:#FFFFFF;">
+              <div style="font-size:9.5px;color:var(--fg-grey-600);font-weight:700;">16-BIT HEXADECIMAL CHRON</div>
+              <div id="nicheHexTimeVal" style="font-size:14px;font-weight:700;">0x0000.0</div>
+              <div style="font-size:9.5px;color:var(--fg-grey-600);">1 Hex-Sec = 1.3183s (65,536/day)</div>
+            </div>
+            <div style="padding:6px;border:1.5px solid #000000;background:#FFFFFF;">
+              <div style="font-size:9.5px;color:var(--fg-grey-600);font-weight:700;">SWATCH INTERNET TIME (BMT)</div>
+              <div id="nicheBeatsTimeVal" style="font-size:14px;font-weight:700;">@000.00 .beats</div>
+              <div style="font-size:9.5px;color:var(--fg-grey-600);">UTC+1 Biel Mean Meridian</div>
+            </div>
+            <div style="padding:6px;border:1.5px solid #000000;background:#FFFFFF;">
+              <div style="font-size:9.5px;color:var(--fg-grey-600);font-weight:700;">GREENWICH SIDEREAL (GMST)</div>
+              <div id="nicheSiderealVal" style="font-size:13px;font-weight:700;">00h 00m 00s</div>
+              <div style="font-size:9.5px;color:var(--fg-grey-600);">Vernal Equinox Right Ascension</div>
+            </div>
+            <div style="padding:6px;border:1.5px solid #000000;background:#FFFFFF;">
+              <div style="font-size:9.5px;color:var(--fg-grey-600);font-weight:700;">UNIX EPOCH HEX & JULIAN</div>
+              <div id="nicheEpochHexVal" style="font-size:13px;font-weight:700;">0x00000000</div>
+              <div id="nicheJulianDayVal" style="font-size:9.5px;color:var(--fg-grey-600);">JD 2461340.5000</div>
+            </div>
+          </div>
+
+          <!-- Top-Bar Niche Clock Format Selector -->
+          <div>
+            <div style="font-size:10px;font-weight:700;margin-bottom:4px;">SELECT TOP-BAR NICHE CLOCK MODE:</div>
+            <div style="display:flex;gap:4px;flex-wrap:wrap;">
+              <button type="button" class="mono-btn mono-btn-black niche-clock-mode-btn" data-clock-mode="omni" style="min-height:24px;padding:1px 6px;font-size:10.5px !important;">◈ Omni-Niche</button>
+              <button type="button" class="mono-btn niche-clock-mode-btn" data-clock-mode="braille-bin" style="min-height:24px;padding:1px 6px;font-size:10.5px !important;">⣿ Pure Braille Bits</button>
+              <button type="button" class="mono-btn niche-clock-mode-btn" data-clock-mode="hex-chron" style="min-height:24px;padding:1px 6px;font-size:10.5px !important;">0x Hex-Chron</button>
+              <button type="button" class="mono-btn niche-clock-mode-btn" data-clock-mode="beats" style="min-height:24px;padding:1px 6px;font-size:10.5px !important;">@ .beats</button>
+              <button type="button" class="mono-btn niche-clock-mode-btn" data-clock-mode="sidereal" style="min-height:24px;padding:1px 6px;font-size:10.5px !important;">☉ Sidereal</button>
+            </div>
+          </div>
+        </div>
       </div>
 
       <!-- Unified System, Mini-Apps, Daemons, Support & Panic Wipe Dropdown Menu -->
@@ -1075,9 +1131,12 @@
           <span>[✦] GhostByte Metadata Cleaner (mat2)</span><span>MAT2</span>
         </button>
         <div class="top-dropdown-header" style="border-top:1.5px solid #000000;">
-          <span>⚙ SYSTEM ACTIONS & OPEN-ACCESS SUPPORT</span>
+          <span>⚙ SYSTEM ACTIONS, AUDIO & OPEN-ACCESS SUPPORT</span>
           <span>TORAM</span>
         </div>
+        <button type="button" class="top-dropdown-item" id="toggleIconDockMenuBtn">
+          <span>⊞ Toggle Left Desktop Mini-App Dock</span><span>DOCK ▸</span>
+        </button>
         <button type="button" class="top-dropdown-item" id="daemonsMenuToggleBtn">
           <span>▓ Quick-Toggle Enclave Daemons</span><span>6/8 ▸</span>
         </button>
@@ -1174,8 +1233,8 @@
          ======================================================================= -->
     <main class="desktop-workspace" role="main">
 
-      <!-- Left 2-Column Mini-App Launchpad + ASCII/Braille Crest -->
-      <aside class="desktop-icons-launchpad" aria-label="ZothOS-Lite Mini-App Launchpad">
+      <!-- Left 2-Column Mini-App Launchpad + ASCII/Braille Crest (Hidden by default; toggleable via Menu) -->
+      <aside class="desktop-icons-launchpad" id="desktopLeftIconDock" style="display:none;" aria-label="ZothOS-Lite Mini-App Launchpad">
         <div>
           <div class="launchpad-header" style="margin-bottom:6px;">
             <span>⣿ MINI-APPS (11)</span>
@@ -2188,17 +2247,17 @@ Type ANY Unix, Bash, Python, Kali Linux, Parrot OS, or Zoth command above and pr
     </main>
 
     <!-- =======================================================================
-         3. MINIMALIST BOTTOM OS TASKBAR & START MENU DOCK (DECLUTTERED!)
-         All 11 Apps, Kali/Parrot Shelves, Dojo & Window Layouts live inside ❖ START!
+         3. ULTRA-MINIMAL BOTTOM OS TASKBAR & START MENU DOCK (ZERO OVERFLOW!)
+         All 11 Apps, Kali/Parrot Shelves, Dojo & Window Layouts live inside ❖ MENU!
          ======================================================================= -->
-    <footer class="tails-bottom-dock" role="contentinfo">
+    <footer class="tails-bottom-dock" role="contentinfo" style="justify-content:space-between;overflow:visible;">
       <!-- Bottom-Left OS Start / Applications Launcher Button -->
-      <button type="button" class="dock-start-btn" id="bottomStartBtn" title="Open ZothOS-Lite Start Menu, All 11 Apps, Kali/Parrot Shelves & Window Controls">
-        <span>❖ START / MENU ▲</span>
+      <button type="button" class="dock-start-btn" id="bottomStartBtn" title="Open ZothOS-Lite Start Menu, All 11 Apps, Kali/Parrot Shelves & Window Controls" style="padding:2px 10px;">
+        <span>❖ MENU ▲</span>
       </button>
 
-      <!-- Active Open Window Taskbar Pills Only (Closed windows stay inside Start Menu) -->
-      <div class="dock-tasks" id="bottomTaskbarList">
+      <!-- Focused Window Pill Only + Overflow Dropdown Pill (Zero Overflow Guarantee) -->
+      <div class="dock-tasks" id="bottomTaskbarList" style="flex:1;justify-content:center;overflow:hidden;">
         <button type="button" class="dock-task-btn win-open win-focused" data-task-win="winAgent" title="AZOTH Embodied Braille AI Agent + Kokoro Voice">● ◉ AZOTH AI</button>
         <button type="button" class="dock-task-btn" data-task-win="winDojo" style="display:none;" title="Interactive Cyber Dojo & Operator Academy">○ ★ Dojo</button>
         <button type="button" class="dock-task-btn" data-task-win="winEnvGuard" style="display:none;" title="Live Bash + Kali + Parrot + Python Shell">○ >_ Shell</button>
@@ -2212,10 +2271,10 @@ Type ANY Unix, Bash, Python, Kali Linux, Parrot OS, or Zoth command above and pr
         <button type="button" class="dock-task-btn" data-task-win="winGhostByte" style="display:none;" title="GhostByte Metadata Cleaner (mat2)">○ ✦ mat2</button>
       </div>
 
-      <!-- Minimalist Bottom-Right Voice Input & 3D Desktop View Toggle -->
-      <div class="dock-wm-controls">
-        <button type="button" class="mono-btn mono-btn-black" id="bottomMicVoiceBtn" style="min-height:28px;padding:2px 9px;" title="Click to Speak into Connected Microphone (Voice-to-Text)">◉ MIC VOICE-TO-TEXT</button>
-        <button type="button" class="mono-btn" id="minimizeAllBtn" style="min-height:28px;padding:2px 9px;" title="Toggle Windows to View Full-Screen Three.js 3D Perspective Braille/Dither Desktop">◈ 3D DESKTOP VIEW</button>
+      <!-- Compact Bottom-Right Mic & 3D Desktop View Toggle -->
+      <div class="dock-wm-controls" style="gap:5px;">
+        <button type="button" class="mono-btn mono-btn-black" id="bottomMicVoiceBtn" style="min-height:26px;padding:2px 8px;" title="Click to Speak into Connected Microphone (Voice-to-Text)">◉ MIC</button>
+        <button type="button" class="mono-btn" id="minimizeAllBtn" style="min-height:26px;padding:2px 8px;" title="Toggle Windows to View Full-Screen Three.js 3D Perspective Braille/Dither Desktop">◈ 3D BG</button>
       </div>
 
       <!-- Pop-Up OS Start Launcher Menu (Anchored Above Bottom-Left Dock) -->
@@ -2287,12 +2346,120 @@ Type ANY Unix, Bash, Python, Kali Linux, Parrot OS, or Zoth command above and pr
       ];
       const ASCII_RAMP = ' .:-=+*#%@█';
 
-      function updateClock() {
-        const el = document.getElementById('topClockUtc');
-        if (el) el.textContent = 'UTC ' + new Date().toISOString().slice(11, 19);
+      // =======================================================================
+      // 0. SOVEREIGN NICHE HOROLOGY CHRONOMETER (20Hz Braille BCD + Hex + .beats + GMST)
+      // =======================================================================
+      let nicheClockMode = 'omni';
+      const BRAILLE_SPIN = ['⠋', '⠙', '⠹', '⠸', '⠼', '⠴', '⠦', '⠧', '⠇', '⠏'];
+      const LUNAR_GLYPHS = ['🌑 NEW', '🌒 WAX-CRES', '🌓 FIRST-Q', '🌔 WAX-GIB', '🌕 FULL', '🌖 WAN-GIB', '🌗 LAST-Q', '🌘 WAN-CRES'];
+
+      function byteToBraille(val) {
+        return String.fromCharCode(0x2800 + (val & 0xFF));
       }
-      setInterval(updateClock, 1000);
+      function byteToBitBar(val) {
+        let s = '';
+        for (let b = 5; b >= 0; b--) s += ((val >> b) & 1) ? '█' : '░';
+        return s;
+      }
+
+      function updateClock() {
+        const now = new Date();
+        const ms = now.getTime();
+        const utcH = now.getUTCHours();
+        const utcM = now.getUTCMinutes();
+        const utcS = now.getUTCSeconds();
+        const utcMs = now.getUTCMilliseconds();
+
+        // 1. U+2800 8-Dot Braille Binary BCD Encoding of [H][M][S] + Sub-second rotor
+        const bH = byteToBraille(utcH || 0x80);
+        const bM = byteToBraille(utcM || 0x40);
+        const bS = byteToBraille(utcS || 0x01);
+        const spin = BRAILLE_SPIN[Math.floor((ms / 80) % BRAILLE_SPIN.length)];
+
+        // 2. 16-Bit Hexadecimal Day Fraction (0x0000 - 0xFFFF; 65,536 hex-seconds per UTC day)
+        const secOfDay = utcH * 3600 + utcM * 60 + utcS + utcMs / 1000;
+        const hexDayFloat = (secOfDay / 86400) * 65536;
+        const hexMain = Math.floor(hexDayFloat).toString(16).toUpperCase().padStart(4, '0');
+        const hexFrac = Math.floor((hexDayFloat % 1) * 16).toString(16).toUpperCase();
+
+        // 3. Swatch Internet Time (.beats — Biel Mean Time UTC+1, 1000 .beats per day)
+        const bmtSec = ((utcH + 1) % 24) * 3600 + utcM * 60 + utcS + utcMs / 1000;
+        const beats = (bmtSec / 86.4);
+        const beatsMain = beats.toFixed(1).padStart(5, '0');
+        const beatsFull = beats.toFixed(2).padStart(6, '0');
+
+        // 4. Greenwich Mean Sidereal Time (GMST) & Julian Date + Lunar Synodic Phase
+        const jd = ms / 86400000 + 2440587.5;
+        const dJ2000 = jd - 2451545.0;
+        let gmstHours = (18.697374558 + 24.06570982441908 * dJ2000) % 24;
+        if (gmstHours < 0) gmstHours += 24;
+        const gmstH = Math.floor(gmstHours);
+        const gmstM = Math.floor((gmstHours - gmstH) * 60);
+        const gmstS = Math.floor((((gmstHours - gmstH) * 60) - gmstM) * 60);
+        const gmstStr = `${String(gmstH).padStart(2, '0')}h${String(gmstM).padStart(2, '0')}m${String(gmstS).padStart(2, '0')}s`;
+
+        const lunarAge = ((jd - 2451550.1) % 29.530588853 + 29.530588853) % 29.530588853;
+        const lunarIdx = Math.floor((lunarAge / 29.530588853) * 8) % 8;
+        const epochHex = '0x' + Math.floor(ms / 1000).toString(16).toUpperCase();
+        const utcShort = `${String(utcH).padStart(2, '0')}:${String(utcM).padStart(2, '0')}:${String(utcS).padStart(2, '0')}Z`;
+
+        const bitsEl = document.getElementById('nicheClockBrailleBits');
+        const readoutEl = document.getElementById('nicheClockReadout');
+        if (bitsEl) bitsEl.textContent = `${bH}${bM}${bS}`;
+        if (readoutEl) {
+          if (nicheClockMode === 'braille-bin') {
+            readoutEl.textContent = `${spin} [${utcH.toString(2).padStart(5, '0')}:${utcM.toString(2).padStart(6, '0')}]`;
+          } else if (nicheClockMode === 'hex-chron') {
+            readoutEl.textContent = `${spin} 0x${hexMain}.${hexFrac} • ${epochHex}`;
+          } else if (nicheClockMode === 'beats') {
+            readoutEl.textContent = `${spin} @${beatsFull} .beats • ${utcShort}`;
+          } else if (nicheClockMode === 'sidereal') {
+            readoutEl.textContent = `${spin} GMST ${gmstStr} • ${LUNAR_GLYPHS[lunarIdx].split(' ')[0]}`;
+          } else {
+            readoutEl.textContent = `${spin} @${beatsMain} • 0x${hexMain} • ${utcShort}`;
+          }
+        }
+
+        // Update Horology Popover if open
+        const asciiMatrix = document.getElementById('nicheBrailleClockAscii');
+        if (asciiMatrix) {
+          const hBin = utcH.toString(2).padStart(6, '0');
+          const mBin = utcM.toString(2).padStart(6, '0');
+          const sBin = utcS.toString(2).padStart(6, '0');
+          asciiMatrix.textContent =
+            `┌──────────────────────────────────────────┐\n` +
+            `│ HRS [${String(utcH).padStart(2, '0')}] : ${bH} (${hBin}b)  ${byteToBitBar(utcH)}   @BMT    │\n` +
+            `│ MIN [${String(utcM).padStart(2, '0')}] : ${bM} (${mBin}b)  ${byteToBitBar(utcM)}   0x${hexMain}  │\n` +
+            `│ SEC [${String(utcS).padStart(2, '0')}] : ${bS} (${sBin}b)  ${byteToBitBar(utcS)}   ${spin}.${String(Math.floor(utcMs / 10)).padStart(2, '0')}ms │\n` +
+            `└──────────────────────────────────────────┘`;
+        }
+        const hexVal = document.getElementById('nicheHexTimeVal');
+        if (hexVal) hexVal.textContent = `0x${hexMain}.${hexFrac}`;
+        const beatsVal = document.getElementById('nicheBeatsTimeVal');
+        if (beatsVal) beatsVal.textContent = `@${beatsFull} .beats`;
+        const sidVal = document.getElementById('nicheSiderealVal');
+        if (sidVal) sidVal.textContent = gmstStr;
+        const epVal = document.getElementById('nicheEpochHexVal');
+        if (epVal) epVal.textContent = epochHex;
+        const jdVal = document.getElementById('nicheJulianDayVal');
+        if (jdVal) jdVal.textContent = `JD ${jd.toFixed(5)}`;
+        const lunBadge = document.getElementById('nicheClockLunarBadge');
+        if (lunBadge) lunBadge.textContent = LUNAR_GLYPHS[lunarIdx];
+        const subSpin = document.getElementById('nicheSubsecSpinner');
+        if (subSpin) subSpin.textContent = `${spin} 12.5HZ BCD`;
+      }
+      setInterval(updateClock, 80);
       updateClock();
+
+      document.querySelectorAll('.niche-clock-mode-btn').forEach((btn) => {
+        btn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          document.querySelectorAll('.niche-clock-mode-btn').forEach((b) => b.classList.remove('mono-btn-black'));
+          btn.classList.add('mono-btn-black');
+          nicheClockMode = btn.getAttribute('data-clock-mode') || 'omni';
+          updateClock();
+        });
+      });
 
       // =======================================================================
       // 1. OS WINDOW MANAGER: POP UP, DRAG, FOCUS, MINIMIZE (_), MAXIMIZE (□), CLOSE (✕)
@@ -2342,6 +2509,7 @@ Type ANY Unix, Bash, Python, Kali Linux, Parrot OS, or Zoth command above and pr
       }
 
       function syncTaskbarButtons() {
+        let shownCount = 0;
         document.querySelectorAll('[data-task-win]').forEach((btn) => {
           const winId = btn.getAttribute('data-task-win');
           const win = document.getElementById(winId);
@@ -2353,7 +2521,14 @@ Type ANY Unix, Bash, Python, Kali Linux, Parrot OS, or Zoth command above and pr
           btn.classList.toggle('win-open', !isClosed);
           btn.classList.toggle('win-is-minimized', !isClosed && isMin);
           btn.classList.toggle('win-focused', isFocused);
-          btn.style.display = isClosed ? 'none' : 'inline-flex';
+
+          // Show at most 3 open window pills in the bottom bar so it NEVER overflows
+          if (!isClosed && (isFocused || shownCount < 2)) {
+            btn.style.display = 'inline-flex';
+            shownCount++;
+          } else {
+            btn.style.display = 'none';
+          }
 
           const baseLabel = btn.textContent.replace(/^[●○_]\s*/, '');
           const prefix = isClosed ? '○ ' : (isMin ? '_ ' : '● ');
@@ -2386,6 +2561,7 @@ Type ANY Unix, Bash, Python, Kali Linux, Parrot OS, or Zoth command above and pr
           openOrRestoreWindow(winId);
           document.getElementById('appsDropdownMenu')?.classList.remove('open');
           document.getElementById('daemonsDropdownMenu')?.classList.remove('open');
+          document.getElementById('clockDropdownMenu')?.classList.remove('open');
           document.getElementById('bottomStartMenu')?.classList.remove('open');
           document.getElementById('bottomStartBtn')?.classList.remove('active');
         });
@@ -2406,12 +2582,33 @@ Type ANY Unix, Bash, Python, Kali Linux, Parrot OS, or Zoth command above and pr
         });
       });
 
-      // Top Bar Dropdown Menus (Apps, Daemons, Support)
+      // Top Bar Dropdown Menus (Apps, Daemons, Support, Niche Clock, Left Dock Toggle)
       document.getElementById('appsMenuToggleBtn')?.addEventListener('click', (e) => {
         e.stopPropagation();
         document.getElementById('daemonsDropdownMenu')?.classList.remove('open');
         document.getElementById('supportDropdownMenu')?.classList.remove('open');
+        document.getElementById('clockDropdownMenu')?.classList.remove('open');
+        document.getElementById('audioDropdownMenu')?.classList.remove('open');
         document.getElementById('appsDropdownMenu')?.classList.toggle('open');
+      });
+      document.getElementById('topClockUtc')?.addEventListener('click', (e) => {
+        e.stopPropagation();
+        document.getElementById('appsDropdownMenu')?.classList.remove('open');
+        document.getElementById('daemonsDropdownMenu')?.classList.remove('open');
+        document.getElementById('supportDropdownMenu')?.classList.remove('open');
+        document.getElementById('audioDropdownMenu')?.classList.remove('open');
+        document.getElementById('clockDropdownMenu')?.classList.toggle('open');
+      });
+      document.getElementById('clockDropdownMenu')?.addEventListener('click', (e) => {
+        e.stopPropagation();
+      });
+      document.getElementById('toggleIconDockMenuBtn')?.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const dock = document.getElementById('desktopLeftIconDock');
+        if (dock) {
+          dock.style.display = dock.style.display === 'none' ? 'flex' : 'none';
+        }
+        document.getElementById('appsDropdownMenu')?.classList.remove('open');
       });
       document.getElementById('daemonsMenuToggleBtn')?.addEventListener('click', (e) => {
         e.stopPropagation();
@@ -2432,6 +2629,7 @@ Type ANY Unix, Bash, Python, Kali Linux, Parrot OS, or Zoth command above and pr
         document.getElementById('appsDropdownMenu')?.classList.remove('open');
         document.getElementById('daemonsDropdownMenu')?.classList.remove('open');
         document.getElementById('supportDropdownMenu')?.classList.remove('open');
+        document.getElementById('clockDropdownMenu')?.classList.remove('open');
       });
 
       // Cascade, Tile, and Minimize All
@@ -3381,7 +3579,7 @@ Type ANY Unix, Bash, Python, Kali Linux, Parrot OS, or Zoth command above and pr
           const data = await res.json();
           if (data && data.ok) {
             renderSystemState(data);
-            runTerminalCommand('help');
+            runTerminalCommand('help', false);
             executeEnvguardScan();
             executeColdSign(false);
           }
@@ -3440,7 +3638,7 @@ Type ANY Unix, Bash, Python, Kali Linux, Parrot OS, or Zoth command above and pr
         }, 28);
       }
 
-      async function runTerminalCommand(cmdStr) {
+      async function runTerminalCommand(cmdStr, autoOpen = true) {
         const inputEl = document.getElementById('terminalCmdInput');
         const cmd = (cmdStr !== undefined ? cmdStr : (inputEl ? inputEl.value : '')).trim() || 'help';
         const term = document.getElementById('terminalScreen');
@@ -3450,12 +3648,14 @@ Type ANY Unix, Bash, Python, Kali Linux, Parrot OS, or Zoth command above and pr
           cmdHistory.push(cmd);
         }
         historyIdx = cmdHistory.length;
-        if (inputEl) {
+        if (inputEl && autoOpen !== false) {
           inputEl.value = '';
           inputEl.focus();
         }
 
-        openOrRestoreWindow('winEnvGuard');
+        if (autoOpen !== false) {
+          openOrRestoreWindow('winEnvGuard');
+        }
         if (cmd === 'clear' || cmd === 'cls') {
           term.textContent = 'root@zothos:~# _ (Terminal cleared — type any command and press Enter)';
           return;
