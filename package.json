@@ -5,6 +5,7 @@
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
+    "test": "node bin/verify-zothos-lite.mjs",
     "vm:build": "./vm/build-vm-image.sh",
     "vm:launch": "./vm/launch-vm.sh"
   },

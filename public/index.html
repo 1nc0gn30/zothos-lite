@@ -1059,6 +1059,99 @@
         gap: 4px;
       }
     }
+
+      /* ======================================================================
+         PHASE 2 — LIVE HOST TELEMETRY (driven by GET /api/system-status)
+         Monotone-safe (no alpha/colour): online vs offline is encoded with
+         fill (●/○) and border style (solid/dashed), never with colour.
+         ====================================================================== */
+      .top-peer-chip {
+        display: inline-flex;
+        align-items: center;
+        gap: 3px;
+        padding: 0 4px;
+        border: 1px solid var(--fill-black);
+        font-weight: 700;
+        white-space: nowrap;
+      }
+      .top-peer-chip[data-online="false"] {
+        border-style: dashed;
+      }
+      #topPackageTemp[data-governor="throttled"] {
+        text-decoration: underline;
+      }
+      #topPackageTemp[data-governor="paused"] {
+        text-decoration: line-through;
+      }
+      /* No hwmon sensor on this host (e.g. inside QEMU): never dress a missing reading up
+         as a number. Dotted underline marks it as genuinely unavailable. */
+      #topPackageTemp[data-governor="unavailable"],
+      #dlTempValue[data-governor="unavailable"],
+      #dockLiveTelemetry[data-governor="unavailable"] #dockLiveTemp {
+        text-decoration: underline dotted;
+      }
+
+      .daemon-live-strip {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(132px, 1fr));
+        gap: 4px 8px;
+        padding: 5px 6px;
+        margin-bottom: 6px;
+        border: 2px solid var(--fill-black);
+        background: var(--bg-grey-50);
+      }
+      .daemon-live-row {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: space-between;
+        gap: 3px 6px;
+        min-width: 0;
+        font-size: 9.5px;
+        font-weight: 700;
+      }
+      .daemon-live-row > b {
+        font-variant-numeric: tabular-nums;
+        text-align: right;
+      }
+      .daemon-live-peers {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 3px;
+      }
+      #daemonLiveTelemetry[data-fresh="false"] {
+        border-style: dashed;
+      }
+
+      .dock-live-badge {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        min-height: 26px;
+        padding: 0 4px;
+        border: 1.5px solid var(--fill-black);
+        font-size: 9.5px;
+        font-weight: 700;
+        white-space: nowrap;
+      }
+      .dock-live-badge[data-governor="paused"] {
+        border-style: dashed;
+      }
+      @media (max-width: 760px) {
+        .dock-live-badge #dockLiveMem {
+          display: none;
+        }
+        .dock-live-badge {
+          gap: 4px;
+          padding: 0 3px;
+          font-size: 9px;
+        }
+      }
+      @media (max-width: 560px) {
+        .top-telemetry-cluster .top-peer-chip {
+          padding: 0 3px;
+        }
+      }
   </style>
 </head>
 <body>
@@ -1082,7 +1175,14 @@
 
       <div class="panel-center">
         <button type="button" class="top-telemetry-cluster" id="audioMenuToggleBtn" title="Click to Configure Connected Speakers, Headphones, Bluetooth & Microphone Voice-to-Text" style="cursor:pointer;padding:0 10px;">
-          <span>⣿ <b id="topRamFootprint">958M</b></span>
+          <span>⣿ <b id="topRamFootprint" title="LIVE host memory — usedMB / totalMB from GET /api/system-status">--/--M</b></span>
+          <span class="top-telemetry-sep">│</span>
+          <span>▓ <b id="topPackageTemp" title="LIVE CPU package temperature from GET /api/system-status">--°C</b></span>
+          <span class="top-telemetry-sep">│</span>
+          <span id="topPeerBadges" style="display:inline-flex;gap:4px;align-items:center;">
+            <span class="top-peer-chip" id="topPeerVaelor" data-online="false" title="Peer vaelor-zoth-node on 127.0.0.1:8140">VAELOR :8140 ○</span>
+            <span class="top-peer-chip" id="topPeerNeuro" data-online="false" title="Peer neuro-memory on 127.0.0.1:8094">NEURO :8094 ○</span>
+          </span>
           <span class="top-telemetry-sep">│</span>
           <span id="topAudioStatusLabel">♫ <b>AUDIO & MIC</b> ▾</span>
         </button>
@@ -1567,6 +1667,32 @@
             <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;padding-bottom:5px;border-bottom:1px solid var(--fill-black);">
               <span style="font-size:10px;font-weight:700;">5 Core Daemons Pre-Installed • 3 Pullable On Demand</span>
               <span class="badge-black" id="daemonWindowCountBadge">6/8 RUNNING</span>
+            </div>
+            <!-- PHASE 2: LIVE host telemetry (GET /api/system-status) — memory, load, package temp, peers, ISO -->
+            <div class="daemon-live-strip" id="daemonLiveTelemetry" data-fresh="false" title="Live host telemetry from GET /api/system-status">
+              <div class="daemon-live-row">
+                <span>⣿ HOST MEMORY</span>
+                <b id="dlMemValue">--/--M</b>
+              </div>
+              <div class="daemon-live-row">
+                <span>▤ LOAD AVG</span>
+                <b id="dlLoadValue">--</b>
+              </div>
+              <div class="daemon-live-row">
+                <span>▓ PACKAGE TEMP</span>
+                <b id="dlTempValue">--°C</b>
+              </div>
+              <div class="daemon-live-row">
+                <span>◈ ISO</span>
+                <b id="dlIsoValue">--</b>
+              </div>
+              <div class="daemon-live-row">
+                <span>◉ SOVEREIGN PEERS</span>
+                <span class="daemon-live-peers">
+                  <span class="top-peer-chip" id="dlPeerVaelor" data-online="false">VAELOR :8140 ○</span>
+                  <span class="top-peer-chip" id="dlPeerNeuro" data-online="false">NEURO-MEM :8094 ○</span>
+                </span>
+              </div>
             </div>
             <div id="daemonsListContainer"></div>
           </div>
@@ -2552,6 +2678,11 @@
 
       <!-- Compact Bottom-Right Mic & 3D Desktop View Toggle -->
       <div class="dock-wm-controls" style="gap:5px;">
+        <span class="dock-live-badge" id="dockLiveTelemetry" data-governor="nominal" title="LIVE host telemetry from GET /api/system-status (memory • CPU package temp • sovereign peers)">
+          <span id="dockLiveMem">⣿ --/--M</span>
+          <span id="dockLiveTemp">▓ --°C</span>
+          <span id="dockLivePeers">◉ 0/2</span>
+        </span>
         <button type="button" class="mono-btn mono-btn-black" id="bottomMicVoiceBtn" style="min-height:26px;padding:2px 8px;" title="Click to Speak into Connected Microphone (Voice-to-Text)">◉ MIC</button>
         <button type="button" class="mono-btn" id="minimizeAllBtn" style="min-height:26px;padding:2px 8px;" title="Toggle Windows to View Full-Screen Three.js 3D Perspective Braille/Dither Desktop">◈ 3D BG</button>
       </div>
@@ -3995,7 +4126,10 @@
         };
 
         setTxt('totalImageMbLabel', `${fp.totalIsoMb || 958} MB`);
-        setTxt('topRamFootprint', `${fp.totalIsoMb || 958}MB`);
+        // PHASE 2: #topRamFootprint is now owned by live host telemetry (renderSystemStatus —
+        // GET /api/system-status) instead of this static ISO footprint figure. The ISO RAM
+        // footprint is still surfaced in the Daemons/Sentinel live strip (◈ ISO) and the Greeter.
+        void (fp.totalIsoMb || 958);
         setTxt('footprintSavingBadge', `${fp.savingsPercent || 90}% SMALLER`);
         setTxt('statKernelMb', `${fp.baseKernelMb || 599} MB`);
         setTxt('statCoreMb', `${fp.coreSecurityDevMb || 268} MB`);
@@ -4193,6 +4327,137 @@
             executeColdSign(false);
           }
         } catch (_e) {}
+      }
+
+      /* ======================================================================
+         PHASE 2 — LIVE HOST TELEMETRY
+         Polls GET /api/system-status (real host memory / loadAvg / CPU package
+         temperature / sovereign peer probes / ISO presence) and paints it into
+         the top-bar telemetry cluster, the Daemons+Sentinel live strip and the
+         bottom-dock badge. Every binder is null-guarded because the top-bar
+         cluster is display:none below 961px.
+         ====================================================================== */
+      function renderPeerChip(chipEl, peerLabel, port, online) {
+        if (!chipEl) return;
+        chipEl.setAttribute('data-online', online ? 'true' : 'false');
+        chipEl.textContent = `${peerLabel} :${port} ${online ? '●' : '○'}`;
+        chipEl.setAttribute('title', `${peerLabel} — 127.0.0.1:${port} — ${online ? 'ONLINE' : 'OFFLINE / unreachable'}`);
+      }
+
+      function renderSystemStatus(s) {
+        if (!s || !s.ok) return;
+        const mem = s.memory || {};
+        const totalMb = Number(mem.totalMb) || 0;
+        const usedMb = Number(mem.usedMb) || 0;
+        const pct = totalMb ? Math.round((usedMb / totalMb) * 100) : 0;
+        const memShort = totalMb ? `${usedMb}/${totalMb}M` : '--/--M';
+        const memFull = totalMb
+          ? `${usedMb} MB used / ${totalMb} MB total (${pct}% • ${Math.max(0, totalMb - usedMb)} MB free)`
+          : 'unavailable';
+
+        const th = s.thermals || {};
+        // `Number(null)` is 0, so a missing sensor would masquerade as a real 0°C reading.
+        // Only a finite, present reading counts; a bare 0 with sensorsAvailable:false is
+        // treated as unavailable too (no genuine package can report exactly 0°C).
+        const tempPresent = th.packageTempC !== null && th.packageTempC !== undefined && th.packageTempC !== '';
+        const tempRaw = tempPresent ? Number(th.packageTempC) : NaN;
+        const sensorDead = th.sensorsAvailable === false || th.sensorSource === 'unavailable';
+        const hasTemp = Number.isFinite(tempRaw) && !(tempRaw === 0 && sensorDead);
+        const tempC = hasTemp ? Math.round(tempRaw) : null;
+        const tempShort = hasTemp ? `${tempC}°C` : '--°C';
+        const guard = th.absoluteGuard || s.absoluteGuard || {};
+        const governor = hasTemp ? (th.governorState || 'nominal') : 'unavailable';
+        const tempFull = hasTemp
+          ? `${tempC}°C package • governor: ${governor} • guardrails: throttle ${guard.throttleC}°C / pause ${guard.pauseC}°C (${guard.enforced || 'server-side'})`
+          : `package temperature unavailable (sensors: ${th.sensorSource || 'unknown'})`;
+
+        // /api/system-status ships loadAvg as { load1, load5, load15 }; older contracts sent an array.
+        const loads = Array.isArray(s.loadAvg)
+          ? s.loadAvg
+          : (s.loadAvg && typeof s.loadAvg === 'object'
+            ? [s.loadAvg.load1, s.loadAvg.load5, s.loadAvg.load15]
+            : []);
+        const loadNums = loads.map((n) => Number(n)).filter((n) => Number.isFinite(n));
+        const loadShort = loadNums.length
+          ? loadNums.map((n) => n.toFixed(2)).join(' ')
+          : '--';
+        const load1 = loadNums.length ? loadNums[0] : null;
+
+        const peers = Array.isArray(s.peers) ? s.peers : [];
+        const onlineCount = peers.filter((p) => p && p.online).length;
+        const peerByPort = {};
+        peers.forEach((p) => { if (p && p.port) peerByPort[p.port] = p; });
+        const vaelor = peerByPort[8140] || { name: 'vaelor-zoth-node', port: 8140, online: false };
+        const neuro = peerByPort[8094] || { name: 'neuro-memory', port: 8094, online: false };
+
+        // --- Top-bar telemetry cluster (>=961px) ---
+        const ramEl = document.getElementById('topRamFootprint');
+        if (ramEl) {
+          ramEl.textContent = memShort;
+          ramEl.setAttribute('title', `LIVE host memory — ${memFull}${load1 !== null ? ` • load ${loadShort}` : ''}`);
+        }
+        const tempEl = document.getElementById('topPackageTemp');
+        if (tempEl) {
+          tempEl.textContent = tempShort;
+          tempEl.setAttribute('data-governor', governor);
+          tempEl.setAttribute('title', `LIVE CPU package temperature — ${tempFull}`);
+        }
+        renderPeerChip(document.getElementById('topPeerVaelor'), 'VAELOR', vaelor.port || 8140, Boolean(vaelor.online));
+        renderPeerChip(document.getElementById('topPeerNeuro'), 'NEURO', neuro.port || 8094, Boolean(neuro.online));
+
+        // --- Daemons / Sentinel live strip (every viewport) ---
+        const strip = document.getElementById('daemonLiveTelemetry');
+        if (strip) {
+          strip.setAttribute('data-fresh', 'true');
+          const dlMem = document.getElementById('dlMemValue');
+          if (dlMem) {
+            dlMem.textContent = totalMb ? `${memShort} • ${pct}%` : '--';
+            dlMem.setAttribute('title', memFull);
+          }
+          const dlLoad = document.getElementById('dlLoadValue');
+          if (dlLoad) {
+            dlLoad.textContent = loadShort;
+            dlLoad.setAttribute('title', `Host 1/5/15-minute load average: ${loadShort}`);
+          }
+          const dlTemp = document.getElementById('dlTempValue');
+          if (dlTemp) {
+            dlTemp.textContent = tempShort;
+            dlTemp.setAttribute('data-governor', governor);
+            dlTemp.setAttribute('title', tempFull);
+          }
+          const dlIso = document.getElementById('dlIsoValue');
+          if (dlIso) {
+            const iso = s.iso || {};
+            dlIso.textContent = iso.present ? 'PRESENT' : 'ABSENT';
+            dlIso.setAttribute('title', iso.present ? `Bootable image staged at ${iso.path}` : `Not found at ${iso.path || 'unknown path'}`);
+          }
+          renderPeerChip(document.getElementById('dlPeerVaelor'), 'VAELOR', vaelor.port || 8140, Boolean(vaelor.online));
+          renderPeerChip(document.getElementById('dlPeerNeuro'), 'NEURO-MEM', neuro.port || 8094, Boolean(neuro.online));
+        }
+
+        // --- Bottom-dock badge (visible at every viewport) ---
+        const dock = document.getElementById('dockLiveTelemetry');
+        if (dock) {
+          dock.setAttribute('data-governor', governor);
+          dock.setAttribute('title', `LIVE host telemetry — memory ${memFull} • ${tempFull} • peers ${onlineCount}/${peers.length || 2} online`);
+          const dockMem = document.getElementById('dockLiveMem');
+          if (dockMem) dockMem.textContent = `⣿ ${memShort}`;
+          const dockTemp = document.getElementById('dockLiveTemp');
+          if (dockTemp) dockTemp.textContent = `▓ ${tempShort}`;
+          const dockPeers = document.getElementById('dockLivePeers');
+          if (dockPeers) dockPeers.textContent = `◉ ${onlineCount}/${peers.length || 2}`;
+        }
+      }
+
+      async function fetchSystemStatus() {
+        try {
+          const res = await fetch('/api/system-status');
+          const data = await res.json();
+          if (data && data.ok) renderSystemStatus(data);
+        } catch (_e) {
+          const strip = document.getElementById('daemonLiveTelemetry');
+          if (strip) strip.setAttribute('data-fresh', 'false');
+        }
       }
 
       const cmdHistory = [
@@ -6954,6 +7219,12 @@
 
       layoutInitialWindowsForViewport();
       window.addEventListener('resize', layoutInitialWindowsForViewport);
+
+      // PHASE 2 — live host telemetry poller (GET /api/system-status):
+      // paints real host memory, CPU package temp, sovereign peer probes and ISO presence
+      // into the top-bar cluster, the Daemons/Sentinel live strip and the bottom-dock badge.
+      fetchSystemStatus();
+      setInterval(fetchSystemStatus, 5000);
 
       fetchSnapshot();
       pollBridgeTelemetry();

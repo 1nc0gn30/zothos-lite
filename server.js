@@ -430,6 +430,8 @@ function buildSnapshot() {
 
   return {
     ok: true,
+    // Mission invariant, surfaced on every telemetry contract so a client can never infer it is optional.
+    absoluteGuard: { throttleC: ABSOLUTE_THROTTLE_C, pauseC: ABSOLUTE_PAUSE_C, enforced: 'server-side' },
     osName: 'ZothOS-Lite v1.0 (Amnesic Monotone Edition)',
     codename: 'OBSIDIAN-TAILS-1BIT',
     palette: '1-Bit Monotone (#000000 / #FFFFFF) + Ordered Bayer 4x4 + Unicode U+2800 Braille',
@@ -520,15 +522,15 @@ const server = http.createServer(async (req, res) => {
       running: d.id in daemonOverrides ? Boolean(daemonOverrides[d.id]) : d.defaultRunning
     }));
     const peers = [
-      { name: 'vaelor-zoth-node', url: 'http://127.0.0.1:8140/api/status' },
-      { name: 'neuro-memory', url: 'http://127.0.0.1:8094/' }
+      { name: 'vaelor-zoth-node', port: 8140, url: 'http://127.0.0.1:8140/api/status' },
+      { name: 'neuro-memory', port: 8094, url: 'http://127.0.0.1:8094/' }
     ];
     const peerHealth = await Promise.all(peers.map(async (p) => {
       try {
         const r = await fetch(p.url, { signal: AbortSignal.timeout(1500) });
-        return { name: p.name, online: r.ok, httpStatus: r.status };
+        return { name: p.name, port: p.port, url: p.url, online: r.ok, httpStatus: r.status };
       } catch (err) {
-        return { name: p.name, online: false, error: err.name || 'unreachable' };
+        return { name: p.name, port: p.port, url: p.url, online: false, error: err.name || 'unreachable' };
       }
     }));
     const memTotalMb = Math.round(os.totalmem() / (1024 ** 2));
@@ -537,6 +539,7 @@ const server = http.createServer(async (req, res) => {
     const isoPath = path.join(__dirname, 'vm', 'zothos-lite-1.0-amd64.iso');
     return sendJson(res, 200, {
       ok: true,
+      absoluteGuard: { throttleC: ABSOLUTE_THROTTLE_C, pauseC: ABSOLUTE_PAUSE_C, enforced: 'server-side' },
       host: os.hostname(),
       platform: `${os.platform()} ${os.release()} ${os.arch()}`,
       uptimeSec: Math.round(os.uptime()),
@@ -999,6 +1002,7 @@ const server = http.createServer(async (req, res) => {
 
     return sendJson(res, 200, {
       ok: true,
+      absoluteGuard: localThermals.absoluteGuard,
       online: Boolean(expData && expData.ok),
       // The absolute guardrail is enforced by THIS daemon at its own PoUW proxy layer, so the policy is
       // reported whichever real source supplies the reading (the Vaelor node's thermals or the local hwmon read).

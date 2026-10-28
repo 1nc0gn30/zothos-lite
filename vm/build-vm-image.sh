@@ -266,6 +266,23 @@ echo "└───────────────────────�
 EOF
 chmod +x "$ROOTFS/usr/local/bin/zoth-hexstrike"
 
+# 4.5. Embed the CURRENT ZothOS-Lite application payload (server.js + public/ web UI)
+#      so this initramfs genuinely ships the latest app instead of booting a stale one.
+#      The volatile 9p hostfs share still exposes the live repo at runtime, and /init
+#      prefers that live copy when present (full public/assets), falling back to this
+#      embedded payload when the share is missing.
+APP_SRC_DIR="$(cd "$VM_DIR/.." && pwd)"
+APP_DST="$ROOTFS/usr/local/share/zoth-lite/app"
+mkdir -p "$APP_DST/public"
+for f in server.js package.json; do
+  if [ -f "$APP_SRC_DIR/$f" ]; then cp -f "$APP_SRC_DIR/$f" "$APP_DST/$f"; fi
+done
+for f in index.html robots.txt sitemap.xml; do
+  if [ -f "$APP_SRC_DIR/public/$f" ]; then cp -f "$APP_SRC_DIR/public/$f" "$APP_DST/public/$f"; fi
+done
+echo "[::] Embedded app payload from $APP_SRC_DIR -> $(find "$APP_DST" -type f | wc -l) file(s)"
+ls -l "$APP_DST" "$APP_DST/public"
+
 # 5. Create /init that loads kernel modules, mounts Amnesic RAM OverlayFS, and starts the Xorg GUI inside the VM!
 cat > "$ROOTFS/init" << 'EOF'
 #!/bin/sh
@@ -332,7 +349,19 @@ for f in /sys/class/input/*/uevent; do echo add > "$f" 2>/dev/null || true; done
 SYSTEMD_IGNORE_CHROOT=1 udevadm settle --timeout=3 2>/dev/null || true
 
 # Start ZothOS-Lite v1.0 daemon inside the VM on 127.0.0.1:8145
-PORT=8145 node ${ZOTHOS_LITE_DIR:-$(pwd)}/server.js >/tmp/zothos-lite-server.log 2>/dev/null &
+# Resolution order: the live host repo (exposed read-only through the 9p hostfs share,
+# which carries the full public/assets set) -> the app payload embedded in this initramfs.
+ZOTH_APP_DIR=""
+for cand in "__ZOTHOS_HOST_APP_DIR__" "/usr/local/share/zoth-lite/app"; do
+  if [ -n "$cand" ] && [ -f "$cand/server.js" ]; then ZOTH_APP_DIR="$cand"; break; fi
+done
+if [ -n "$ZOTH_APP_DIR" ]; then
+  export ZOTHOS_LITE_DIR="$ZOTH_APP_DIR"
+  echo "[::] ZothOS-Lite app source: $ZOTH_APP_DIR" > /dev/ttyS0
+  PORT=8145 node "$ZOTH_APP_DIR/server.js" >/tmp/zothos-lite-server.log 2>&1 &
+else
+  echo "[!!] No ZothOS-Lite server.js found (hostfs share + embedded payload both missing)" > /dev/ttyS0
+fi
 sleep 1
 
 # Create Xorg config for 1280x800 resolution inside QEMU with SWCursor enabled
@@ -414,6 +443,15 @@ while true; do
 done
 EOF
 chmod +x "$ROOTFS/init"
+# Bake the absolute host repo path into /init (the heredoc is quoted, so the placeholder
+# survives verbatim and is resolved here). Inside QEMU the 9p hostfs share exposes the host
+# root read-only at its natural path, so this points the in-VM daemon at the live repo.
+sed -i "s|__ZOTHOS_HOST_APP_DIR__|$APP_SRC_DIR|g" "$ROOTFS/init"
+if grep -q "__ZOTHOS_HOST_APP_DIR__" "$ROOTFS/init"; then
+  echo "[!!] WARNING: /init placeholder substitution failed" >&2
+fi
+if grep -q "$APP_SRC_DIR" "$ROOTFS/init"; then :; else echo "[!!] WARNING: baked app path not found in /init" >&2; fi
+echo "[::] /init baked with app dir: $APP_SRC_DIR"
 
 # 6. Pack initramfs image
 echo "[::] Packing $VM_DIR/initrd-zothos-lite.img..."
