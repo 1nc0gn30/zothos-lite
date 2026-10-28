@@ -2,13 +2,13 @@
 # ==============================================================================
 # ZOTHOS-LITE v1.0 // AMNESIC 1-BIT MONOTONE VM & BOOTABLE ISO BUILDER (GUI + CLI)
 # Builds:
-#   1. /home/zoth/NullAITech/zothos-lite/vm/initrd-zothos-lite.img
-#   2. /home/zoth/NullAITech/zothos-lite/vm/zothos-lite-1.0-amd64.iso
+#   1. ${ZOTHOS_LITE_DIR:-$(pwd)}/vm/initrd-zothos-lite.img
+#   2. ${ZOTHOS_LITE_DIR:-$(pwd)}/vm/zothos-lite-1.0-amd64.iso
 # Boots Linux 6.12 -> Amnesic RAM OverlayFS -> Xorg :0 (1280x800) -> ZothOS-Lite GUI!
 # ==============================================================================
 set -euo pipefail
 
-VM_DIR="/home/zoth/NullAITech/zothos-lite/vm"
+VM_DIR="${ZOTHOS_LITE_DIR:-$(pwd)}/vm"
 ROOTFS="$VM_DIR/rootfs"
 ISO_ROOT="$VM_DIR/iso_root"
 KVER="6.12.107+deb13-amd64"
@@ -332,7 +332,7 @@ for f in /sys/class/input/*/uevent; do echo add > "$f" 2>/dev/null || true; done
 SYSTEMD_IGNORE_CHROOT=1 udevadm settle --timeout=3 2>/dev/null || true
 
 # Start ZothOS-Lite v1.0 daemon inside the VM on 127.0.0.1:8145
-PORT=8145 node /home/zoth/NullAITech/zothos-lite/server.js >/tmp/zothos-lite-server.log 2>/dev/null &
+PORT=8145 node ${ZOTHOS_LITE_DIR:-$(pwd)}/server.js >/tmp/zothos-lite-server.log 2>/dev/null &
 sleep 1
 
 # Create Xorg config for 1280x800 resolution inside QEMU with SWCursor enabled

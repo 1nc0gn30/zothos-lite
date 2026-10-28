@@ -16,6 +16,12 @@ const PUBLIC_DIR = path.join(__dirname, 'public');
 const DATA_DIR = path.join(__dirname, 'data');
 const STATE_PATH = path.join(DATA_DIR, 'pkg_state.json');
 
+// ABSOLUTE THERMAL GUARDRAIL (mission invariant — server-side, never caller-tunable, never force-bypassable):
+//   package  > 80°C -> throttle: the PoUW mining allowance is clamped to the 80°C absolute ceiling
+//   package >= 85°C -> unconditional pause: no PoUW block is minted
+const ABSOLUTE_THROTTLE_C = 80;
+const ABSOLUTE_PAUSE_C = 85;
+
 if (!fs.existsSync(DATA_DIR)) {
   fs.mkdirSync(DATA_DIR, { recursive: true });
 }
@@ -497,6 +503,67 @@ const server = http.createServer(async (req, res) => {
     return sendJson(res, 200, buildSnapshot());
   }
 
+  // Live hardware telemetry (hwmon/coretemp). Reports real sensors or explicit nulls — never invented values.
+  if (pathname === '/api/thermals' && req.method === 'GET') {
+    const ceiling = Number(urlObj.searchParams.get('maxTemp')) || 76.0;
+    const thermals = readHostHardwareThermals(ceiling);
+    return sendJson(res, 200, { ok: true, source: 'host-hwmon', host: os.hostname(), ...thermals });
+  }
+
+  if (pathname === '/api/system-status' && req.method === 'GET') {
+    const thermals = readHostHardwareThermals(76.0);
+    const state = loadState();
+    const daemonOverrides = state.daemonStates || {};
+    const daemons = ZOTHOS_DAEMONS.map((d) => ({
+      id: d.id,
+      name: d.name || d.id,
+      running: d.id in daemonOverrides ? Boolean(daemonOverrides[d.id]) : d.defaultRunning
+    }));
+    const peers = [
+      { name: 'vaelor-zoth-node', url: 'http://127.0.0.1:8140/api/status' },
+      { name: 'neuro-memory', url: 'http://127.0.0.1:8094/' }
+    ];
+    const peerHealth = await Promise.all(peers.map(async (p) => {
+      try {
+        const r = await fetch(p.url, { signal: AbortSignal.timeout(1500) });
+        return { name: p.name, online: r.ok, httpStatus: r.status };
+      } catch (err) {
+        return { name: p.name, online: false, error: err.name || 'unreachable' };
+      }
+    }));
+    const memTotalMb = Math.round(os.totalmem() / (1024 ** 2));
+    const memFreeMb = Math.round(os.freemem() / (1024 ** 2));
+    const memUsedMb = memTotalMb - memFreeMb;
+    const isoPath = path.join(__dirname, 'vm', 'zothos-lite-1.0-amd64.iso');
+    return sendJson(res, 200, {
+      ok: true,
+      host: os.hostname(),
+      platform: `${os.platform()} ${os.release()} ${os.arch()}`,
+      uptimeSec: Math.round(os.uptime()),
+      processUptimeSec: Math.round(process.uptime()),
+      loadAvg: thermals.loadAvg,
+      memory: {
+        totalMb: memTotalMb,
+        usedMb: memUsedMb,
+        freeMb: memFreeMb,
+        usedPercent: memTotalMb > 0 ? +((memUsedMb / memTotalMb) * 100).toFixed(1) : null
+      },
+      thermals: {
+        packageTempC: thermals.packageTempC,
+        coreMaxC: thermals.coreMaxC,
+        coreAvgC: thermals.coreAvgC,
+        maxTempCeilingC: thermals.maxTempCeilingC,
+        sensorsAvailable: thermals.sensorsAvailable,
+        sensorSource: thermals.sensorSource,
+        governorState: thermals.governorState,
+        throttled: thermals.throttled
+      },
+      daemons,
+      peers: peerHealth,
+      iso: { path: isoPath, present: fs.existsSync(isoPath) }
+    });
+  }
+
   if (pathname === '/api/pkg/pull' && req.method === 'POST') {
     const body = await readJsonBody(req);
     const toolId = String(body.toolId || '').trim();
@@ -790,7 +857,7 @@ const server = http.createServer(async (req, res) => {
     let fan2Rpm = null;
 
     try {
-      const hwmonBase = '/sys/class/hwmon';
+      const hwmonBase = process.env.ZOTHOS_HWMON_ROOT || '/sys/class/hwmon';
       if (fs.existsSync(hwmonBase)) {
         for (const d of fs.readdirSync(hwmonBase)) {
           const dirPath = path.join(hwmonBase, d);
@@ -835,30 +902,43 @@ const server = http.createServer(async (req, res) => {
       }
     } catch (_e) {}
 
+    // Deriving a package temperature from real core sensors is legitimate; inventing one is not.
+    const hasPackageSensor = packageTempC !== null;
     if (packageTempC === null && cores.length > 0) packageTempC = Math.max(...cores.map((c) => c.tempC));
-    if (packageTempC === null) packageTempC = 58.0;
+    const measured = packageTempC !== null;
     const coreMaxC = cores.length > 0 ? Math.max(...cores.map((c) => c.tempC)) : packageTempC;
     const coreAvgC = cores.length > 0 ? +(cores.reduce((s, c) => s + c.tempC, 0) / cores.length).toFixed(1) : packageTempC;
     const [load1, load5, load15] = os.loadavg().map((n) => +n.toFixed(2));
     const ceiling = Number(maxTempCeilingC) || 76.0;
-    const throttled = packageTempC >= ceiling;
-    const governorState = throttled
-      ? 'THROTTLING_COOLING_GUARD'
-      : (packageTempC >= ceiling - 6 ? 'WARM_GOVERNED' : 'OPTIMAL_COOL');
+    // Guardrail integrity: an unmeasured temperature is never reported as a comfortable number,
+    // so an unreadable sensor can never silently defeat the 80°C/85°C mining governor.
+    const absPaused = measured && packageTempC >= ABSOLUTE_PAUSE_C;
+    const absThrottled = measured && packageTempC > ABSOLUTE_THROTTLE_C;
+    const throttled = measured ? (packageTempC >= ceiling || absPaused || absThrottled) : false;
+    const governorState = !measured
+      ? 'SENSOR_UNAVAILABLE'
+      : (absPaused
+        ? 'PAUSED_ABSOLUTE_THERMAL_GUARD'
+        : (absThrottled
+          ? 'THROTTLED_ABSOLUTE_THERMAL_GUARD'
+          : (throttled ? 'THROTTLING_COOLING_GUARD' : (packageTempC >= ceiling - 6 ? 'WARM_GOVERNED' : 'OPTIMAL_COOL'))));
 
     return {
       packageTempC,
       coreMaxC,
       coreAvgC,
       cores,
-      nvmeTempC: nvmeTempC ?? 36.9,
-      pchTempC: pchTempC ?? 55.0,
-      wifiTempC: wifiTempC ?? 44.0,
-      fan1Rpm: fan1Rpm ?? 3180,
-      fan2Rpm: fan2Rpm ?? 3200,
+      nvmeTempC,
+      pchTempC,
+      wifiTempC,
+      fan1Rpm,
+      fan2Rpm,
       loadAvg: { load1, load5, load15 },
       maxTempCeilingC: ceiling,
-      headroomC: +(ceiling - packageTempC).toFixed(1),
+      absoluteGuard: { throttleC: ABSOLUTE_THROTTLE_C, pauseC: ABSOLUTE_PAUSE_C, enforced: 'server-side' },
+      headroomC: measured ? +(ceiling - packageTempC).toFixed(1) : null,
+      sensorsAvailable: measured,
+      sensorSource: measured ? (hasPackageSensor ? 'hwmon:coretemp/package' : 'hwmon:coretemp/core-max') : 'unavailable',
       throttled,
       governorState
     };
@@ -920,7 +1000,9 @@ const server = http.createServer(async (req, res) => {
     return sendJson(res, 200, {
       ok: true,
       online: Boolean(expData && expData.ok),
-      thermals: nodeThermals || localThermals,
+      // The absolute guardrail is enforced by THIS daemon at its own PoUW proxy layer, so the policy is
+      // reported whichever real source supplies the reading (the Vaelor node's thermals or the local hwmon read).
+      thermals: { ...(nodeThermals || localThermals), absoluteGuard: localThermals.absoluteGuard },
       ledger: {
         chainId: expData?.chainId || 'vaelor-mainnet-1',
         totalBlocks: expData?.totalBlocks || intData?.totalBlocks || 0,
@@ -949,8 +1031,41 @@ const server = http.createServer(async (req, res) => {
     const body = await readJsonBody(req);
     const worker = String(body.worker || '@zoth').trim();
     const workType = String(body.workType || 'SECURITY_ENTROPY_SCAN').trim();
-    const maxTempC = Number(body.maxTempC || 76.0);
-    const preThermals = readHostHardwareThermals(maxTempC);
+    const requestedCeilingC = Number(body.maxTempC || 76.0);
+    // ABSOLUTE THERMAL GUARDRAIL (mission invariant — server-side, never caller-tunable, never force-bypassable):
+    //   package > 80°C  -> throttle: effective allowance clamped to 80°C
+    //   package >= 85°C -> unconditional pause
+    // body.force may only override the caller's own ceiling (tier 1), never these two tiers.
+    const preThermals = readHostHardwareThermals(requestedCeilingC);
+    const measuredC = preThermals.sensorsAvailable && Number.isFinite(preThermals.packageTempC)
+      ? preThermals.packageTempC : null;
+
+    if (measuredC !== null && measuredC >= ABSOLUTE_PAUSE_C) {
+      return sendJson(res, 200, {
+        ok: true,
+        throttled: true,
+        governorAction: 'PAUSED_ABSOLUTE_THERMAL_GUARD',
+        reason: `CPU Package (${measuredC}°C) reached the absolute ${ABSOLUTE_PAUSE_C}°C pause guard. PoUW block refused to protect hardware (not overridable).`,
+        absoluteGuard: { throttleC: ABSOLUTE_THROTTLE_C, pauseC: ABSOLUTE_PAUSE_C, measuredC },
+        thermals: preThermals
+      });
+    }
+
+    const inThrottleBand = measuredC !== null && measuredC > ABSOLUTE_THROTTLE_C;
+    // The governed miner exposes no duty-cycle/intensity lever, so "throttle" = clamp the allowance to 80°C.
+    const maxTempC = inThrottleBand ? Math.min(requestedCeilingC, ABSOLUTE_THROTTLE_C) : requestedCeilingC;
+
+    if (inThrottleBand) {
+      return sendJson(res, 200, {
+        ok: true,
+        throttled: true,
+        governorAction: 'THROTTLED_ABSOLUTE_THERMAL_GUARD',
+        reason: `CPU Package (${measuredC}°C) is above the absolute ${ABSOLUTE_THROTTLE_C}°C throttle guard; mining allowance clamped to ${maxTempC}°C until the CPU cools (not overridable).`,
+        maxTempCeilingC: maxTempC,
+        absoluteGuard: { throttleC: ABSOLUTE_THROTTLE_C, pauseC: ABSOLUTE_PAUSE_C, measuredC },
+        thermals: preThermals
+      });
+    }
 
     if (preThermals.throttled && !body.force) {
       return sendJson(res, 200, {

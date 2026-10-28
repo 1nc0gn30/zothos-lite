@@ -7,7 +7,8 @@
 # ==============================================================================
 set -euo pipefail
 
-VM_DIR="/home/zoth/NullAITech/zothos-lite/vm"
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+VM_DIR="${ZOTHOS_LITE_DIR:-$(dirname "$SCRIPT_DIR")}/vm"
 KERNEL="/boot/vmlinuz-6.12.107+deb13-amd64"
 [ ! -f "$KERNEL" ] && KERNEL="/boot/vmlinuz"
 INITRD="$VM_DIR/initrd-zothos-lite.img"

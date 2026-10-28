@@ -557,6 +557,15 @@
       pointer-events: none;
     }
 
+    /* text-overflow is inert on a flex container: truncate the title span itself so a
+       narrow window shows a real ellipsis instead of hard-cutting mid-glyph. */
+    .win-title-left > span {
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
     .win-controls {
       display: flex;
       align-items: center;
@@ -997,6 +1006,57 @@
         left: 6px !important;
         width: calc(100% - 12px) !important;
         height: calc(100% - 12px) !important;
+      }
+      /* Touch-target floor (WCAG 2.5.8 minimum 24x24 CSS px) on pointer-coarse / narrow layouts.
+         Applied as real layout size so adjacent hit areas never overlap and mis-tap. */
+      .win-ctrl-btn {
+        width: 24px;
+        height: 24px;
+      }
+      .mono-btn {
+        min-height: 26px !important;
+        min-width: 24px;
+      }
+      /* Checkbox rows: the <label> wraps box + caption, so it carries the real hit area. */
+      label:has(> input[type="checkbox"]) {
+        min-height: 26px;
+      }
+      /* When windows go full-screen the task dock is the only window switcher: never clip it. */
+      #bottomTaskbarList {
+        justify-content: flex-start !important;
+        overflow-x: auto !important;
+        -webkit-overflow-scrolling: touch;
+        -webkit-mask-image: linear-gradient(90deg, #000 calc(100% - 16px), transparent);
+        mask-image: linear-gradient(90deg, #000 calc(100% - 16px), transparent);
+      }
+    }
+    /* Phone-width top bar: the chronometer + brand must fit the 42px strip instead of clipping. */
+    @media (max-width: 560px) {
+      .tails-top-panel {
+        padding: 0 6px;
+        gap: 4px;
+      }
+      .top-brand-seal {
+        font-size: 10px;
+        padding: 0 7px;
+        height: 26px;
+      }
+      .tails-top-panel .mono-btn {
+        font-size: 10px !important;
+        padding: 0 6px !important;
+        min-height: 26px !important;
+      }
+      #topClockUtc {
+        font-size: 10px !important;
+        padding: 0 5px !important;
+        gap: 4px !important;
+      }
+      #nicheClockBrailleBits {
+        padding: 0 3px !important;
+      }
+      .panel-left,
+      .panel-right {
+        gap: 4px;
       }
     }
   </style>
@@ -1941,7 +2001,7 @@
             </div>
 
             <!-- Live Account Balances Strip (Always Visible) -->
-            <div id="vaelorAccountsStrip" style="display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:4px;"></div>
+            <div id="vaelorAccountsStrip" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(112px,1fr));gap:4px;"></div>
 
             <!-- TAB 1: WALLET & AIR-GAPPED ED25519 COLD SIGNER -->
             <div id="vaelorTabTransfer" class="vaelor-tab-pane" style="display:flex;flex-direction:column;gap:6px;flex:1;">
@@ -2247,7 +2307,7 @@
             </div>
           </div>
 
-          <div class="os-window-body" style="display:grid;grid-template-columns:345px minmax(0,1fr);gap:8px;padding:8px;overflow:hidden;height:calc(100% - 30px);">
+          <div class="os-window-body" style="display:grid;grid-template-columns:min(345px,50%) minmax(0,1fr);gap:8px;padding:8px;overflow:hidden;height:calc(100% - 30px);">
             <!-- LEFT PANE: 60FPS ANIMATED BRAILLE + BAYER 8X8 DITHER + ASCII EMBODIED AVATAR (MOUTH + FULL BODY) -->
             <div style="display:flex;flex-direction:column;gap:6px;min-height:0;">
               <!-- Top Telemetry & Mood Status Strip -->
@@ -2381,9 +2441,9 @@
               </div>
 
               <!-- Prompt Input + Hardware Microphone Voice-to-Text Button -->
-              <form id="azothChatForm" style="display:flex;gap:5px;align-items:center;margin:0;" onsubmit="return false;">
+              <form id="azothChatForm" style="display:flex;flex-wrap:wrap;gap:5px;align-items:center;margin:0;" onsubmit="return false;">
                 <button type="button" class="mono-btn mono-btn-black" id="azothMicSttBtn" title="Record from Connected Microphone (Voice-to-Text) & Send to AZOTH" style="min-height:36px;padding:0 10px;font-size:12px !important;flex-shrink:0;">◉ MIC</button>
-                <input id="azothPromptInput" type="text" class="mono-input" placeholder="Type or click ◉ MIC (CoT Memory remembers every turn)..." autocomplete="off" style="flex:1;min-height:36px;" />
+                <input id="azothPromptInput" type="text" class="mono-input" placeholder="Type or click ◉ MIC (CoT Memory remembers every turn)..." autocomplete="off" style="flex:1 1 160px;min-width:160px;min-height:36px;" />
                 <button type="submit" class="mono-btn mono-btn-black" id="azothSendBtn" style="min-height:36px;padding:0 12px;font-size:12.5px !important;flex-shrink:0;">SPEAK ↵</button>
               </form>
             </div>
@@ -2405,7 +2465,7 @@
               <button type="button" class="win-ctrl-btn close-btn" data-win-action="close" data-win-id="winCoT" title="Close Window">✕</button>
             </div>
           </div>
-          <div class="os-window-body" style="display:grid;grid-template-columns:310px 1fr;gap:10px;height:calc(100% - 34px);overflow:hidden;padding:10px;">
+          <div class="os-window-body" style="display:grid;grid-template-columns:min(310px,50%) minmax(0,1fr);gap:10px;height:calc(100% - 34px);overflow:hidden;padding:10px;">
             <!-- Left Column: Animated Braille/Bayer Thought-DAG Canvas + Pinned Semantic Facts Vault -->
             <div style="display:flex;flex-direction:column;gap:7px;height:100%;overflow:hidden;">
               <!-- Live Synaptic Thought-DAG Header & Token Telemetry -->
@@ -2627,17 +2687,29 @@
         const readoutEl = document.getElementById('nicheClockReadout');
         if (bitsEl) bitsEl.textContent = `${bH}${bM}${bS}`;
         if (readoutEl) {
+          // Narrow viewports (phones) cannot fit the full chronometer string in the 42px top bar;
+          // render a mode-faithful compact form so the readout is never clipped off-screen.
+          const narrowClock = window.innerWidth <= 560;
+          const hBin5 = utcH.toString(2).padStart(5, '0');
+          const mBin6 = utcM.toString(2).padStart(6, '0');
+          let fullReadout, compactReadout;
           if (nicheClockMode === 'braille-bin') {
-            readoutEl.textContent = `${spin} [${utcH.toString(2).padStart(5, '0')}:${utcM.toString(2).padStart(6, '0')}]`;
+            fullReadout = `${spin} [${hBin5}:${mBin6}]`;
+            compactReadout = `[${hBin5}:${mBin6}]`;
           } else if (nicheClockMode === 'hex-chron') {
-            readoutEl.textContent = `${spin} 0x${hexMain}.${hexFrac} • ${epochHex}`;
+            fullReadout = `${spin} 0x${hexMain}.${hexFrac} • ${epochHex}`;
+            compactReadout = `0x${hexMain}.${hexFrac}`;
           } else if (nicheClockMode === 'beats') {
-            readoutEl.textContent = `${spin} @${beatsFull} .beats • ${utcShort}`;
+            fullReadout = `${spin} @${beatsFull} .beats • ${utcShort}`;
+            compactReadout = `@${beatsFull} .beats`;
           } else if (nicheClockMode === 'sidereal') {
-            readoutEl.textContent = `${spin} GMST ${gmstStr} • ${LUNAR_GLYPHS[lunarIdx].split(' ')[0]}`;
+            fullReadout = `${spin} GMST ${gmstStr} • ${LUNAR_GLYPHS[lunarIdx].split(' ')[0]}`;
+            compactReadout = `GMST ${gmstStr}`;
           } else {
-            readoutEl.textContent = `${spin} @${beatsMain} • 0x${hexMain} • ${utcShort}`;
+            fullReadout = `${spin} @${beatsMain} • 0x${hexMain} • ${utcShort}`;
+            compactReadout = utcShort;
           }
+          readoutEl.textContent = narrowClock ? compactReadout : fullReadout;
         }
 
         // Update Horology Popover if open
@@ -5076,18 +5148,24 @@
           setTxt('vaelorHdrQuorum', leg.bftConsensusQuorum || '5/5 FINALIZED_BFT');
           setTxt(
             'vaelorThermalHeaderBadge',
-            `🌡️ CPU ${th.packageTempC ?? 60}°C • FAN ${th.fan1Rpm ?? 3180} RPM • ${th.governorState || 'OPTIMAL_COOL'}`
+            `🌡️ CPU ${Number.isFinite(th.packageTempC) ? th.packageTempC + '°C' : 'n/a'} • FAN ${Number.isFinite(th.fan1Rpm) ? th.fan1Rpm + ' RPM' : 'n/a'} • ${th.governorState || 'SENSOR_UNAVAILABLE'}`
           );
-          setTxt('vaelorMinerGovBadge', `GOVERNOR: ${th.governorState || 'OPTIMAL_COOL'} (MAX ${th.maxTempCeilingC || 76}°C)`);
+          const absGuard = th.absoluteGuard || null;
+          setTxt(
+            'vaelorMinerGovBadge',
+            absGuard
+              ? `GOVERNOR: ${th.governorState || 'OPTIMAL_COOL'} (SOFT ${th.maxTempCeilingC || 76}°C • HARD >${absGuard.throttleC}°C THROTTLE / ≥${absGuard.pauseC}°C PAUSE, server-enforced)`
+              : `GOVERNOR: ${th.governorState || 'OPTIMAL_COOL'} (MAX ${th.maxTempCeilingC || 76}°C)`
+          );
           setTxt('vaelorExplorerMerkleRoot', leg.merkleStateRoot || '0x00');
 
           // Render Account Balances Strip
           const stripEl = document.getElementById('vaelorAccountsStrip');
           if (stripEl && Array.isArray(d.accountChains)) {
             stripEl.innerHTML = d.accountChains.slice(0, 6).map((acc) => `
-              <button type="button" class="mono-btn vaelor-acc-pill" data-acc-handle="${acc.handle}" style="display:flex;flex-direction:column;align-items:flex-start;padding:3px 5px;min-height:40px;text-align:left;overflow:hidden;">
-                <span style="font-size:10.5px;font-weight:700;white-space:nowrap;">${acc.handle} <span style="font-weight:400;">(#${acc.height || acc.blocks || 1})</span></span>
-                <span style="font-size:11px;font-weight:700;white-space:nowrap;">${Number(acc.balanceVlr || 0).toLocaleString(undefined, { maximumFractionDigits: 2 })} VLR</span>
+              <button type="button" class="mono-btn vaelor-acc-pill" data-acc-handle="${acc.handle}" style="display:flex;flex-direction:column;align-items:flex-start;padding:3px 5px;min-height:40px;text-align:left;overflow:hidden;min-width:0;">
+                <span style="font-size:10.5px;font-weight:700;white-space:nowrap;max-width:100%;overflow:hidden;text-overflow:ellipsis;display:block;">${acc.handle} <span style="font-weight:400;">(#${acc.height || acc.blocks || 1})</span></span>
+                <span style="font-size:11px;font-weight:700;white-space:nowrap;max-width:100%;overflow:hidden;text-overflow:ellipsis;display:block;">${Number(acc.balanceVlr || 0).toLocaleString(undefined, { maximumFractionDigits: 2 })} VLR</span>
               </button>
             `).join('');
             stripEl.querySelectorAll('.vaelor-acc-pill').forEach((btn) => {
@@ -5105,10 +5183,18 @@
             const coreLines = (th.cores || []).map(
               (c) => `  • ${c.label.padEnd(8, ' ')}: ${String(c.tempC + '°C').padEnd(7, ' ')} [${formatBrailleBarClient(c.tempC, 100, 14)}]`
             );
+            const hrTxt = Number.isFinite(th.headroomC)
+              ? (th.headroomC >= 0 ? `+${th.headroomC}` : `${th.headroomC}`) + '°C'
+              : 'unknown';
+            const absG = th.absoluteGuard || null;
+            const hardTxt = absG
+              ? `>${absG.throttleC}°C THROTTLE / ≥${absG.pauseC}°C PAUSE [${absG.enforced || 'server-side'}]`
+              : 'n/a';
             thPre.textContent = [
-              `  • CPU Pkg : ${String((th.packageTempC ?? 60) + '°C').padEnd(7, ' ')} [${formatBrailleBarClient(th.packageTempC ?? 60, 100, 14)}] (Headroom: +${th.headroomC ?? 16}°C)`,
+              `  • CPU Pkg : ${String(Number.isFinite(th.packageTempC) ? th.packageTempC + '°C' : 'n/a').padEnd(7, ' ')} [${Number.isFinite(th.packageTempC) ? formatBrailleBarClient(th.packageTempC, 100, 14) : '·'.repeat(14)}] (Headroom: ${hrTxt})`,
               ...coreLines,
-              `  • NVMe SSD: ${String((th.nvmeTempC ?? 36.9) + '°C').padEnd(7, ' ')} • Fans: ${th.fan1Rpm ?? 3180} / ${th.fan2Rpm ?? 3200} RPM • Load: ${th.loadAvg?.load1 ?? 1.2}`
+              `  • NVMe SSD: ${String(Number.isFinite(th.nvmeTempC) ? th.nvmeTempC + '°C' : 'n/a').padEnd(7, ' ')} • Fans: ${Number.isFinite(th.fan1Rpm) ? th.fan1Rpm : 'n/a'} / ${Number.isFinite(th.fan2Rpm) ? th.fan2Rpm : 'n/a'} RPM • Load: ${Number.isFinite(th.loadAvg?.load1) ? th.loadAvg.load1 : 'n/a'}`,
+              `  • HARD GUARD: ${hardTxt}`
             ].join('\n');
           }
 
@@ -5205,25 +5291,39 @@
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ worker, workType, maxTempC })
           });
-          const d = await res.json();
-          if (d && d.ok && out) {
-            if (d.throttled) {
-              out.textContent = `[⚠ THERMAL GUARD ACTIVE]\n${d.reason}`;
-            } else {
-              const mb = d.mintBlock || {};
-              const th = d.thermals || {};
-              out.textContent = [
-                `[✓ PoUW BLOCK #${mb.height} MINTED & BFT FINALIZED]`,
-                `• Worker / Task : ${worker} // ${workType} (+${d.rewardVlr} VLR • $0.00 Gas)`,
-                `• Block Hash    : ${String(mb.hash || '').slice(0, 44)}…`,
-                `• New Balance   : ${Number(mb.balanceAfterVlr || 0).toLocaleString(undefined, { maximumFractionDigits: 4 })} VLR`,
-                `• Thermal Watch : CPU ${th.packageTempC ?? 60}°C / ${maxTempC}°C Ceiling (${th.governorState || 'OPTIMAL_COOL'} • ${th.fan1Rpm ?? 3180} RPM)`,
-                d.brailleSeal || ''
-              ].join('\n');
-              fetchVaelorDashboard();
-            }
+          const d = await res.json().catch(() => null);
+          if (!out) return;
+          if (!d) {
+            out.textContent = `[✗ NO USABLE RESPONSE] HTTP ${res.status} from /api/vaelor/mine (non-JSON) — the PoUW proxy or 127.0.0.1:8140 refused the request; no block was minted.`;
+          } else if (d.throttled) {
+            const ag = d.absoluteGuard || {};
+            out.textContent = [
+              `[⚠ THERMAL GUARD ACTIVE — NO BLOCK MINTED]`,
+              `• Action   : ${d.governorAction || 'THROTTLED'}`,
+              `• Reason   : ${d.reason || 'n/a'}`,
+              Number.isFinite(ag.measuredC)
+                ? `• Measured : CPU package ${ag.measuredC}°C vs HARD >${ag.throttleC}°C THROTTLE / ≥${ag.pauseC}°C PAUSE (server-enforced, not overridable)`
+                : ''
+            ].filter(Boolean).join('\n');
+          } else if (d.ok) {
+            const mb = d.mintBlock || {};
+            const th = d.thermals || {};
+            const ag = th.absoluteGuard || {};
+            out.textContent = [
+              `[✓ PoUW BLOCK #${mb.height} MINTED & BFT FINALIZED]`,
+              `• Worker / Task : ${worker} // ${workType} (+${d.rewardVlr} VLR • $0.00 Gas)`,
+              `• Block Hash    : ${String(mb.hash || '').slice(0, 44)}…`,
+              `• New Balance   : ${Number(mb.balanceAfterVlr || 0).toLocaleString(undefined, { maximumFractionDigits: 4 })} VLR`,
+              `• Thermal Watch : CPU ${Number.isFinite(th.packageTempC) ? th.packageTempC + '°C' : 'n/a'} / ${maxTempC}°C Soft Ceiling${Number.isFinite(ag.throttleC) ? ` (HARD >${ag.throttleC}°C throttle / ≥${ag.pauseC}°C pause)` : ''} (${th.governorState || 'SENSOR_UNAVAILABLE'} • ${Number.isFinite(th.fan1Rpm) ? th.fan1Rpm + ' RPM' : 'n/a'})`,
+              d.brailleSeal || ''
+            ].join('\n');
+            fetchVaelorDashboard();
+          } else {
+            out.textContent = `[✗ MINT REFUSED] HTTP ${res.status} — ${d.error || d.reason || 'the node rejected the request and returned no reason'}; no block was minted.`;
           }
-        } catch (_e) {}
+        } catch (e) {
+          if (out) out.textContent = `[✗ REQUEST FAILED] ${String((e && e.message) || e)} — no block was minted.`;
+        }
       });
 
       document.getElementById('msigCreatePropBtn')?.addEventListener('click', async () => {
@@ -6870,6 +6970,24 @@
       setInterval(renderBrailleScope, 120);
       setInterval(pollBridgeTelemetry, 6000);
       setInterval(pollVmStatus, 5000);
+    })();
+  </script>
+  <script>
+    /* Window titles ellipsize on narrow windows; mirror the full string as a native tooltip so
+       the truncated text is still reachable. Titles are static markup, so one pass is enough. */
+    (() => {
+      const tagWindowTitles = () => {
+        document.querySelectorAll('.win-title-left').forEach((el) => {
+          const bar = el.closest('.os-window-titlebar');
+          const text = (el.textContent || '').trim();
+          if (bar && text && !bar.hasAttribute('title')) bar.setAttribute('title', text);
+        });
+      };
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', tagWindowTitles);
+      } else {
+        tagWindowTitles();
+      }
     })();
   </script>
 </body>
