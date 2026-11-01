@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # ==============================================================================
-# ZOTHOS-LITE v1.0 // AMNESIC 1-BIT MONOTONE VM & BOOTABLE ISO BUILDER (GUI + CLI)
+# ZOTHOS-LITE v1.1 // AMNESIC 1-BIT MONOTONE VM & BOOTABLE ISO BUILDER (GUI + CLI)
 # Builds:
 #   1. ${ZOTHOS_LITE_DIR:-$(pwd)}/vm/initrd-zothos-lite.img
 #   2. ${ZOTHOS_LITE_DIR:-$(pwd)}/vm/zothos-lite-1.0-amd64.iso
@@ -15,7 +15,7 @@ KVER="6.12.107+deb13-amd64"
 KERNEL="/boot/vmlinuz-$KVER"
 [ ! -f "$KERNEL" ] && KERNEL="/boot/vmlinuz"
 
-echo "[::] Building ZothOS-Lite v1.0 Amnesic RAM Initramfs (with GUI X11/DRM/9p/OverlayFS) & ISO..."
+echo "[::] Building ZothOS-Lite v1.1 Amnesic RAM Initramfs (with GUI X11/DRM/9p/OverlayFS) & ISO..."
 rm -rf "$ROOTFS" "$ISO_ROOT"
 mkdir -p "$ROOTFS"/{bin,sbin,usr/bin,usr/sbin,usr/local/bin,etc/zoth-lite,proc,sys,dev,tmp,run,var/lib/zoth-lite/pulled,root,lib/x86_64-linux-gnu,lib64,lib/modules,mnt/lower,mnt/ram,mnt/newroot}
 
@@ -122,7 +122,7 @@ arg="${2:-}"
 case "$cmd" in
   status)
     echo "+----------------------------------------------------------------------------+"
-    echo "| [::] ZOTHOS-LITE v1.0 // AMNESIC 1-BIT MONOTONE PACKAGE MANAGER            |"
+    echo "| [::] ZOTHOS-LITE v1.1 // AMNESIC 1-BIT MONOTONE PACKAGE MANAGER            |"
     echo "+----------------------------------------------------------------------------+"
     echo "| Boot Mode   : toram noswap (100% Volatile RAM tmpfs - Zero Disk)           |"
     echo "| Spoofed MAC : 02:42:ac:11:00:7f  |  Kernel: $(uname -sr | cut -c1-28) |"
@@ -225,12 +225,12 @@ TO="${1:-@zoth}"
 AMT="${2:-25}"
 MEMO="${3:-Air-Gapped ZothOS-Lite VM Transfer}"
 TS=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
-RAW="VAELOR-L1-COLD-SIGN|from=@neal|to=$TO|amount=$AMT|memo=$MEMO|ts=$TS"
+RAW="VAELOR-L1-COLD-SIGN|from=@1nc0gn30|to=$TO|amount=$AMT|memo=$MEMO|ts=$TS"
 TX_HASH=$(printf "%s" "$RAW" | sha256sum | cut -d' ' -f1)
 SIG=$(printf "ed25519:%s" "$TX_HASH" | sha256sum | cut -d' ' -f1)
 echo "┌──[ VAELOR L1 // AIR-GAPPED ED25519 COLD SIGNER ]─────────────────────────┐"
 echo "│ Protocol    : VAELOR-L1-COLD-SIGN-v1 (Zero-Network RAM Enclave)          │"
-echo "│ Transfer    : @neal -> $TO ($AMT VLR)                                    │"
+echo "│ Transfer    : @1nc0gn30 -> $TO ($AMT VLR)                                    │"
 echo "│ Memo        : $MEMO"
 echo "│ Block Hash  : $TX_HASH"
 echo "│ Ed25519 Sig : $SIG$(echo "$TX_HASH" | cut -c1-32)"
@@ -348,7 +348,7 @@ SYSTEMD_IGNORE_CHROOT=1 udevadm trigger --type=devices --action=add 2>/dev/null 
 for f in /sys/class/input/*/uevent; do echo add > "$f" 2>/dev/null || true; done
 SYSTEMD_IGNORE_CHROOT=1 udevadm settle --timeout=3 2>/dev/null || true
 
-# Start ZothOS-Lite v1.0 daemon inside the VM on 127.0.0.1:8145
+# Start ZothOS-Lite v1.1 daemon inside the VM on 127.0.0.1:8145
 # Resolution order: the live host repo (exposed read-only through the 9p hostfs share,
 # which carries the full public/assets set) -> the app payload embedded in this initramfs.
 ZOTH_APP_DIR=""
@@ -420,7 +420,7 @@ google-chrome \
 GUISCRIPT
     chmod +x /mnt/newroot/tmp/start-zoth-gui.sh
 
-    echo "[::] Starting ZothOS-Lite v1.0 1-Bit Black & White X11 Graphical Desktop inside QEMU/KVM VM..." > /dev/ttyS0
+    echo "[::] Starting ZothOS-Lite v1.1 1-Bit Black & White X11 Graphical Desktop inside QEMU/KVM VM..." > /dev/ttyS0
     chroot /mnt/newroot /tmp/start-zoth-gui.sh &
 
     # Run interactive root shell on Serial console (/dev/ttyS0) inside the RAM overlay chroot
@@ -469,7 +469,7 @@ set default=0
 set menu_color_normal=white/black
 set menu_color_highlight=black/white
 
-menuentry "ZothOS-Lite v1.0 // Amnesic 1-Bit Monotone GUI + CLI (toram noswap)" {
+menuentry "ZothOS-Lite v1.1 // Amnesic 1-Bit Monotone GUI + CLI (toram noswap)" {
     linux /boot/vmlinuz toram noswap slab_nomerge init_on_alloc=1 init_on_free=1 console=tty0 console=ttyS0,115200n8
     initrd /boot/initrd.img
 }
@@ -478,4 +478,4 @@ EOF
 echo "[::] Building bootable ISO $VM_DIR/zothos-lite-1.0-amd64.iso..."
 grub-mkrescue -o "$VM_DIR/zothos-lite-1.0-amd64.iso" "$ISO_ROOT" 2>/dev/null
 ls -lh "$VM_DIR/zothos-lite-1.0-amd64.iso"
-echo "[OK] ZothOS-Lite v1.0 GUI Bootable ISO & Initramfs ready."
+echo "[OK] ZothOS-Lite v1.1 GUI Bootable ISO & Initramfs ready."

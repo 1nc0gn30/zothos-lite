@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # ==============================================================================
-# ZOTHOS-LITE v1.0 // QEMU/KVM AMNESIC RAM-ONLY GUI VM LAUNCHER
+# ZOTHOS-LITE v1.1 // QEMU/KVM AMNESIC RAM-ONLY GUI VM LAUNCHER
 # Boots zothos-lite-1.0-amd64.iso / vmlinuz + initrd-zothos-lite.img in KVM
 # with 3072 MB volatile RAM, 4 vCPUs, 0 hard disks, Amnesic RAM OverlayFS,
 # Xorg :0 (1280x800) + ZothOS-Lite 1-Bit Black & White Graphical Desktop!
@@ -37,9 +37,9 @@ if [ -n "$XAUTH_FILE" ]; then
   export XAUTHORITY="$XAUTH_FILE"
 fi
 
-echo "[::] Launching ZothOS-Lite v1.0 QEMU/KVM Graphical Virtual Machine (Xorg 1280x800 GUI)..."
+echo "[::] Launching ZothOS-Lite v1.1 QEMU/KVM Graphical Virtual Machine (Xorg 1280x800 GUI)..."
 qemu-system-x86_64 \
-  -name "ZothOS-Lite v1.0 // Amnesic 1-Bit Monotone OS (GUI + RAM Overlay)" \
+  -name "ZothOS-Lite v1.1 // Amnesic 1-Bit Monotone OS (GUI + RAM Overlay)" \
   -enable-kvm \
   -cpu host \
   -smp 4 \
@@ -66,7 +66,7 @@ qemu-system-x86_64 \
 
 sleep 2
 VM_PID=$(cat "$PIDFILE")
-echo "[OK] ZothOS-Lite v1.0 Graphical VM online (PID: $VM_PID)"
+echo "[OK] ZothOS-Lite v1.1 Graphical VM online (PID: $VM_PID)"
 echo "     • Desktop Display : GTK Window on DISPLAY=$DISPLAY (1280x800 X11 GUI)"
 echo "     • VNC Endpoint    : 127.0.0.1:5905"
 echo "     • Serial Socket   : $SERIAL_SOCK"

@@ -263,7 +263,7 @@ def main():
         return
 
     print("┌──────────────────────────────────────────────────────────────────────────────┐")
-    print("│ ░░▒▒▓▓██ ZOTHOS-LITE v1.0 // AMNESIC MONOTONE SECURITY & DEV ARSENAL ██▓▓▒▒░░ │")
+    print("│ ░░▒▒▓▓██ ZOTHOS-LITE v1.1 // AMNESIC MONOTONE SECURITY & DEV ARSENAL ██▓▓▒▒░░ │")
     print("└──────────────────────────────────────────────────────────────────────────────┘")
     print("\n[CORE PRE-INSTALLED ZOTH SECURITY & DEV TOOLS — ALWAYS ON ISO]")
     for t in CORE_SECURITY_DEV_TOOLS:

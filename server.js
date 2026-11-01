@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * ZothOS-Lite v1.0 — Amnesic Monotone Security & Dev OS Server (:8145)
+ * ZothOS-Lite v1.1 — Amnesic Monotone Security & Dev OS Server (:8145)
  * "Tails-Style RAM-Only Security Meets ZothOS — Pure 1-Bit Black & White ASCII/Braille/Dither"
  */
 const http = require('http');
@@ -84,7 +84,7 @@ const CORE_SECURITY_DEV_TOOLS = [
     status: 'CORE_LOCKED',
     immutable: true,
     description: 'RFC-8032 Ed25519 Account-Lattice cold wallet, deterministic key derivation & Binary Merkle proof verifier.',
-    cliExample: 'zoth-node-lite sign-offline --from @neal --to @zoth --amount 25.0'
+    cliExample: 'zoth-node-lite sign-offline --from @1nc0gn30 --to @zoth --amount 25.0'
   },
   {
     id: 'azoth-hardened-dev-suite',
@@ -432,7 +432,7 @@ function buildSnapshot() {
     ok: true,
     // Mission invariant, surfaced on every telemetry contract so a client can never infer it is optional.
     absoluteGuard: { throttleC: ABSOLUTE_THROTTLE_C, pauseC: ABSOLUTE_PAUSE_C, enforced: 'server-side' },
-    osName: 'ZothOS-Lite v1.0 (Amnesic Monotone Edition)',
+    osName: 'ZothOS-Lite v1.1 (Amnesic Monotone Edition)',
     codename: 'OBSIDIAN-TAILS-1BIT',
     palette: '1-Bit Monotone (#000000 / #FFFFFF) + Ordered Bayer 4x4 + Unicode U+2800 Braille',
     signingPubKey: PUBKEY_HEX,
@@ -491,7 +491,14 @@ const MIME_TYPES = {
   '.json': 'application/json; charset=utf-8',
   '.txt': 'text/plain; charset=utf-8',
   '.xml': 'application/xml; charset=utf-8',
-  '.svg': 'image/svg+xml'
+  '.svg': 'image/svg+xml',
+  '.png': 'image/png',
+  '.jpg': 'image/jpeg',
+  '.jpeg': 'image/jpeg',
+  '.webp': 'image/webp',
+  '.glb': 'model/gltf-binary',
+  '.mp4': 'video/mp4',
+  '.webm': 'video/webm'
 };
 
 const server = http.createServer(async (req, res) => {
@@ -723,7 +730,7 @@ const server = http.createServer(async (req, res) => {
   // ---------------------------------------------------------------------------
   if (pathname === '/api/crypto/cold-sign' && req.method === 'POST') {
     const body = await readJsonBody(req);
-    const from = String(body.from || '@neal').trim();
+    const from = String(body.from || '@1nc0gn30').trim();
     const to = String(body.to || '@zoth').trim();
     const amountVlr = Math.max(0.01, Number(body.amountVlr) || 10);
     const memo = String(body.memo || 'Air-gapped ZothOS-Lite cold-signed transfer').trim();
@@ -1025,7 +1032,7 @@ const server = http.createServer(async (req, res) => {
         bftValidators: peersData?.bftValidators || []
       },
       multisig: {
-        vault: msigData?.vault || { id: 'msig_zoth_foundation', address: 'vlr1_multisig_corp_treasury', policy: '2-of-3', balanceVlr: 50000, signers: ['@neal', '@zoth', '@sprig'] },
+        vault: msigData?.vault || { id: 'msig_zoth_foundation', address: 'vlr1_multisig_corp_treasury', policy: '2-of-3', balanceVlr: 50000, signers: ['@1nc0gn30', '@zoth', '@sprig'] },
         proposals: msigData?.proposals || []
       }
     });
@@ -1284,7 +1291,7 @@ const server = http.createServer(async (req, res) => {
       headHash: genesisHash,
       maxTurns: 24,
       pinnedFacts: [
-        { id: 'fact-operator', category: 'IDENTITY', fact: 'Operator is Neal (@1nc0gn30) running ZothOS-Lite v1.0 Amnesic Workstation.', active: true, ts: new Date().toISOString() },
+        { id: 'fact-operator', category: 'IDENTITY', fact: 'Operator is Neal (@1nc0gn30) running ZothOS-Lite v1.1 Amnesic Workstation.', active: true, ts: new Date().toISOString() },
         { id: 'fact-hardware', category: 'HARDWARE', fact: 'Audio routed via PipeWire Pro-Audio Duplex (ALC3266 Analog + Samsung HDMI + ALC3266 Mic + Meta Ray-Ban Bridge).', active: true, ts: new Date().toISOString() },
         { id: 'fact-arsenal', category: 'ARSENAL', fact: '45 Kali Linux, Parrot OS, Reversing, and Zoth CLI tools armed in RAM overlay (toram noswap).', active: true, ts: new Date().toISOString() }
       ],
@@ -2117,7 +2124,7 @@ print(json.dumps({"transcript": transcript, "peakDb": peak_db, "engine": engine}
       const initBannerCmd = [
         'clear',
         'echo "╔══════════════════════════════════════════════════════════════════════════════╗"',
-        'echo "║ ⣿ ZOTHOS-LITE v1.0 // NATIVE KDE KONSOLE 25.04 TERMINAL (TORAM NOSWAP)     ⣿ ║"',
+        'echo "║ ⣿ ZOTHOS-LITE v1.1 // NATIVE KDE KONSOLE 25.04 TERMINAL (TORAM NOSWAP)     ⣿ ║"',
         'echo "╠══════════════════════════════════════════════════════════════════════════════╣"',
         'echo "║ • PATH Armed : bin/kali-parrot-bin + zoth-cot + zoth-lite-pkg + zoth-rayban ║"',
         'echo "║ • Try        : zoth-cot status | anonsurf status | checksec --file=/bin/ls  ║"',
@@ -2290,7 +2297,7 @@ print(json.dumps({"transcript": transcript, "peakDb": peak_db, "engine": engine}
     if (base === 'help' || base === 'commands' || base === '?') {
       const out = [
         '╔══════════════════════════════════════════════════════════════════════════════╗',
-        '║ ⣿ ZOTHOS-LITE v1.0 // FULL BASH + KALI + PARROT + PYTHON + ZOTH SHELL      ⣿ ║',
+        '║ ⣿ ZOTHOS-LITE v1.1 // FULL BASH + KALI + PARROT + PYTHON + ZOTH SHELL      ⣿ ║',
         '╠══════════════════════════════════════════════════════════════════════════════╣',
         '║ [1] KALI LINUX & PARROT OS RECON / WEB / EXPLOIT TOOLS (LIVE IN PATH):       ║',
         '║  • nmap -sV 127.0.0.1        • whatweb 127.0.0.1:8145   • wafw00f 127.0.0.1  ║',
@@ -2415,7 +2422,7 @@ print(json.dumps({"transcript": transcript, "peakDb": peak_db, "engine": engine}
         ].join('\n')
       };
       const page = manPages[topic] || [
-        `MAN PAGE: ${topic.toUpperCase()} (ZothOS-Lite v1.0 Operator Manual)`,
+        `MAN PAGE: ${topic.toUpperCase()} (ZothOS-Lite v1.1 Operator Manual)`,
         'Available manual topics:',
         '  • man zoth-envguard         • man zoth-ghostbyte        • man zoth-hexstrike',
         '  • man zoth-promptmaster     • man zoth-vaelor-coldsign  • man zoth-neuro-stdp',
@@ -2594,7 +2601,7 @@ print(json.dumps({"transcript": transcript, "peakDb": peak_db, "engine": engine}
         ok: true,
         command: rawCmd,
         output: [
-          `▓▒░ ZOTHOS-LITE v1.0 AMNESIC FOOTPRINT: ${snap.footprint.totalIsoMb} MB (${snap.footprint.savingsPercent}% smaller than 9,365 MB Full OS) ░▒▓`,
+          `▓▒░ ZOTHOS-LITE v1.1 AMNESIC FOOTPRINT: ${snap.footprint.totalIsoMb} MB (${snap.footprint.savingsPercent}% smaller than 9,365 MB Full OS) ░▒▓`,
           `  • Base Kernel + Xorg : ${snap.footprint.baseKernelMb} MB (toram noswap)`,
           `  • 8 Core Tools       : ${snap.footprint.coreSecurityDevMb} MB (locked in SquashFS)`,
           `  • Pulled in RAM      : ${snap.footprint.pulledRamMb} MB | LUKS Vault: ${snap.footprint.pulledLuksMb} MB`,
@@ -2945,5 +2952,5 @@ print(json.dumps({"transcript": transcript, "peakDb": peak_db, "engine": engine}
 });
 
 server.listen(PORT, '0.0.0.0', () => {
-  console.log(`░░▒▒▓▓██ ZothOS-Lite v1.0 (Amnesic Monotone OS) listening on http://127.0.0.1:${PORT} ██▓▓▒▒░░`);
+  console.log(`░░▒▒▓▓██ ZothOS-Lite v1.1 (Amnesic Monotone OS) listening on http://127.0.0.1:${PORT} ██▓▓▒▒░░`);
 });

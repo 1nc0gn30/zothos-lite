@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * ZothOS-Lite v1.0 — automated end-to-end verification harness.
+ * ZothOS-Lite v1.1 — automated end-to-end verification harness.
  *
  *   node bin/verify-zothos-lite.mjs          (or: npm test)
  *
@@ -541,7 +541,7 @@ function checkCaptureTool() {
 // ── main ───────────────────────────────────────────────────────────────────
 (async () => {
   const started = Date.now();
-  console.log(`ZothOS-Lite v1.0 verification harness`);
+  console.log(`ZothOS-Lite v1.1 verification harness`);
   console.log(`base=${BASE}  out=${OUT_DIR}  capture=${CAPTURE_SCRIPT}`);
 
   await checkContracts();

@@ -1,7 +1,7 @@
 {
   "name": "zothos-lite",
-  "version": "1.0.0",
-  "description": "ZothOS-Lite v1.0 — 1-Bit Monotone Amnesic Security & AI Workstation (toram noswap) with AZOTH Embodied Braille AI, Kokoro ONNX Voice, Chain of Thoughts DAG, 3D Perspective Desktop & 45 Kali/Parrot CLI Tools",
+  "version": "1.1.0",
+  "description": "ZothOS-Lite v1.1 — 1-Bit Monotone Amnesic Security & AI Workstation (toram noswap) with AZOTH Embodied Braille AI, Kokoro ONNX Voice, Chain of Thoughts DAG, 3D Perspective Desktop & 45 Kali/Parrot CLI Tools",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
@@ -23,7 +23,7 @@
     "3d-ascii",
     "nullai"
   ],
-  "author": "Neal Frazier <1nc0gn30@users.noreply.github.com> (https://nealfrazier.tech)",
+  "author": "1nc0gn30 <1nc0gn30@users.noreply.github.com> (https://nullai.tech)",
   "license": "MIT",
   "repository": {
     "type": "git",

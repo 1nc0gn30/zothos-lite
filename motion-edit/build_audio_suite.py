@@ -1,4 +1,4 @@
-"""Synthesize mastered -14.0 LUFS procedural audio tracks for the 3-video ZothOS-Lite v1.0 Motion Edit Suite."""
+"""Synthesize mastered -14.0 LUFS procedural audio tracks for the 3-video ZothOS-Lite v1.1 Motion Edit Suite."""
 
 import json
 import math
@@ -40,7 +40,7 @@ def braille_arp(freqs, step_s=0.075, duty=0.25):
 def build_hero_showreel():
     """1. Flagship Hero Showreel (18.0s, 128 BPM, -14.0 LUFS)."""
     tl = {
-        "title": "ZothOS-Lite v1.0 — Sovereign Amnesic Desktop OS Flagship Showreel",
+        "title": "ZothOS-Lite v1.1 — Sovereign Amnesic Desktop OS Flagship Showreel",
         "fps": 60, "width": 1920, "height": 1080, "duration": 18.0, "bpm": 128
     }
     with open(os.path.join(DIR, "timeline_hero.json"), "w") as f:
@@ -199,7 +199,7 @@ def build_vaelor_node_edit():
 def build_vertical_hype_edit():
     """3. Vertical 9:16 Hype Edit (15.0s, 136 BPM, -14.0 LUFS)."""
     tl = {
-        "title": "ZothOS-Lite v1.0 — Vertical 9:16 High-Velocity Hype Edit",
+        "title": "ZothOS-Lite v1.1 — Vertical 9:16 High-Velocity Hype Edit",
         "fps": 60, "width": 1080, "height": 1920, "duration": 15.0, "bpm": 136
     }
     with open(os.path.join(DIR, "timeline_vertical.json"), "w") as f:

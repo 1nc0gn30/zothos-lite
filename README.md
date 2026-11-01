@@ -1,13 +1,13 @@
-# ◈ ZothOS-Lite v1.0 (`zothos-lite`)
+# ◈ ZothOS-Lite v1.1 (`zothos-lite`)
 
-> **1-Bit Monotone Amnesic Security & AI Workstation (`toram noswap`) — Featuring the AZOTH Embodied Braille/ASCII AI Agent, Kokoro ONNX Neural Voice, Chain of Thoughts (`zoth-cot`) Working Memory DAG, 3D Perspective Braille/Dither Desktop, and 45 Armed Kali/Parrot CLI Tools**
+> **1-Bit Monotone Amnesic Security & AI Workstation (`toram noswap`) — Featuring the AZOTH Embodied Braille/ASCII AI Agent, Kokoro ONNX Neural Voice, Chain of Thoughts (`zoth-cot`) Working Memory DAG, 3D Perspective Braille/Dither Desktop, and 75+ Armed Kali/Parrot & 72 Zoth Arsenal CLI Tools**
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-000000.svg)](https://opensource.org/licenses/MIT)
 [![RAM Footprint: 958 MB](https://img.shields.io/badge/RAM_Footprint-958_MB_(90%25_Smaller)-000000)](https://github.com/NullAITech/zothos-lite)
 [![Agent: AZOTH + Kokoro Voice](https://img.shields.io/badge/AI_Agent-AZOTH_Braille_%2B_Kokoro_ONNX-FFFFFF)](https://github.com/NullAITech/zothos-lite)
 [![Memory: Chain of Thoughts DAG](https://img.shields.io/badge/Memory-Chain_of_Thoughts_DAG-000000)](https://github.com/NullAITech/chain-of-thoughts)
 
-**ZothOS-Lite v1.0** is an ultra-lightweight, Tails-inspired **1-Bit Monotone (`#FFFFFF` Paper White + `#000000` Ink Black + Ordered Bayer 4×4/8×8 Dither + Unicode `U+2800` Braille)** operating environment that boots entirely in volatile RAM (`toram noswap`) in **958 MB** (90% smaller than the 9.3 GB full ZothOS ISO).
+**ZothOS-Lite v1.1** is an ultra-lightweight, Tails-inspired **1-Bit Monotone (`#FFFFFF` Paper White + `#000000` Ink Black + Ordered Bayer 4×4/8×8 Dither + Unicode `U+2800` Braille)** operating environment that boots entirely in volatile RAM (`toram noswap`) in **958 MB** (90% smaller than the 9.3 GB full ZothOS ISO).
 
 ---
 
@@ -30,7 +30,7 @@
 ### 4. ⏳ Sovereign Horology Niche Chronometer (`#topClockUtc` & `#clockDropdownMenu`)
 - **Top-Bar Horology Instrument**: Displays a live **3-Glyph `U+2800` 8-Dot Braille Binary BCD Matrix** encoding `[Hours][Minutes][Seconds]`, a 12.5Hz sub-second Braille phase rotor, **Swatch Internet Time (`.beats` BMT)**, **16-Bit Hexadecimal Day-Fraction Chron (`0x0000`–`0xFFFF`)**, **Greenwich Mean Sidereal Time (`GMST`)**, **Julian Date (`JD`)**, and **Lunar Synodic Phase**.
 
-### 5. [>_] 45 Armed Kali Linux, Parrot OS, Reversing & Zoth CLI Tools + Cyber Dojo (`winDojo`)
+### 5. [>_] 75+ Armed Kali Linux, Parrot OS, Reversing & 72 Zoth Arsenal CLI Tools + Cyber Dojo (`winDojo`)
 - **Live Root Terminal (`winEnvGuard`)**: Direct execution of `nmap`, `whatweb`, `wafw00f`, `nuclei`, `subfinder`, `sqlmap`, `nikto`, `ffuf`, `gobuster`, `searchsploit`, `linpeas`, `anonsurf`, `macchanger`, `mat2`, `exiftool`, `checksec`, `ropper`, `radare2`, `gdb`, `binwalk`, `john`, `hashcat`, `zoth-cot`, `zoth-rayban`, `zoth-envguard`, `zoth-ghostbyte`, and `zoth-vaelor-coldsign`.
 - **Interactive Cyber Dojo (`winDojo`)**: 6 hands-on gamified security & privacy missions with XP progression and a verifiable **Ed25519 Braille Operator Diploma**.
 
@@ -42,7 +42,7 @@
 git clone https://github.com/NullAITech/zothos-lite.git
 cd zothos-lite
 
-# Start the ZothOS-Lite v1.0 Desktop & API Server (:8145)
+# Start the ZothOS-Lite v1.1 Desktop & API Server (:8145)
 node server.js
 
 # Optional: Build and launch the bootable QEMU/KVM Amnesic RAM VM
@@ -61,4 +61,4 @@ Every tool, daemon, and cryptographic enclave in **ZothOS-Lite** is **100% free,
 
 ---
 
-**Engineered by Neal Frazier Tech ([@1nc0gn30](https://github.com/1nc0gn30)) • [NullAI Platform](https://nullai.tech) • [ZothOS](https://zoth.nullai.tech)**
+**Engineered by 1nc0gn30 • NullAI ([@1nc0gn30](https://github.com/1nc0gn30)) • [NullAI Platform](https://nullai.tech) • [ZothOS](https://zoth.nullai.tech)**

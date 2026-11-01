@@ -1,5 +1,5 @@
 {
-  "title": "ZothOS-Lite v1.0 × Chain of Thoughts (zoth-cot) — Official Motion Edit",
+  "title": "ZothOS-Lite v1.1 × Chain of Thoughts (zoth-cot) — Official Motion Edit",
   "fps": 60,
   "width": 1920,
   "height": 1080,
@@ -16,7 +16,7 @@
       "id": "01_amnesic_boot",
       "start": 0.0,
       "end": 3.0,
-      "tag": "01 // ZOTHOS-LITE v1.0 • AMNESIC MONOTONE EDITION",
+      "tag": "01 // ZOTHOS-LITE v1.1 • AMNESIC MONOTONE EDITION",
       "headline": "100% RAM-ONLY. *ZERO DISK TRACE.*",
       "sub": "3D PERSPECTIVE UNICODE BRAILLE MATRIX • BAYER 8×8 DITHER • 75+ KALI & PARROT TOOLS",
       "cmd": "zoth-lite-boot --toram --3d-braille-matrix --kali-parrot-parity"
@@ -54,7 +54,7 @@
       "end": 18.0,
       "tag": "◈ // 100% FREE & OPEN-ACCESS SOVEREIGNTY",
       "headline": "ZOTHOS-LITE *× CHAIN OF THOUGHTS*",
-      "sub": "ZOTHOS.NULLAI.TECH • GITHUB.COM/NULLAITECH • ENGINEERED BY NEAL FRAZIER TECH (@1NC0GN30)",
+      "sub": "ZOTHOS.NULLAI.TECH • GITHUB.COM/NULLAITECH • ENGINEERED BY 1NC0GN30 • NULLAI (@1NC0GN30)",
       "cmd": "git clone https://github.com/NullAITech/chain-of-thoughts && zoth-cot status"
     }
   ]
