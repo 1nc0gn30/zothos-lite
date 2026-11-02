@@ -104,7 +104,7 @@ class ChainOfThoughts:
             {
                 "id": "fact-operator",
                 "category": "IDENTITY",
-                "fact": "Operator: Neal (@1nc0gn30) • Sovereign AI Workstation.",
+                "fact": "Operator: 1nc0gn30 (@1nc0gn30) • Sovereign AI Workstation.",
                 "active": True,
                 "ts": _iso_now(),
             },

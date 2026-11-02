@@ -207,7 +207,7 @@ chmod +x "$ROOTFS/usr/local/bin/zoth-envguard"
 
 cat > "$ROOTFS/usr/local/bin/zoth-ghostbyte" << 'EOF'
 #!/bin/sh
-PAYLOAD="${*:-Author: Neal | GPSLatitude: 36.85 | Clean Document Payload}"
+PAYLOAD="${*:-Author: 1nc0gn30 | GPSLatitude: 36.85 | Clean Document Payload}"
 BEFORE=$(printf "%s" "$PAYLOAD" | sha256sum | cut -d' ' -f1)
 CLEAN=$(printf "%s" "$PAYLOAD" | sed -E 's/(Author|Creator|GPSLatitude|GPSLongitude|EXIF):[^|]+/[GHOSTBYTE-STRIPPED]/gi')
 AFTER=$(printf "%s" "$CLEAN" | sha256sum | cut -d' ' -f1)

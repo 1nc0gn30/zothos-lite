@@ -201,6 +201,16 @@ const ZOTHOS_DAEMONS = [
     preinstalled: false,
     defaultRunning: false,
     description: 'P2P World Portal & 23-agent sovereign society simulation bridge.'
+  },
+  {
+    id: 'konsole-relay-daemon',
+    unit: 'konsole-relay.service',
+    name: 'Konsole Relay Agent Terminal Bridge',
+    port: 8797,
+    ramMb: 12,
+    preinstalled: true,
+    defaultRunning: true,
+    description: 'Loopback terminal injection & screen-capture bridge (127.0.0.1:8797) for AZOTH & autonomous coding agents.'
   }
 ];
 
@@ -1291,7 +1301,7 @@ const server = http.createServer(async (req, res) => {
       headHash: genesisHash,
       maxTurns: 24,
       pinnedFacts: [
-        { id: 'fact-operator', category: 'IDENTITY', fact: 'Operator is Neal (@1nc0gn30) running ZothOS-Lite v1.1 Amnesic Workstation.', active: true, ts: new Date().toISOString() },
+        { id: 'fact-operator', category: 'IDENTITY', fact: 'Operator is 1nc0gn30 (@1nc0gn30) running ZothOS-Lite v1.1 Amnesic Workstation.', active: true, ts: new Date().toISOString() },
         { id: 'fact-hardware', category: 'HARDWARE', fact: 'Audio routed via PipeWire Pro-Audio Duplex (ALC3266 Analog + Samsung HDMI + ALC3266 Mic + Meta Ray-Ban Bridge).', active: true, ts: new Date().toISOString() },
         { id: 'fact-arsenal', category: 'ARSENAL', fact: '45 Kali Linux, Parrot OS, Reversing, and Zoth CLI tools armed in RAM overlay (toram noswap).', active: true, ts: new Date().toISOString() }
       ],
