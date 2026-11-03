@@ -273,12 +273,22 @@ chmod +x "$ROOTFS/usr/local/bin/zoth-hexstrike"
 #      embedded payload when the share is missing.
 APP_SRC_DIR="$(cd "$VM_DIR/.." && pwd)"
 APP_DST="$ROOTFS/usr/local/share/zoth-lite/app"
-mkdir -p "$APP_DST/public"
+mkdir -p "$APP_DST/public/assets" "$APP_DST/bin"
 for f in server.js package.json; do
   if [ -f "$APP_SRC_DIR/$f" ]; then cp -f "$APP_SRC_DIR/$f" "$APP_DST/$f"; fi
 done
-for f in index.html robots.txt sitemap.xml; do
+for f in zothos-lite zothos-lite-tui; do
+  if [ -f "$APP_SRC_DIR/bin/$f" ]; then
+    cp -f "$APP_SRC_DIR/bin/$f" "$APP_DST/bin/$f"
+    cp -f "$APP_SRC_DIR/bin/$f" "$ROOTFS/usr/local/bin/$f"
+    chmod +x "$APP_DST/bin/$f" "$ROOTFS/usr/local/bin/$f"
+  fi
+done
+for f in index.html robots.txt sitemap.xml llms.txt; do
   if [ -f "$APP_SRC_DIR/public/$f" ]; then cp -f "$APP_SRC_DIR/public/$f" "$APP_DST/public/$f"; fi
+done
+for f in "$APP_SRC_DIR/public/assets/"*.js "$APP_SRC_DIR/public/assets/"*.svg "$APP_SRC_DIR/public/assets/"*.png; do
+  if [ -f "$f" ]; then cp -f "$f" "$APP_DST/public/assets/"; fi
 done
 echo "[::] Embedded app payload from $APP_SRC_DIR -> $(find "$APP_DST" -type f | wc -l) file(s)"
 ls -l "$APP_DST" "$APP_DST/public"
@@ -329,9 +339,11 @@ if mount -t 9p -o trans=virtio,version=9p2000.L,msize=524288,cache=none,ro hostf
     mount -t tmpfs -o size=256M tmpfs /mnt/newroot/run 2>/dev/null || true
     mount -t tmpfs -o size=128M tmpfs /mnt/newroot/var/log 2>/dev/null || true
 
-    # Copy our ZothOS-Lite CLI tools into the RAM overlay /usr/local/bin
-    cp -f /usr/local/bin/zoth-* /mnt/newroot/usr/local/bin/ 2>/dev/null || true
+    # Copy our ZothOS-Lite CLI tools and embedded v1.1 app into the RAM overlay
+    cp -f /usr/local/bin/zoth* /mnt/newroot/usr/local/bin/ 2>/dev/null || true
     cp -rf /var/lib/zoth-lite/* /mnt/newroot/var/lib/zoth-lite/ 2>/dev/null || true
+    mkdir -p /mnt/newroot/usr/local/share/zoth-lite
+    cp -rf /usr/local/share/zoth-lite/* /mnt/newroot/usr/local/share/zoth-lite/ 2>/dev/null || true
 
     cat > /mnt/newroot/tmp/start-zoth-gui.sh << 'GUISCRIPT'
 #!/bin/bash
@@ -349,10 +361,8 @@ for f in /sys/class/input/*/uevent; do echo add > "$f" 2>/dev/null || true; done
 SYSTEMD_IGNORE_CHROOT=1 udevadm settle --timeout=3 2>/dev/null || true
 
 # Start ZothOS-Lite v1.1 daemon inside the VM on 127.0.0.1:8145
-# Resolution order: the live host repo (exposed read-only through the 9p hostfs share,
-# which carries the full public/assets set) -> the app payload embedded in this initramfs.
 ZOTH_APP_DIR=""
-for cand in "__ZOTHOS_HOST_APP_DIR__" "/usr/local/share/zoth-lite/app"; do
+for cand in "/opt/zothos-lite" "/usr/local/share/zoth-lite/app"; do
   if [ -n "$cand" ] && [ -f "$cand/server.js" ]; then ZOTH_APP_DIR="$cand"; break; fi
 done
 if [ -n "$ZOTH_APP_DIR" ]; then
@@ -443,15 +453,6 @@ while true; do
 done
 EOF
 chmod +x "$ROOTFS/init"
-# Bake the absolute host repo path into /init (the heredoc is quoted, so the placeholder
-# survives verbatim and is resolved here). Inside QEMU the 9p hostfs share exposes the host
-# root read-only at its natural path, so this points the in-VM daemon at the live repo.
-sed -i "s|__ZOTHOS_HOST_APP_DIR__|$APP_SRC_DIR|g" "$ROOTFS/init"
-if grep -q "__ZOTHOS_HOST_APP_DIR__" "$ROOTFS/init"; then
-  echo "[!!] WARNING: /init placeholder substitution failed" >&2
-fi
-if grep -q "$APP_SRC_DIR" "$ROOTFS/init"; then :; else echo "[!!] WARNING: baked app path not found in /init" >&2; fi
-echo "[::] /init baked with app dir: $APP_SRC_DIR"
 
 # 6. Pack initramfs image
 echo "[::] Packing $VM_DIR/initrd-zothos-lite.img..."
@@ -477,5 +478,6 @@ EOF
 
 echo "[::] Building bootable ISO $VM_DIR/zothos-lite-1.0-amd64.iso..."
 grub-mkrescue -o "$VM_DIR/zothos-lite-1.0-amd64.iso" "$ISO_ROOT" 2>/dev/null
+rm -rf "$ROOTFS" "$ISO_ROOT"
 ls -lh "$VM_DIR/zothos-lite-1.0-amd64.iso"
 echo "[OK] ZothOS-Lite v1.1 GUI Bootable ISO & Initramfs ready."
