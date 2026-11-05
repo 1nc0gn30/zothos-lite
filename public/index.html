@@ -7530,6 +7530,22 @@
       }
     })();
   </script>
-  <script src="/assets/sovereign-upgrade.js" defer></script>
+  
+
+  <script src="/sovereign_tutorial.js"></script>
+  <script>
+    window.addEventListener("DOMContentLoaded", function() {
+      if (window.createSovereignTutorial) {
+        window.createSovereignTutorial({
+          toolId: "zothos-lite",
+          toolName: "ZothOS-Lite v1.1 (Amnesic Monotone OS)",
+          tagline: "RAM-only amnesic live Linux desktop running entirely inside your web browser!",
+          accentColor: "#94A3B8",
+          steps: [{"icon": "\u2601\ufe0f", "title": "Linux in Your Browser", "desc": "Experience a complete, distraction-free monochrome operating system without installing anything on your computer!"}, {"icon": "\ud83e\uddfc", "title": "100% Amnesic Security", "desc": "Runs strictly in RAM (toram noswap). The moment you close the tab, all temporary data evaporates into thin air."}, {"icon": "\ud83d\udee0\ufe0f", "title": "Packed with AI & Security Tools", "desc": "Includes local text editors, hex inspectors, and terminal utilities ready to use immediately."}]
+        });
+      }
+    });
+  </script>
+
 </body>
 </html>
