@@ -2961,6 +2961,6 @@ print(json.dumps({"transcript": transcript, "peakDb": peak_db, "engine": engine}
   }
 });
 
-server.listen(PORT, '0.0.0.0', () => {
+server.listen(PORT, process.env.HOST || '127.0.0.1', () => {
   console.log(`░░▒▒▓▓██ ZothOS-Lite v1.1 (Amnesic Monotone OS) listening on http://127.0.0.1:${PORT} ██▓▓▒▒░░`);
 });
