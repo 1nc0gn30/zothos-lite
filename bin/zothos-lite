@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 ZothOS-Lite v1.2 — Universal Amnesic Security OS & Multi-Model AI Workstation CLI (:8145)
-Engineered by Neal Frazier Tech (@1nc0gn30) • NullAI Platform
+Engineered by 1nc0gn30 • NullAI Platform
 """
 import os as _z_os, sys as _z_sys, shutil as _z_sh, subprocess as _z_sp
 if '--electron' in _z_sys.argv[1:] or (_z_sys.argv[1:] and _z_sys.argv[1] in ('desktop', 'electron')):
@@ -193,7 +193,7 @@ def get_status():
         "built_in_tools_count": len(IN_BROWSER_TOOLS),
         "guide_topics_count": len(GUIDE_TOPICS),
         "system_status": live,
-        "engineered_by": "Neal Frazier Tech (@1nc0gn30) • NullAI Platform",
+        "engineered_by": "1nc0gn30 • NullAI Platform",
         "support": {
             "buy_us_a_coffee_stripe": "https://buy.stripe.com/3cIfZg27PdKo2D64Ocfw40X",
             "solana_tip_address": "GG2eQbVh8ut1BK6j1A2tz7pSySdLpD38BgyEhGcxdXoK"

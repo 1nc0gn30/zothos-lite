@@ -3,52 +3,51 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ZOTHOS LITE — The Amnesic Sovereign OS (Debian 13 Live · RAM-Only)</title>
+  <title>ZOTHOS-LITE v1.2 — Amnesic Monotone Security OS (Debian 13 Live · RAM-Only)</title>
 
-  <!-- OpenGraph & Twitter Card Meta Tags -->
-  <meta name="description" content="ZothOS Lite: Ultra-lightweight amnesic Debian 13 Live OS for autonomous AI agents. Boots into volatile RAM (toram) in <15s with universal x86_64 compatibility, zero forensic trace, multi-model AI runner (460+ models), and ZothNet P2P mesh.">
+  <!-- OpenGraph & Twitter Meta Tags -->
+  <meta name="description" content="ZothOS-Lite v1.2: Tails-style amnesic RAM-only Linux OS for autonomous AI agents. Boots into volatile memory (toram noswap) in <15s with universal x86_64 compatibility, zero forensic trace, multi-model AI runner (460+ models), and ZothNet P2P mesh.">
   <meta property="og:type" content="website">
-  <meta property="og:title" content="ZOTHOS LITE — The Amnesic Sovereign OS (Debian 13 Live)">
-  <meta property="og:description" content="RAM-only amnesic security OS. Universal x86_64 hardware compatibility, multi-model AI agent runner (460+ models), external USB/cloud persistence, and zero disk trace.">
+  <meta property="og:title" content="ZOTHOS-LITE v1.2 — Amnesic Monotone Security OS">
+  <meta property="og:description" content="Tails-style RAM-only amnesic security OS. Universal x86_64 hardware compatibility, multi-model AI agent runner (460+ models), external USB/cloud persistence, and zero disk trace.">
   <meta property="og:url" content="https://zothos-lite.nullai.tech">
-  <meta property="og:image" content="https://zothos-lite.nullai.tech/assets/wallpapers/zoth-gold-master-web.jpg">
+  <meta property="og:image" content="https://zothos-lite.nullai.tech/og-banner.jpg">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:site" content="@1nc0gn30">
   <meta name="twitter:creator" content="@1nc0gn30">
-  <meta name="twitter:title" content="ZOTHOS LITE — The Amnesic Sovereign OS">
-  <meta name="twitter:description" content="RAM-only amnesic security OS. Universal x86_64 hardware compatibility, multi-model AI agent runner (460+ models), external USB/cloud persistence, and zero disk trace.">
-  <meta name="twitter:image" content="https://zothos-lite.nullai.tech/assets/wallpapers/zoth-gold-master-web.jpg">
-  <meta name="theme-color" content="#08080B">
+  <meta name="twitter:title" content="ZOTHOS-LITE v1.2 — Amnesic Monotone Security OS">
+  <meta name="twitter:description" content="Tails-style RAM-only amnesic security OS. Universal x86_64 hardware compatibility, multi-model AI agent runner (460+ models), external USB/cloud persistence, and zero disk trace.">
+  <meta name="twitter:image" content="https://zothos-lite.nullai.tech/og-banner.jpg">
+  <meta name="theme-color" content="#F7F7F4">
 
-  <!-- Distinctive Typography Pairings (Cinzel Display, Space Grotesk, JetBrains Mono) -->
+  <!-- Monotone Fonts: IBM Plex Mono, Space Grotesk, JetBrains Mono -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800;900&family=JetBrains+Mono:wght@400;600;700;800&family=Space+Grotesk:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600;700;800&family=Space+Grotesk:wght@500;600;700;800&display=swap" rel="stylesheet">
 
   <link rel="stylesheet" href="style.css">
 
-  <!-- AEO & SEO Schema.org Graph for Frontier LLM Search Indexation -->
+  <!-- AEO & SEO Schema.org Graph -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
     "@graph": [
       {
         "@type": "SoftwareApplication",
-        "name": "ZOTHOS LITE",
+        "name": "ZOTHOS-LITE v1.2 (Amnesic Monotone Security OS)",
         "url": "https://zothos-lite.nullai.tech",
         "applicationCategory": "OperatingSystem",
-        "operatingSystem": "Linux (Debian 13 Trixie, Linux 6.12)",
-        "description": "Ultra-lightweight amnesic Debian 13 Live OS for autonomous AI agents. Boots entirely to volatile RAM (toram noswap) with zero forensic trace, universal x86_64 hardware support, multi-model AI runner (460+ models), and ZothNet P2P mesh.",
+        "operatingSystem": "Linux (Debian 13 Trixie Live RAM-Only / x86_64)",
+        "description": "Tails-style RAM-only amnesic security and developer operating system. Boots entirely to volatile memory (toram noswap) with zero forensic trace, universal x86_64 hardware support, multi-model AI runner (460+ models), and ZothNet P2P mesh.",
         "offers": {
           "@type": "Offer",
           "price": "0.00",
           "priceCurrency": "USD"
         },
         "creator": {
-          "@type": "Person",
-          "name": "Neal Frazier",
-          "url": "https://github.com/1nc0gn30",
-          "sameAs": "https://nullai.tech"
+          "@type": "Organization",
+          "name": "1nc0gn30 • NullAI",
+          "url": "https://nullai.tech"
         }
       },
       {
@@ -59,7 +58,7 @@
             "name": "What is ZothOS Lite?",
             "acceptedAnswer": {
               "@type": "Answer",
-              "text": "ZothOS Lite is an ultra-lightweight amnesic Live Linux operating system built on Debian 13 (Linux kernel 6.12). It boots entirely into volatile RAM (toram noswap) in under 15 seconds, leaving zero forensic trace on host drives."
+              "text": "ZothOS Lite is an ultra-lightweight, Tails-style amnesic Live Linux operating system built on Debian 13 (Linux 6.12). It boots entirely into volatile RAM (toram noswap) in under 15 seconds, leaving zero forensic trace on host disks."
             }
           },
           {
@@ -72,10 +71,10 @@
           },
           {
             "@type": "Question",
-            "name": "How does external persistence work in ZothOS Lite?",
+            "name": "How does persistence work when memory clears on shutdown?",
             "acceptedAnswer": {
               "@type": "Answer",
-              "text": "Because RAM clears permanently on shutdown, persistence is achieved by plugging in an external USB flash drive or SSD, or by synchronizing repositories and model weights to cloud storage via built-in rclone."
+              "text": "Because volatile RAM discharges completely on power-off, persistence is achieved by plugging in an external USB flash drive or SSD, or by synchronizing files and repositories to cloud storage via built-in rclone."
             }
           }
         ]
@@ -86,85 +85,82 @@
 </head>
 <body>
 
-  <!-- Ambient Glow Atmosphere -->
-  <div class="bg-ambient"></div>
+  <!-- Background grid texture -->
+  <div class="bg-grid"></div>
 
-  <!-- Top System OS Shell Bar (Real-Time Live Telemetry HUD) -->
-  <aside class="os-shell-bar" aria-label="System Status Bar">
-    <div class="wrapper os-shell-inner">
-      <div class="os-shell-left">
-        <span class="os-shield-badge">● AMNESIC SHIELD: ARMED (toram noswap)</span>
-        <span>Volatile RAM: <strong id="shellRamDisplay" style="color:var(--gold);">2.42 GB / 32.0 GB</strong></span>
-        <span class="os-telemetry-badge">⚡ 50+ Preloaded · 460+ Live OpenRouter</span>
+  <!-- Top Amnesic Status HUD Bar -->
+  <aside class="amnesic-top-hud" aria-label="System Status HUD">
+    <div class="wrapper hud-inner">
+      <div class="hud-left">
+        <span class="hud-badge">● AMNESIC SHIELD: ARMED (toram noswap)</span>
+        <span>Volatile RAM: <strong id="shellRamDisplay">2.42 GB / 32.0 GB</strong></span>
+        <span>⚡ <strong>50+ Preloaded · 460+ Live OpenRouter</strong></span>
       </div>
-      <div class="os-shell-right">
-        <span>⏱ <span id="shellClockDisplay">15:18:25 UTC</span> · <strong id="shellBeatsDisplay" style="color:var(--gold);">@679.beats</strong></span>
-        <a href="https://buy.stripe.com/3cIfZg27PdKo2D64Ocfw40X" target="_blank" rel="noopener" class="os-shell-btn" title="Support Sovereign Open Tools">
-          ☕ Buy Us a Coffee
+      <div class="hud-right">
+        <span>⏱ <span id="shellClockDisplay">15:30:00 UTC</span> · <strong id="shellBeatsDisplay">@690.beats</strong></span>
+        <a href="https://buy.stripe.com/3cIfZg27PdKo2D64Ocfw40X" target="_blank" rel="noopener" class="hud-link" title="Support Sovereign Open-Source Tools">
+          ☕ Support
         </a>
       </div>
     </div>
   </aside>
 
-  <!-- Primary Navigation Bar -->
+  <!-- Primary Monotone Navigation Bar -->
   <nav class="navbar" role="navigation" aria-label="Main Navigation">
     <div class="wrapper nav-inner">
       <div class="brand">
-        <span>🜂 ZOTHOS LITE</span>
+        <span>🛡️ ZOTHOS-LITE</span>
         <span class="brand-badge">v1.2 · RAM-ONLY</span>
       </div>
 
       <ul class="nav-links">
         <li><a href="#about">About</a></li>
-        <li><a href="#simulator">Simulator</a></li>
         <li><a href="#agent-swarm">460+ Swarm</a></li>
-        <li><a href="#guide">Guide</a></li>
-        <li><a href="#tools">Dev Tools</a></li>
+        <li><a href="#guide">User Guide</a></li>
+        <li><a href="#tools">In-Browser Tools</a></li>
+        <li><a href="#download">Download ISO</a></li>
       </ul>
 
       <div class="nav-actions">
-        <a href="https://buy.stripe.com/3cIfZg27PdKo2D64Ocfw40X" target="_blank" rel="noopener" class="btn-coffee" title="Support Sovereign Open-Source Tools">
-          <span>☕</span> Buy Us a Coffee
+        <a href="https://buy.stripe.com/3cIfZg27PdKo2D64Ocfw40X" target="_blank" rel="noopener" class="btn-nav-action btn-nav-support" title="Support Sovereign Open Tools">
+          ☕ Support
         </a>
-        <a href="#download" class="btn-iso-nav">
-          <span>⬇</span> Get ISO (2.4 GB)
+        <a href="#download" class="btn-nav-action btn-nav-iso">
+          ⬇ Get Live ISO (2.4 GB)
         </a>
       </div>
     </div>
   </nav>
 
-  <!-- Golden Anchor Glow Line -->
-  <div class="glow-line"></div>
-
   <!-- Hero Section -->
   <header class="hero" id="about">
     <div class="wrapper">
       <div class="hero-pill">
-        <span>⠋⠙⠹</span> 100% AMNESIC LIVE LINUX · VOLATILE RAM (TORAM NOSWAP) · ZERO FORENSIC TRACE <span>⠼⠴⠦</span>
+        <span>⠋⠙⠹</span> TAILS-STYLE RAM-ONLY AMNESIC SECURITY OS · DEBIAN 13 LIVE · ZERO FORENSIC TRACE <span>⠼⠴⠦</span>
       </div>
 
       <h1 class="hero-title">
         The Amnesic Agent <br>
-        <span class="gradient-gold">Operating System.</span>
+        <span class="tag-highlight">Operating System.</span>
       </h1>
 
       <p class="hero-desc">
-        Boots entirely into volatile system RAM in &lt;15 seconds. Designed for privacy, speed, and 
+        Boots entirely into volatile system RAM in &lt;15 seconds. Designed for absolute privacy, speed, and 
         autonomous AI agent swarms running in the cloud or across local networks. Universal x86_64 hardware compatibility—zero proprietary locks.
       </p>
 
       <div class="hero-buttons">
-        <a href="#download" class="btn-primary">
+        <a href="#download" class="btn-monotone-primary">
           <span>⬇</span> Download Live ISO (2.4 GB)
         </a>
-        <a href="#simulator" class="btn-secondary">
-          <span>🖥️</span> Interactive Desktop Simulator
-        </a>
-        <a href="#agent-swarm" class="btn-secondary">
+        <a href="#agent-swarm" class="btn-monotone-secondary">
           <span>⚡</span> 460+ Multi-Model Swarm
         </a>
-        <a href="#guide" class="btn-secondary">
-          <span>📖</span> Read Sovereign Guide
+        <a href="#guide" class="btn-monotone-secondary">
+          <span>📖</span> Sovereign User Guide
+        </a>
+        <a href="#tools" class="btn-monotone-secondary">
+          <span>🛠️</span> In-Browser Dev Tools
         </a>
       </div>
 
@@ -194,177 +190,104 @@
     </div>
   </header>
 
-  <!-- Interactive Desktop Simulator & AZOTH Braille Agent -->
-  <section class="section" id="simulator">
+  <!-- AZOTH Embodied Braille Agent Companion (Monotone E-Ink) -->
+  <section class="section" style="padding-bottom:12px;">
     <div class="wrapper">
-      <div class="section-head">
-        <span class="section-tag">AUTHENTIC OPERATING SYSTEM ENVIRONMENT</span>
-        <h2 class="section-title">Interactive ZothOS Desktop Experience</h2>
-        <p class="section-sub">Experience the authentic KDE Plasma 6.3 & XFCE desktop layout, official 4K wallpapers, and the embodied AZOTH Braille AI companion.</p>
-      </div>
-
-      <!-- AZOTH Embodied Braille Agent Companion -->
-      <div class="azoth-card">
-        <div class="azoth-avatar-box">
-          <pre id="azothBrailleCanvas" class="azoth-braille-canvas"></pre>
-          <div class="azoth-mood-chips">
-            <button type="button" class="mood-chip is-active" data-mood="IDLE">IDLE</button>
-            <button type="button" class="mood-chip" data-mood="THINKING">THINKING</button>
-            <button type="button" class="mood-chip" data-mood="REASONING">REASONING</button>
-            <button type="button" class="mood-chip" data-mood="ALERT">ALERT</button>
-            <button type="button" class="mood-chip" data-mood="AMNESIC">AMNESIC</button>
-            <button type="button" class="mood-chip" data-mood="TRANSMITTING">ZOTHNET</button>
+      <div class="azoth-eink-card">
+        <div class="azoth-canvas-frame">
+          <pre id="azothBrailleCanvas" class="azoth-braille-text"></pre>
+          <div class="azoth-mood-row">
+            <button type="button" class="azoth-mood-btn is-active" data-mood="IDLE">IDLE</button>
+            <button type="button" class="azoth-mood-btn" data-mood="THINKING">THINK</button>
+            <button type="button" class="azoth-mood-btn" data-mood="REASONING">COT</button>
+            <button type="button" class="azoth-mood-btn" data-mood="ALERT">ALERT</button>
+            <button type="button" class="azoth-mood-btn" data-mood="AMNESIC">WIPE</button>
+            <button type="button" class="azoth-mood-btn" data-mood="TRANSMITTING">MESH</button>
           </div>
         </div>
         <div>
-          <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; margin-bottom:8px;">
-            <div style="font-family:var(--font-display); font-size:18px; font-weight:800; color:var(--gold);">
-              AZOTH — Embodied Braille AI Agent (U+2800)
-            </div>
-            <span style="font-family:var(--font-mono); font-size:11px; color:#10B981; font-weight:700;">● EMBODIED SYNAPSE LIVE</span>
+          <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; margin-bottom:6px;">
+            <strong style="font-family:var(--font-mono); font-size:16px;">AZOTH — Embodied Braille AI Agent (Unicode U+2800)</strong>
+            <span style="font-family:var(--font-mono); font-size:10.5px; font-weight:700; background:#000; color:#FFF; padding:2px 6px;">● EMBODIED KERNEL</span>
           </div>
-          <p style="font-size:13px; color:var(--text-dim); margin-bottom:12px;">
+          <p style="font-size:13px; color:var(--ink-secondary); margin-bottom:10px;">
             Built directly into the ZothOS-Lite kernel: AZOTH communicates through Unicode U+2800 2×4 sub-pixel Braille glyphs, phoneme lip-sync, and cryptographic Merkle thought DAGs.
           </p>
-          <div id="azothThoughtText" class="azoth-thought-box">
+          <div id="azothThoughtText" class="azoth-readout-box">
             <strong>[AZOTH KERNEL]</strong> Volatile tmpfs initialized. 0 bytes written to host disk. Standing by for multi-agent swarm dispatch.
-          </div>
-        </div>
-      </div>
-
-      <!-- Live Desktop Simulator Window -->
-      <div class="desktop-simulator-wrap">
-        <!-- Top KDE Panel -->
-        <div class="desktop-top-panel">
-          <div class="desktop-panel-left">
-            <button type="button" class="desktop-launcher-btn" id="btnDesktopLauncher">
-              <span>🜂</span> ZothOS
-            </button>
-            <span>📁 Desktop Workstation</span>
-            <span style="color:#64748B;">|</span>
-            <span style="color:#10B981;">● toram: clean</span>
-          </div>
-          <div class="desktop-panel-right">
-            <span>⚡ CPU: 2.1%</span>
-            <span>💾 RAM: 2.4 GB</span>
-            <span style="color:var(--gold);">⏱ 15:18 UTC</span>
-          </div>
-        </div>
-
-        <!-- Desktop Workspace Stage -->
-        <div class="desktop-stage" id="desktopStage">
-          <!-- 4 Core Desktop Folders -->
-          <div class="desktop-icon" data-folder="folder-ai" title="Click to view AI Agent suites">
-            <div class="desktop-icon-symbol">🤖</div>
-            <div class="desktop-icon-label">01-AI-Agents-and-Dev</div>
-          </div>
-
-          <div class="desktop-icon" data-folder="folder-sec" title="Click to view Security & Amnesic tools">
-            <div class="desktop-icon-symbol">🛡️</div>
-            <div class="desktop-icon-label">02-Security-and-Privacy</div>
-          </div>
-
-          <div class="desktop-icon" data-folder="folder-daemons" title="Click to view ZothOS Daemons">
-            <div class="desktop-icon-symbol">⚙️</div>
-            <div class="desktop-icon-label">03-ZothOS-Daemons</div>
-          </div>
-
-          <div class="desktop-icon" data-folder="folder-media" title="Click to view Media & Utilities">
-            <div class="desktop-icon-symbol">🎬</div>
-            <div class="desktop-icon-label">04-Media-and-Utilities</div>
-          </div>
-
-          <!-- Wallpaper Switcher Bar -->
-          <div class="desktop-wallpaper-selector">
-            <span style="color:var(--gold); font-weight:700;">🖼️ Switch ZothOS Wallpaper:</span>
-            <div class="wallpaper-btn-group">
-              <button type="button" class="wp-btn is-active" data-wp="master">Zoth Gold Master</button>
-              <button type="button" class="wp-btn" data-wp="matrix">Hermetic Matrix</button>
-              <button type="button" class="wp-btn" data-wp="ghost">GhostMode NullAI</button>
-              <button type="button" class="wp-btn" data-wp="alchemy">Alchemical Gold</button>
-            </div>
-          </div>
-
-          <!-- Interactive Simulated Window -->
-          <div class="sim-window" id="simWindow">
-            <div class="sim-window-header">
-              <span id="simWindowTitle">📁 Folder Inspection</span>
-              <button type="button" class="sim-window-close" id="simWindowClose">✕</button>
-            </div>
-            <div class="sim-window-body" id="simWindowBody"></div>
           </div>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- Interactive In-Browser Dev Tools Suite (Rock-Solid & Non-Flaky) -->
+  <!-- In-Browser Dev Tools Suite (100% Client-Side & Non-Flaky) -->
   <section class="section" id="tools">
     <div class="wrapper">
       <div class="section-head" id="agent-swarm">
         <span class="section-tag">SOVEREIGN BROWSER UTILITIES</span>
-        <h2 class="section-title">Zero-Bloat In-Browser Dev Workstation</h2>
+        <h2 class="section-title">Zero-Bloat In-Browser Workstation</h2>
         <p class="section-sub">100% client-side utilities. Stream from 460+ models, inspect 4K media, test Chain-of-Thought Merkle DAGs, and package files directly in your browser.</p>
       </div>
 
-      <!-- Tools Tab Selector -->
-      <div class="tools-tabs">
-        <button type="button" class="tool-tab-btn is-active" data-tool="toolAgentConsole">
+      <!-- Tools Tab Bar -->
+      <div class="tools-tab-bar">
+        <button type="button" class="tool-tab is-active" data-tool="toolAgentConsole">
           <span>⚡</span> Multi-Model AI Agent Swarm (460+ Models)
         </button>
-        <button type="button" class="tool-tab-btn" data-tool="toolImageViewer">
-          <span>🖼️</span> Precision 4K Image Inspector
-        </button>
-        <button type="button" class="tool-tab-btn" data-tool="toolMediaPlayer">
+        <button type="button" class="tool-tab" data-tool="toolMediaPlayer">
           <span>🎬</span> Precision Video & Audio Player
         </button>
-        <button type="button" class="tool-tab-btn" data-tool="toolStoragePackager">
+        <button type="button" class="tool-tab" data-tool="toolImageViewer">
+          <span>🖼️</span> Precision 4K Image Inspector
+        </button>
+        <button type="button" class="tool-tab" data-tool="toolStoragePackager">
           <span>💾</span> External Storage & Cloud Packager
         </button>
-        <button type="button" class="tool-tab-btn" data-tool="toolCoTExplorer">
+        <button type="button" class="tool-tab" data-tool="toolCoTExplorer">
           <span>🧠</span> Zoth-CoT Merkle Thought DAG
         </button>
-        <button type="button" class="tool-tab-btn" data-tool="toolColdSigner">
+        <button type="button" class="tool-tab" data-tool="toolColdSigner">
           <span>🔐</span> Air-Gapped Ed25519 Cold Signer
         </button>
       </div>
 
       <!-- WORKSTATION 1: Multi-Model AI Agent Swarm Console -->
-      <div class="tool-workstation is-active" id="toolAgentConsole">
+      <div class="tool-pane is-active" id="toolAgentConsole">
         <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-bottom:12px;">
           <div>
-            <h3 style="font-family:var(--font-display); font-size:18px; font-weight:800; color:#FFF;">Autonomous Agent Swarm Console</h3>
-            <p style="font-size:12.5px; color:#94A3B8;">50+ Preloaded Flagships · 460+ Live OpenRouter Models · 8 Provider Backends with Real Streaming & Zero Telemetry.</p>
+            <h3 style="font-family:var(--font-mono); font-size:17px; font-weight:800;">Autonomous Agent Swarm Console</h3>
+            <p style="font-size:12.5px; color:var(--ink-secondary);">50+ Preloaded Flagships · 460+ Live OpenRouter Models · 8 Provider Backends with Real Streaming & Zero Telemetry.</p>
           </div>
-          <div style="display:flex; gap:10px; align-items:center;">
-            <button type="button" class="btn-ctrl btn-gold" id="btnFetchLiveModels" style="font-size:11px;">
+          <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
+            <button type="button" class="btn-pill-ctrl is-dark" id="btnFetchLiveModels">
               ⚡ Fetch All 460+ Live Models from OpenRouter
             </button>
-            <span style="font-size:11px; color:#10B981; font-family:var(--font-mono); font-weight:700;">🔒 LOCAL ENCRYPTED KEYS</span>
+            <span style="font-size:11px; font-family:var(--font-mono); font-weight:700;">🔒 LOCAL ENCRYPTED KEYS</span>
           </div>
         </div>
 
-        <!-- Provider Chips -->
-        <div class="provider-chips" id="providerChips"></div>
+        <!-- Provider Chips Row -->
+        <div class="provider-chips-row" id="providerChips"></div>
 
         <!-- Inputs Grid -->
-        <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(240px, 1fr)); gap:12px; margin-bottom:12px;">
+        <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(230px, 1fr)); gap:10px; margin-bottom:12px;">
           <div>
-            <div style="display:flex; justify-content:space-between; margin-bottom:4px;">
-              <label style="font-size:11px; font-weight:700; color:var(--gold);">SELECT MODEL</label>
-              <span style="font-size:10.5px; color:#64748B;">Search below to filter</span>
+            <div style="display:flex; justify-content:space-between; margin-bottom:3px;">
+              <label style="font-size:11px; font-weight:700; font-family:var(--font-mono);">SELECT MODEL</label>
+              <span style="font-size:10px; color:var(--ink-muted); font-family:var(--font-mono);">Filter below</span>
             </div>
-            <select id="modelSelect" style="width:100%; background:#04050A; border:1px solid var(--border); border-radius:var(--radius-sm); padding:10px; color:#FFF; font-family:var(--font-mono); font-size:12px; outline:none;"></select>
+            <select id="modelSelect" class="monotone-input" style="width:100%;"></select>
           </div>
 
           <div>
-            <label style="font-size:11px; font-weight:700; color:var(--gold); display:block; margin-bottom:4px;">FILTER OR TYPE CUSTOM MODEL</label>
-            <input type="text" id="modelSearchInput" class="input-text" placeholder="Type to filter (e.g. deepseek, claude, hermes, free)..." style="width:100%;">
+            <label style="font-size:11px; font-weight:700; font-family:var(--font-mono); display:block; margin-bottom:3px;">FILTER OR TYPE CUSTOM MODEL</label>
+            <input type="text" id="modelSearchInput" class="monotone-input" placeholder="Type to filter (e.g. deepseek, claude, hermes, free)..." style="width:100%;">
           </div>
 
           <div>
-            <label style="font-size:11px; font-weight:700; color:var(--gold); display:block; margin-bottom:4px;">SWARM AGENT ROLE</label>
-            <select id="agentRoleSelect" style="width:100%; background:#04050A; border:1px solid var(--border); border-radius:var(--radius-sm); padding:10px; color:#FFF; font-family:var(--font-mono); font-size:12px; outline:none;">
+            <label style="font-size:11px; font-weight:700; font-family:var(--font-mono); display:block; margin-bottom:3px;">SWARM AGENT ROLE</label>
+            <select id="agentRoleSelect" class="monotone-input" style="width:100%;">
               <option value="System Architect">🏛️ System Architect (OS & Daemons)</option>
               <option value="Code Builder">🔨 Code Builder (Rust/Python/Node)</option>
               <option value="Security Auditor">🛡️ Security Auditor (OWASP & OpSec)</option>
@@ -373,213 +296,211 @@
           </div>
 
           <div>
-            <label style="font-size:11px; font-weight:700; color:var(--gold); display:block; margin-bottom:4px;">API KEY (OPTIONAL FOR LIVE STREAMING)</label>
-            <input type="password" id="aiKeyInput" class="input-text" placeholder="Enter key (sk-...) or leave blank to test offline mode" style="width:100%;">
+            <label style="font-size:11px; font-weight:700; font-family:var(--font-mono); display:block; margin-bottom:3px;">API KEY (OPTIONAL FOR LIVE STREAMING)</label>
+            <input type="password" id="aiKeyInput" class="monotone-input" placeholder="Enter key (sk-...) or leave blank to test offline mode" style="width:100%;">
           </div>
         </div>
 
         <!-- Quick Prompt Presets -->
         <div style="display:flex; gap:6px; flex-wrap:wrap; margin-bottom:10px; align-items:center;">
-          <span style="font-family:var(--font-mono); font-size:11px; color:#64748B;">QUICK PRESETS:</span>
-          <button type="button" class="btn-ctrl btn-quick-prompt" data-prompt="Write a concise shell script that checks RAM usage and alerts if > 80% in toram mode.">RAM Watchdog Script</button>
-          <button type="button" class="btn-ctrl btn-quick-prompt" data-prompt="Synthesize a ZothNet P2P LAN Mesh UDP broadcast discovery script in Python for port 8102.">ZothNet P2P Handshake</button>
-          <button type="button" class="btn-ctrl btn-quick-prompt" data-prompt="Audit this repository for hardcoded AWS keys, Stripe tokens, and unencrypted private keys.">EnvGuard Audit Check</button>
-          <button type="button" class="btn-ctrl btn-quick-prompt" data-prompt="Construct an air-gapped Ed25519 cold-sign payload with Unicode U+2800 Braille visual seal.">Cold-Sign Payload</button>
+          <span style="font-family:var(--font-mono); font-size:10.5px; color:var(--ink-muted); font-weight:700;">QUICK PRESETS:</span>
+          <button type="button" class="btn-pill-ctrl btn-quick-prompt" data-prompt="Write a concise shell script that checks RAM usage and alerts if > 80% in toram mode.">RAM Watchdog Script</button>
+          <button type="button" class="btn-pill-ctrl btn-quick-prompt" data-prompt="Synthesize a ZothNet P2P LAN Mesh UDP broadcast discovery script in Python for port 8102.">ZothNet P2P Handshake</button>
+          <button type="button" class="btn-pill-ctrl btn-quick-prompt" data-prompt="Audit this repository for hardcoded AWS keys, Stripe tokens, and unencrypted private keys.">EnvGuard Audit Check</button>
+          <button type="button" class="btn-pill-ctrl btn-quick-prompt" data-prompt="Construct an air-gapped Ed25519 cold-sign payload with Unicode U+2800 Braille visual seal.">Cold-Sign Payload</button>
         </div>
 
         <!-- Prompt Row -->
-        <div class="input-row">
-          <input type="text" id="agentPromptInput" class="input-text" placeholder="Enter instruction for autonomous agent..." value="Write a concise shell script that checks RAM usage and alerts if > 80% in toram mode.">
-          <button type="button" id="btnRunAgent" class="btn-primary" style="white-space:nowrap;">
+        <div class="input-block-row">
+          <input type="text" id="agentPromptInput" class="monotone-input" placeholder="Enter task instruction..." value="Write a concise shell script that checks RAM usage and alerts if > 80% in toram mode.">
+          <button type="button" id="btnRunAgent" class="btn-monotone-primary" style="white-space:nowrap; padding:8px 18px;">
             <span>⚡</span> Run Agent
           </button>
         </div>
 
-        <div id="agentConsoleOutput" class="agent-console-out">[ZOTH-AGENT-BRIDGE] Workstation Ready.
+        <div id="agentConsoleOutput" class="monotone-console">[ZOTH-AGENT-BRIDGE] Workstation Ready.
 • Select any of 50+ preloaded models or click "Fetch All 460+ Live Models" to load the complete OpenRouter catalog.
 • Enter an API key for live token streaming, or run without a key to execute sovereign offline Chain-of-Thought verification.</div>
       </div>
 
-      <!-- WORKSTATION 2: Precision Image Viewer & Metadata Inspector -->
-      <div class="tool-workstation" id="toolImageViewer">
+      <!-- WORKSTATION 2: Precision Video & Audio Player -->
+      <div class="tool-pane" id="toolMediaPlayer">
         <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-bottom:12px;">
           <div>
-            <h3 style="font-family:var(--font-display); font-size:18px; font-weight:800; color:#FFF;">Precision 4K Image Inspector</h3>
-            <p style="font-size:12.5px; color:#94A3B8;">Smooth canvas pan/zoom, rotation, filters, and real-time uncompressed RAM footprint analysis.</p>
+            <h3 style="font-family:var(--font-mono); font-size:17px; font-weight:800;">Precision Video & Audio Player</h3>
+            <p style="font-size:12.5px; color:var(--ink-secondary);">Frame-accurate scrubber, real-time frequency spectrum visualizer, and frame snapshots.</p>
           </div>
-          <div style="display:flex; gap:8px; flex-wrap:wrap;">
-            <button type="button" class="btn-ctrl btn-gold btn-wp-preset" data-preset="master">🖼️ Zoth Gold Master</button>
-            <button type="button" class="btn-ctrl btn-gold btn-wp-preset" data-preset="matrix">🔮 Hermetic Matrix</button>
-            <button type="button" class="btn-ctrl btn-gold btn-wp-preset" data-preset="ghost">🛡️ GhostMode</button>
-            <button type="button" class="btn-ctrl btn-gold btn-wp-preset" data-preset="alchemy">🜂 Alchemical</button>
-            <label class="btn-ctrl" style="cursor:pointer;">
-              📁 Open Local Image <input type="file" id="imageFileInput" accept="image/*" style="display:none;">
-            </label>
-          </div>
-        </div>
-
-        <div class="media-canvas-wrap" id="imageDropzone">
-          <canvas id="imageCanvas"></canvas>
-        </div>
-
-        <div class="toolbar-row" style="justify-content:space-between;">
           <div style="display:flex; gap:6px; flex-wrap:wrap;">
-            <button type="button" class="btn-ctrl" id="btnImgZoomIn">🔍 Zoom +25%</button>
-            <button type="button" class="btn-ctrl" id="btnImgZoomOut">🔍 Zoom -25%</button>
-            <button type="button" class="btn-ctrl" id="btnImgRotate">🔄 Rotate 90°</button>
-            <button type="button" class="btn-ctrl" id="btnImgGray">◐ Grayscale</button>
-            <button type="button" class="btn-ctrl" id="btnImgInvert">◑ Invert</button>
-            <button type="button" class="btn-ctrl" id="btnImgReset">⟲ Reset</button>
-          </div>
-          <div id="imageMetadata" style="font-family:var(--font-mono); font-size:11px; color:#CBD5E1; display:flex; gap:12px; flex-wrap:wrap;">
-            <span><strong>File:</strong> zoth-gold-master.jpg</span>
-            <span><strong>Resolution:</strong> 1920 × 1080</span>
-            <span><strong>RAM Footprint:</strong> ~7.9 MB uncompressed</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- WORKSTATION 3: Precision Video & Audio Player -->
-      <div class="tool-workstation" id="toolMediaPlayer">
-        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-bottom:12px;">
-          <div>
-            <h3 style="font-family:var(--font-display); font-size:18px; font-weight:800; color:#FFF;">Precision Video & Audio Player</h3>
-            <p style="font-size:12.5px; color:#94A3B8;">Frame-accurate scrubber, real-time frequency spectrum visualizer, and instant frame snapshot generator.</p>
-          </div>
-          <div style="display:flex; gap:8px; flex-wrap:wrap;">
-            <button type="button" class="btn-ctrl btn-gold" id="btnLoadHermesShowcase">🎬 Hermes Swarm Showreel (1080p 60fps)</button>
-            <button type="button" class="btn-ctrl btn-gold" id="btnLoadLaunchFilm">🎞️ 30s Launch Film</button>
-            <label class="btn-ctrl" style="cursor:pointer;">
+            <button type="button" class="btn-pill-ctrl is-dark" id="btnLoadHermesShowcase">🎬 Hermes Swarm Showreel (1080p 60fps)</button>
+            <button type="button" class="btn-pill-ctrl" id="btnLoadLaunchFilm">🎞️ 30s Launch Film</button>
+            <label class="btn-pill-ctrl" style="cursor:pointer;">
               📁 Open Local Video <input type="file" id="mediaFileInput" accept="video/*,audio/*" style="display:none;">
             </label>
           </div>
         </div>
 
-        <div class="player-viewport" id="mediaDropzone">
+        <div class="media-viewport-box">
           <video id="mediaPlayerVideo" playsinline preload="metadata" poster="assets/hermes-swarm-showcase-poster.jpg">
             <source src="assets/hermes-swarm-showcase-1080p.mp4" type="video/mp4">
             Your browser does not support HTML5 video.
           </video>
         </div>
 
-        <!-- Video Controls & Audio Spectrum -->
-        <div style="background:#04050A; border:1px solid var(--border); border-radius:var(--radius-sm); padding:12px 14px; margin-bottom:10px;">
-          <div style="display:flex; align-items:center; gap:12px; margin-bottom:8px;">
-            <button type="button" class="btn-primary" id="btnMediaPlay" style="padding:6px 14px; font-size:12px;">▶ Play</button>
-            <span id="mediaTimeDisplay" style="font-family:var(--font-mono); font-size:11.5px; color:var(--gold); min-width:90px;">0.0s / 0.0s</span>
-            <input type="range" id="mediaScrubber" min="0" max="100" value="0" step="0.1" style="flex:1; accent-color:var(--gold); cursor:pointer;">
+        <div style="background:var(--bg-card-subtle); border:1.5px solid var(--border-bold); border-radius:var(--radius-sm); padding:10px 14px; margin-bottom:10px;">
+          <div style="display:flex; align-items:center; gap:10px; margin-bottom:8px;">
+            <button type="button" class="btn-monotone-primary" id="btnMediaPlay" style="padding:5px 12px; font-size:11.5px;">▶ Play</button>
+            <span id="mediaTimeDisplay" style="font-family:var(--font-mono); font-size:11.5px; font-weight:700; min-width:85px;">0.0s / 0.0s</span>
+            <input type="range" id="mediaScrubber" min="0" max="100" value="0" step="0.1" style="flex:1; accent-color:#000000; cursor:pointer;">
           </div>
 
-          <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
+          <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
             <div style="display:flex; gap:6px; align-items:center;">
-              <button type="button" class="btn-ctrl" id="btnMediaStepBack">⏪ -1 Frame</button>
-              <button type="button" class="btn-ctrl" id="btnMediaStepFwd">⏩ +1 Frame</button>
-              <select id="mediaSpeedSelect" style="background:#0A0D18; border:1px solid var(--border); color:#FFF; border-radius:4px; padding:4px 8px; font-size:11px; font-family:var(--font-mono);">
+              <button type="button" class="btn-pill-ctrl" id="btnMediaStepBack">⏪ -1 Frame</button>
+              <button type="button" class="btn-pill-ctrl" id="btnMediaStepFwd">⏩ +1 Frame</button>
+              <select id="mediaSpeedSelect" class="monotone-input" style="padding:3px 6px; font-size:11px;">
                 <option value="0.5">0.5x Speed</option>
                 <option value="1.0" selected>1.0x Normal</option>
                 <option value="1.25">1.25x Speed</option>
                 <option value="1.5">1.5x Speed</option>
                 <option value="2.0">2.0x Speed</option>
               </select>
-              <button type="button" class="btn-ctrl" id="btnMediaSnapshot">📸 Snapshot Frame</button>
+              <button type="button" class="btn-pill-ctrl" id="btnMediaSnapshot">📸 Snapshot Frame</button>
             </div>
 
-            <!-- Audio Spectrum Canvas -->
             <div style="display:flex; align-items:center; gap:8px;">
-              <span style="font-family:var(--font-mono); font-size:10.5px; color:#64748B;">AUDIO SPECTRUM:</span>
-              <canvas id="audioVisualizerCanvas" width="220" height="30" style="background:#020306; border:1px solid var(--border); border-radius:3px;"></canvas>
+              <span style="font-family:var(--font-mono); font-size:10.5px; color:var(--ink-muted); font-weight:700;">SPECTRUM:</span>
+              <canvas id="audioVisualizerCanvas" width="200" height="26" style="background:#000000; border:1px solid var(--border-bold); border-radius:2px;"></canvas>
             </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- WORKSTATION 3: Precision Image Inspector -->
+      <div class="tool-pane" id="toolImageViewer">
+        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-bottom:12px;">
+          <div>
+            <h3 style="font-family:var(--font-mono); font-size:17px; font-weight:800;">Precision 4K Image Inspector</h3>
+            <p style="font-size:12.5px; color:var(--ink-secondary);">Smooth canvas pan/zoom, rotation, filters, and real-time uncompressed RAM footprint analysis.</p>
+          </div>
+          <div style="display:flex; gap:6px; flex-wrap:wrap;">
+            <button type="button" class="btn-pill-ctrl is-dark btn-wp-preset" data-preset="zoth-gold-master">🖼️ Master</button>
+            <button type="button" class="btn-pill-ctrl btn-wp-preset" data-preset="hermetic-matrix">🔮 Matrix</button>
+            <button type="button" class="btn-pill-ctrl btn-wp-preset" data-preset="ghostmode-nullai">🛡️ GhostMode</button>
+            <button type="button" class="btn-pill-ctrl btn-wp-preset" data-preset="alchemical-gold">🜂 Alchemical</button>
+            <label class="btn-pill-ctrl" style="cursor:pointer;">
+              📁 Open Image <input type="file" id="imageFileInput" accept="image/*" style="display:none;">
+            </label>
+          </div>
+        </div>
+
+        <div class="media-viewport-box">
+          <canvas id="imageCanvas"></canvas>
+        </div>
+
+        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
+          <div style="display:flex; gap:5px; flex-wrap:wrap;">
+            <button type="button" class="btn-pill-ctrl" id="btnImgZoomIn">🔍 Zoom +25%</button>
+            <button type="button" class="btn-pill-ctrl" id="btnImgZoomOut">🔍 Zoom -25%</button>
+            <button type="button" class="btn-pill-ctrl" id="btnImgRotate">🔄 Rotate 90°</button>
+            <button type="button" class="btn-pill-ctrl" id="btnImgGray">◐ Grayscale</button>
+            <button type="button" class="btn-pill-ctrl" id="btnImgInvert">◑ Invert</button>
+            <button type="button" class="btn-pill-ctrl" id="btnImgReset">⟲ Reset</button>
+          </div>
+          <div id="imageMetadata" style="font-family:var(--font-mono); font-size:11px; display:flex; gap:10px; flex-wrap:wrap;">
+            <span><strong>File:</strong> zoth-gold-master.jpg</span>
+            <span><strong>Res:</strong> 1920 × 1080</span>
+            <span><strong>RAM:</strong> ~7.9 MB uncompressed</span>
           </div>
         </div>
       </div>
 
       <!-- WORKSTATION 4: External Storage & Cloud Packager -->
-      <div class="tool-workstation" id="toolStoragePackager">
-        <div style="margin-bottom:14px;">
-          <h3 style="font-family:var(--font-display); font-size:18px; font-weight:800; color:#FFF;">External Storage & Cloud Packager</h3>
-          <p style="font-size:12.5px; color:#94A3B8;">Compress repositories, code, and weights into verified PKZIP archives directly in your browser. Ready for external USB or cloud drives.</p>
+      <div class="tool-pane" id="toolStoragePackager">
+        <div style="margin-bottom:12px;">
+          <h3 style="font-family:var(--font-mono); font-size:17px; font-weight:800;">External Storage & Cloud Packager</h3>
+          <p style="font-size:12.5px; color:var(--ink-secondary);">Compress repositories, code, and weights into verified PKZIP archives directly in your browser. Ready for external USB or cloud drives.</p>
         </div>
 
-        <div class="dropzone-box" id="pkgDropzone">
-          <div style="font-size:32px; margin-bottom:8px;">💾</div>
-          <h4 style="color:#FFF; font-size:14.5px; margin-bottom:4px;">Drag and drop files here to stage for backup</h4>
-          <p style="color:var(--text-dim); font-size:12px; margin-bottom:12px;">Or browse files from your computer or live session</p>
-          <label class="btn-primary" style="cursor:pointer; display:inline-flex;">
+        <div class="monotone-dropzone" id="pkgDropzone">
+          <div style="font-size:28px; margin-bottom:6px;">💾</div>
+          <h4 style="font-size:14px; font-weight:700; margin-bottom:3px;">Drag and drop files here to stage for backup</h4>
+          <p style="font-size:11.5px; color:var(--ink-muted); margin-bottom:10px;">Or browse files from your computer</p>
+          <label class="btn-monotone-primary" style="cursor:pointer; display:inline-flex; font-size:11.5px; padding:6px 14px;">
             <span>📁</span> Browse Files
             <input type="file" id="pkgFileInput" multiple style="display:none;">
           </label>
         </div>
 
-        <div id="pkgFileList" style="margin-bottom:14px; max-height:160px; overflow-y:auto;">
-          <span style="color:#64748B; font-family:var(--font-mono); font-size:12px;">No files staged. Drop files above to package.</span>
+        <div id="pkgFileList" style="margin-bottom:12px; max-height:140px; overflow-y:auto;">
+          <span style="color:var(--ink-muted); font-family:var(--font-mono); font-size:12px;">No files staged. Drop files above to package.</span>
         </div>
 
-        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;">
-          <button type="button" id="btnBuildZip" class="btn-primary" disabled>
+        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
+          <button type="button" id="btnBuildZip" class="btn-monotone-primary" disabled>
             <span>📦</span> Package & Download ZIP
           </button>
-          <span id="pkgStatus" style="font-family:var(--font-mono); font-size:12px; color:var(--gold);"></span>
+          <span id="pkgStatus" style="font-family:var(--font-mono); font-size:11.5px; font-weight:700;"></span>
         </div>
       </div>
 
-      <!-- WORKSTATION 5: Zoth-CoT Synaptic Thought DAG Explorer -->
-      <div class="tool-workstation" id="toolCoTExplorer">
+      <!-- WORKSTATION 5: Zoth-CoT Thought DAG Explorer -->
+      <div class="tool-pane" id="toolCoTExplorer">
         <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-bottom:12px;">
           <div>
-            <h3 style="font-family:var(--font-display); font-size:18px; font-weight:800; color:#FFF;">Zoth-CoT Synaptic Thought DAG & Merkle Inspector</h3>
-            <p style="font-size:12.5px; color:#94A3B8;">Cryptographic multi-turn thought DAG with SHA-256 Merkle proofs and semantic memory tagging.</p>
+            <h3 style="font-family:var(--font-mono); font-size:17px; font-weight:800;">Zoth-CoT Synaptic Thought DAG & Merkle Inspector</h3>
+            <p style="font-size:12.5px; color:var(--ink-secondary);">Cryptographic multi-turn thought DAG with SHA-256 Merkle proofs and semantic memory tagging.</p>
           </div>
-          <button type="button" class="btn-ctrl btn-gold" id="btnCopyCotDag">📋 Export DAG JSON</button>
+          <button type="button" class="btn-pill-ctrl is-dark" id="btnCopyCotDag">📋 Export DAG JSON</button>
         </div>
 
-        <div style="background:#04050A; border:1px solid var(--border); border-radius:var(--radius-sm); padding:10px 14px; margin-bottom:12px; display:flex; justify-content:space-between; align-items:center;">
-          <span id="cotMerkleRoot" style="font-family:var(--font-mono); font-size:11.5px; color:var(--gold); font-weight:700;">MERKLE ROOT COMPUTING...</span>
-          <span style="font-family:var(--font-mono); font-size:11px; color:#10B981;">● BFT CONSENSUS VALID</span>
+        <div style="background:var(--bg-card-subtle); border:1.5px solid var(--border-bold); padding:8px 12px; margin-bottom:10px; display:flex; justify-content:space-between; align-items:center;">
+          <strong id="cotMerkleRoot" style="font-family:var(--font-mono); font-size:11.5px;">MERKLE ROOT COMPUTING...</strong>
+          <span style="font-family:var(--font-mono); font-size:10.5px; font-weight:700;">● BFT CONSENSUS VALID</span>
         </div>
 
-        <div id="cotDagNodes" style="margin-bottom:14px; max-height:240px; overflow-y:auto;"></div>
+        <div id="cotDagNodes" style="margin-bottom:12px; max-height:220px; overflow-y:auto;"></div>
 
-        <div style="display:flex; gap:10px; flex-wrap:wrap;">
-          <select id="cotTagSelect" style="background:#04050A; border:1px solid var(--border); border-radius:var(--radius-sm); padding:8px 12px; color:#FFF; font-family:var(--font-mono); font-size:12px;">
+        <div style="display:flex; gap:8px; flex-wrap:wrap;">
+          <select id="cotTagSelect" class="monotone-input" style="padding:6px 10px;">
             <option value="MISSION">MISSION</option>
             <option value="IDENTITY">IDENTITY</option>
             <option value="MEMORY">MEMORY</option>
             <option value="SECRET">SECRET</option>
           </select>
-          <input type="text" id="cotThoughtInput" class="input-text" placeholder="Enter new thought synapse..." style="flex:1; min-width:240px;" value="Verify toram page cache flush with zero residual memory.">
-          <button type="button" id="btnAddCotThought" class="btn-primary" style="white-space:nowrap;">
-            <span>➕</span> Append Synapse Node
+          <input type="text" id="cotThoughtInput" class="monotone-input" placeholder="Enter new thought synapse..." style="flex:1; min-width:240px;" value="Verify toram page cache flush with zero residual memory.">
+          <button type="button" id="btnAddCotThought" class="btn-monotone-primary" style="white-space:nowrap; padding:6px 14px;">
+            <span>➕</span> Append Node
           </button>
         </div>
       </div>
 
       <!-- WORKSTATION 6: Air-Gapped Ed25519 Cold Signer -->
-      <div class="tool-workstation" id="toolColdSigner">
-        <div style="margin-bottom:14px;">
-          <h3 style="font-family:var(--font-display); font-size:18px; font-weight:800; color:#FFF;">Air-Gapped Ed25519 Cold Signer & Braille RandomArt</h3>
-          <p style="font-size:12.5px; color:#94A3B8;">Sign payloads and generate authentic Unicode U+2800 2×4 Braille visual signature seals with zero network transmission.</p>
+      <div class="tool-pane" id="toolColdSigner">
+        <div style="margin-bottom:12px;">
+          <h3 style="font-family:var(--font-mono); font-size:17px; font-weight:800;">Air-Gapped Ed25519 Cold Signer & Braille RandomArt</h3>
+          <p style="font-size:12.5px; color:var(--ink-secondary);">Sign payloads and generate authentic Unicode U+2800 2×4 Braille visual signature seals with zero network transmission.</p>
         </div>
 
-        <div class="input-row">
-          <input type="text" id="coldSignInput" class="input-text" placeholder="Enter payload or transaction memo..." value="Transfer 10 VLR to @1nc0gn30 (air-gapped amnesic verification)">
-          <button type="button" id="btnColdSign" class="btn-primary" style="white-space:nowrap;">
+        <div class="input-block-row">
+          <input type="text" id="coldSignInput" class="monotone-input" placeholder="Enter payload or transaction memo..." value="Transfer 10 VLR to @1nc0gn30 (air-gapped amnesic verification)">
+          <button type="button" id="btnColdSign" class="btn-monotone-primary" style="white-space:nowrap; padding:8px 18px;">
             <span>🔐</span> Generate Braille Seal
           </button>
         </div>
 
-        <pre id="coldSignSeal" class="agent-console-out" style="min-height:160px; color:var(--gold);">Press "Generate Braille Seal" to sign payload and produce Unicode U+2800 RandomArt.</pre>
+        <pre id="coldSignSeal" class="monotone-console" style="min-height:150px; color:#A7F3D0;">Press "Generate Braille Seal" to sign payload and produce Unicode U+2800 RandomArt.</pre>
       </div>
 
     </div>
   </section>
 
-  <!-- Core Pillars Section -->
-  <section class="section">
+  <!-- Architectural Invariants Section -->
+  <section class="section" style="background:var(--bg-card); border-top:2px solid var(--border-bold); border-bottom:2px solid var(--border-bold);">
     <div class="wrapper">
       <div class="section-head">
         <span class="section-tag">ARCHITECTURAL INVARIANTS</span>
-        <h2 class="section-title">Why ZothOS Lite Exists</h2>
-        <p class="section-sub">A sovereign workstation engineered to eliminate digital bloat, vendor lock-in, and forensic surveillance.</p>
+        <h2 class="section-title">Why ZothOS-Lite Exists</h2>
+        <p class="section-sub">A sovereign amnesic workstation engineered to eliminate digital bloat, vendor lock-in, and forensic surveillance.</p>
       </div>
 
       <div class="pillars-grid">
@@ -587,7 +508,7 @@
           <div class="pillar-icon">🛡️</div>
           <h3 class="pillar-title">Amnesic RAM Hygiene</h3>
           <p class="pillar-text">
-            Runs exclusively in volatile RAM. Once booted, the boot USB can be disconnected. When you shut off or restart the machine, all processes and memory vanish instantly. Zero bytes are ever written to the host computer's internal disk.
+            Runs exclusively in volatile RAM (toram noswap). Once booted, the boot USB can be disconnected. When you shut off or restart the machine, all memory vanishes permanently. Zero bytes are ever written to the host computer's internal disk.
           </p>
         </div>
 
@@ -595,7 +516,7 @@
           <div class="pillar-icon">🧠</div>
           <h3 class="pillar-title">460+ Multi-Model AI Hub</h3>
           <p class="pillar-text">
-            Empower autonomous swarms across OpenRouter (460+ models with 1 key), Nous Hermes Swarm, Anthropic Claude, OpenAI, Groq LPUs, Google Gemini, DeepSeek, and local Ollama endpoints. Keys remain client-side with zero cloud telemetry.
+            Empower autonomous agent swarms across OpenRouter (460+ models with 1 key), Nous Hermes Swarm, Anthropic Claude, OpenAI, Groq LPUs, Google Gemini, DeepSeek, and local Ollama endpoints. Keys remain client-side with zero cloud telemetry.
           </p>
         </div>
 
@@ -644,17 +565,17 @@
       </div>
 
       <div class="guide-container">
-        <div class="guide-tabs">
-          <button type="button" class="guide-tab-btn is-active" data-tab="tabAmnesic">1. Amnesic Hygiene & Shutdown</button>
-          <button type="button" class="guide-tab-btn" data-tab="tabPersistence">2. External Storage & Cloud Sync</button>
-          <button type="button" class="guide-tab-btn" data-tab="tabAI">3. 460+ Model AI Configuration</button>
-          <button type="button" class="guide-tab-btn" data-tab="tabZothNet">4. ZothNet P2P Communications</button>
-          <button type="button" class="guide-tab-btn" data-tab="tabModular">5. Modular Tools (zoth-pull)</button>
+        <div class="guide-tabs-col">
+          <button type="button" class="guide-tab-link is-active" data-tab="tabAmnesic">1. Amnesic Hygiene & Shutdown</button>
+          <button type="button" class="guide-tab-link" data-tab="tabPersistence">2. External Storage & Cloud Sync</button>
+          <button type="button" class="guide-tab-link" data-tab="tabAI">3. 460+ Model AI Configuration</button>
+          <button type="button" class="guide-tab-link" data-tab="tabZothNet">4. ZothNet P2P Communications</button>
+          <button type="button" class="guide-tab-link" data-tab="tabModular">5. Modular Tools (zoth-pull)</button>
         </div>
 
-        <div class="guide-content">
-          <!-- Pane 1: Amnesic Hygiene -->
-          <div class="guide-pane is-active" id="tabAmnesic">
+        <div class="guide-pane-content">
+          <!-- Pane 1 -->
+          <div class="guide-pane-item is-active" id="tabAmnesic">
             <h3>⚡ What Happens When You Shut Off or Close the Machine?</h3>
             <p>
               ZothOS Lite boots using the Debian Live <code>toram noswap</code> kernel flags. The entire operating system image is decompressed into your computer's volatile RAM memory at startup.
@@ -662,7 +583,7 @@
             <p>
               <strong>Complete Physical Memory Discharge:</strong> Because volatile RAM requires continuous electrical power to retain state, the instant your machine is powered off, rebooted, or the battery is removed, every byte of data in memory is erased permanently.
             </p>
-            <div class="code-box">
+            <div class="code-terminal-box">
               <pre># The Boot Media is Safe to Remove:
 1. Boot the PC from your ZothOS Lite USB.
 2. When the desktop appears, you can unplug the USB thumb drive.
@@ -674,14 +595,14 @@
             </p>
           </div>
 
-          <!-- Pane 2: Persistence & Cloud Sync -->
-          <div class="guide-pane" id="tabPersistence">
+          <!-- Pane 2 -->
+          <div class="guide-pane-item" id="tabPersistence">
             <h3>💾 How to Save Your Work, Code & Agent Memories</h3>
             <p>
               Because RAM clears on shutdown, you must save persistent work to external storage or cloud endpoints:
             </p>
             <p><strong>Option A: External USB Drives & SSDs (Recommended)</strong></p>
-            <div class="code-box">
+            <div class="code-terminal-box">
               <pre># 1. Plug in any formatted USB drive (exFAT, NTFS, ext4)
 # 2. It will auto-mount under:
 /media/zoth/&lt;YourDriveName&gt;
@@ -691,7 +612,7 @@
 $ zoth-backup /media/zoth/MyUSB</pre>
             </div>
             <p><strong>Option B: Cloud Storage Synchronization (rclone)</strong></p>
-            <div class="code-box">
+            <div class="code-terminal-box">
               <pre># Configure Google Drive, AWS S3, Dropbox, or Nextcloud:
 $ rclone config
 
@@ -700,13 +621,13 @@ $ mkdir -p ~/CloudDrive &amp;&amp; rclone mount mydrive: ~/CloudDrive &amp;</pre
             </div>
           </div>
 
-          <!-- Pane 3: Multi-Model AI Config -->
-          <div class="guide-pane" id="tabAI">
+          <!-- Pane 3 -->
+          <div class="guide-pane-item" id="tabAI">
             <h3>🧠 Connecting Over 460 Frontier & Local Models</h3>
             <p>
               ZothOS Lite allows autonomous agents to reason through 8 distinct provider backends with over 460 frontier models:
             </p>
-            <div class="code-box">
+            <div class="code-terminal-box">
               <pre># Run the interactive AI Configuration Wizard inside ZothOS:
 $ zoth-welcome
 # Or directly configure provider keys:
@@ -727,13 +648,13 @@ $ zoth-ai-config
             </div>
           </div>
 
-          <!-- Pane 4: ZothNet P2P Communications -->
-          <div class="guide-pane" id="tabZothNet">
+          <!-- Pane 4 -->
+          <div class="guide-pane-item" id="tabZothNet">
             <h3>🌐 ZothNet: Talking to Other Zoth Users on the Network</h3>
             <p>
               ZothOS machines form a decentralized, sovereign communication mesh across local networks and remote federation:
             </p>
-            <div class="code-box">
+            <div class="code-terminal-box">
               <pre># 1. Zero-Config Local Encrypted Mesh Chat:
 $ zoth-chat
 # Discovers neighboring Zoth nodes on your local WiFi/Ethernet subnet.
@@ -749,16 +670,16 @@ $ zoth-node --join https://civilization.nullai.tech</pre>
             </div>
           </div>
 
-          <!-- Pane 5: Modular Tools -->
-          <div class="guide-pane" id="tabModular">
+          <!-- Pane 5 -->
+          <div class="guide-pane-item" id="tabModular">
             <h3>🧰 Modular Tool Installation On-Demand (zoth-pull)</h3>
             <p>
               To maintain an ultra-lightweight 2.4 GB ISO footprint, advanced suites are pulled on demand:
             </p>
-            <div class="code-box">
+            <div class="code-terminal-box">
               <pre># Mount and execute full tools without rebuilding the ISO:
-$ zoth-pull zoth-studio        # Launches 77+ tool developer workstation
-$ zoth-pull zoth-civilization   # Launches 3D multi-agent civilization engine
+$ zoth-pull zoth-studio        # Launches developer workstation
+$ zoth-pull zoth-civilization   # Launches 3D multi-agent engine
 $ zoth-pull adytum-alchemist    # Launches AI workflow studio
 
 # Standard Linux package management works inside RAM:
@@ -775,51 +696,50 @@ $ npm install -g &lt;node-tool&gt;</pre>
   <!-- Download ISO Section -->
   <section class="section" id="download">
     <div class="wrapper">
-      <div class="download-card">
+      <div class="download-card-monotone">
         <span class="section-tag">OFFICIAL RELEASES</span>
-        <h2 style="font-family:var(--font-display); font-size:28px; font-weight:800; color:#FFF; margin-bottom:12px;">Download ZothOS Lite ISO</h2>
-        <p style="color:var(--text-dim); font-size:14px; max-width:680px; margin:0 auto 20px;">
+        <h2 style="font-family:var(--font-mono); font-size:24px; font-weight:800; margin-bottom:10px;">Download ZothOS-Lite ISO</h2>
+        <p style="font-size:13.5px; color:var(--ink-secondary); max-width:640px; margin:0 auto 18px;">
           Bootable hybrid live ISO image with UEFI & BIOS support. Burn to a USB drive with BalenaEtcher or <code>dd</code>, or boot directly in VirtualBox / QEMU / Proxmox.
         </p>
 
-        <div style="display:flex; justify-content:center; gap:14px; flex-wrap:wrap; margin-bottom:18px;">
-          <a href="https://github.com/1nc0gn30/zoth-os/releases" target="_blank" rel="noopener" class="btn-primary" style="font-size:14px; padding:14px 32px;">
+        <div style="display:flex; justify-content:center; gap:10px; flex-wrap:wrap; margin-bottom:16px;">
+          <a href="https://github.com/1nc0gn30/zoth-os/releases" target="_blank" rel="noopener" class="btn-monotone-primary" style="font-size:13.5px; padding:12px 28px;">
             <span>⬇</span> Download ZothOS-Lite-v1.2-amd64.iso (2.4 GB)
           </a>
-          <a href="https://github.com/1nc0gn30/zothos-lite" target="_blank" rel="noopener" class="btn-secondary">
+          <a href="https://github.com/1nc0gn30/zothos-lite" target="_blank" rel="noopener" class="btn-monotone-secondary">
             <span>⭐</span> View on GitHub
           </a>
         </div>
 
-        <div class="checksum-box">
-          <div style="color:var(--gold); font-weight:700; margin-bottom:4px;">SHA-256 CHECKSUM VERIFICATION:</div>
-          <code>e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855  zothos-lite-v1.2-amd64.iso</code>
+        <div class="code-terminal-box" style="text-align:left; max-width:680px; margin:0 auto;">
+          <div style="color:#FFF; font-weight:700; margin-bottom:3px; font-size:11px;">SHA-256 CHECKSUM VERIFICATION:</div>
+          <code style="font-size:11px; color:#86EFAC;">e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855  zothos-lite-v1.2-amd64.iso</code>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- Footer -->
+  <!-- Footer (Strictly 1nc0gn30 & NullAI Only) -->
   <footer class="footer">
     <div class="wrapper footer-inner">
       <div>
-        <div style="font-family:var(--font-display); font-size:16px; font-weight:800; color:var(--gold); margin-bottom:4px;">
-          🜂 ZOTHOS LITE
+        <div style="font-weight:800; font-size:15px; margin-bottom:3px;">
+          🛡️ ZOTHOS-LITE
         </div>
-        <p style="font-size:11.5px; color:#94A3B8;">
-          Engineered by Neal Frazier Tech (<a href="https://github.com/1nc0gn30" target="_blank" rel="noopener">@1nc0gn30</a>) • NullAI Platform.
+        <p style="color:var(--ink-muted); font-size:12px;">
+          Engineered by <a href="https://github.com/1nc0gn30" target="_blank" rel="noopener" style="text-decoration:none; font-weight:700;">1nc0gn30</a> • NullAI Platform.
         </p>
       </div>
 
       <ul class="footer-links">
         <li><a href="https://github.com/1nc0gn30/zothos-lite" target="_blank" rel="noopener">Source Code</a></li>
         <li><a href="https://nullai.tech" target="_blank" rel="noopener">NullAI Hub</a></li>
-        <li><a href="https://buy.stripe.com/3cIfZg27PdKo2D64Ocfw40X" target="_blank" rel="noopener">☕ Buy Us a Coffee</a></li>
+        <li><a href="https://buy.stripe.com/3cIfZg27PdKo2D64Ocfw40X" target="_blank" rel="noopener">☕ Support</a></li>
       </ul>
     </div>
   </footer>
 
   <script src="app.js"></script>
-  <script src="sovereign_tutorial.js"></script>
 </body>
 </html>
