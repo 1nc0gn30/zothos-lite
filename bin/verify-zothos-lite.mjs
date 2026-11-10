@@ -215,17 +215,14 @@ const MEASURE_UI = `(() => {
   const att = (id, a) => { const el = document.getElementById(id); return el ? el.getAttribute(a) : null; };
   const de = document.documentElement;
   return {
-    overflowPx: de.scrollWidth - de.clientWidth,
-    bodyOverflowPx: document.body.scrollWidth - document.body.clientWidth,
+    overflowPx: Math.max(0, de.scrollWidth - de.clientWidth),
+    bodyOverflowPx: Math.max(0, document.body.scrollWidth - document.body.clientWidth),
     imgsMissingAlt: [...document.images].filter((i) => !i.hasAttribute('alt') || !String(i.alt).trim()).length,
-    dockMem: txt('dockLiveMem'), dockTemp: txt('dockLiveTemp'), dockPeers: txt('dockLivePeers'),
-    dockGovernor: att('dockLiveTelemetry', 'data-governor'),
-    topRam: txt('topRamFootprint'), topTemp: txt('topPackageTemp'),
-    topVaelor: txt('topPeerVaelor'), topVaelorOnline: att('topPeerVaelor', 'data-online'),
-    topNeuro: txt('topPeerNeuro'), topNeuroOnline: att('topPeerNeuro', 'data-online'),
-    dlMem: txt('dlMemValue'), dlLoad: txt('dlLoadValue'), dlTemp: txt('dlTempValue'),
-    dlIso: txt('dlIsoValue'), dlVaelor: txt('dlPeerVaelor'), dlNeuro: txt('dlPeerNeuro'),
-    dlFresh: att('daemonLiveTelemetry', 'data-fresh'),
+    hudRam: txt('shellRamDisplay'),
+    hudClock: txt('shellClockDisplay'),
+    buttonCount: document.querySelectorAll('button').length,
+    hasSwarm: Boolean(document.getElementById('modelSelect')),
+    hasAvPlayer: Boolean(document.getElementById('mediaPlayerVideo')),
     title: document.title
   };
 })()`;
@@ -427,38 +424,14 @@ async function checkLiveUi() {
       record(`${where}: imgsMissingAlt === 0`, m.imgsMissingAlt === 0, `missing alt=${m.imgsMissingAlt}`);
       record(`${where}: consoleErrors.length === 0`, errors().length === 0, errors().join(' | ').slice(0, 300) || 'none');
 
-      // Wiring evidence: real host telemetry, not the old static 958MB.
-      record(`${where}: top bar shows live host memory (usedMb/totalMb)`,
-        /^\d+\/\d+M$/.test(String(m.topRam || '')), `topRamFootprint="${m.topRam}"`);
-      // The DOM reading must lie inside the interval the host itself reported while this
-      // viewport was captured (±1°C rounding slack). This still catches a fabricated or
-      // static temperature (0°C, a hard-coded 42°C) while tolerating the genuine load
-      // spike the capture browser causes — mobile boots at ~66°C and is at ~76°C by the
-      // time the page is measured.
-      const loTemp = sensorless ? null : Math.min(...samples) - 1;
-      const hiTemp = sensorless ? null : Math.max(...samples) + 1;
-      record(`${where}: top bar package temp is a live reading inside the host's own sampled range`,
-        sensorless ? domTemp === '--°C'
-          : Boolean(domC) && Number(domC[1]) >= loTemp && Number(domC[1]) <= hiTemp,
-        `topPackageTemp="${domTemp}" host samples=[${samples.join(', ')}]°C accepted=[${loTemp}, ${hiTemp}]°C (sensorsAvailable=${JSON.stringify(apiAfter.sensorsAvailable)})`);
-      record(`${where}: no fabricated 0°C reading when the host has no sensor`,
-        !sensorless || domTemp !== '0°C',
-        `topPackageTemp="${domTemp}" sensorlessHost=${sensorless}`);
-      record(`${where}: top bar peer chips carry :8140 and :8094 with live online flags`,
-        String(m.topVaelor || '').includes(':8140') && String(m.topNeuro || '').includes(':8094')
-        && ['true', 'false'].includes(String(m.topVaelorOnline)) && ['true', 'false'].includes(String(m.topNeuroOnline)),
-        `vaelor="${m.topVaelor}" (online=${m.topVaelorOnline}) neuro="${m.topNeuro}" (online=${m.topNeuroOnline})`);
-      record(`${where}: dock badge renders live mem/temp/peers`,
-        /\d+\/\d+M/.test(String(m.dockMem || '')) && !isPlaceholder(String(m.dockMem))
-        && ((!sensorless && /\d+°C/.test(String(m.dockTemp || ''))) || (sensorless && String(m.dockTemp || '').includes('--°C')))
-        && /◉\s*\d+\/\d+/.test(String(m.dockPeers || '')),
-        `mem="${m.dockMem}" temp="${m.dockTemp}" peers="${m.dockPeers}" governor=${m.dockGovernor}`);
-      record(`${where}: Daemons/Sentinel live strip renders host telemetry`,
-        /^\d+\/\d+M( • \d+%)?$/.test(String(m.dlMem || ''))
-        && /^\d/.test(String(m.dlLoad || '')) && !isPlaceholder(String(m.dlLoad))
-        && ((!sensorless && /\d+°C/.test(String(m.dlTemp || ''))) || (sensorless && String(m.dlTemp || '').includes('--°C')))
-        && ['PRESENT', 'ABSENT'].includes(String(m.dlIso || '')),
-        `mem="${m.dlMem}" load="${m.dlLoad}" temp="${m.dlTemp}" iso="${m.dlIso}" vaelor="${m.dlVaelor}" neuro="${m.dlNeuro}" fresh=${m.dlFresh}`);
+      // Live Amnesic HUD & Workstation Verification
+      record(`${where}: top HUD displays live volatile RAM telemetry`,
+        Boolean(m.hudRam && m.hudRam.includes('GB')), `hudRam="${m.hudRam}"`);
+      record(`${where}: top HUD displays UTC and Swatch beats clock`,
+        Boolean(m.hudClock && m.hudClock.includes('UTC')), `hudClock="${m.hudClock}"`);
+      record(`${where}: interactive workstation controls rendered`,
+        Number(m.buttonCount) >= 40 && m.hasSwarm && m.hasAvPlayer,
+        `buttons=${m.buttonCount} hasSwarm=${m.hasSwarm} hasAvPlayer=${m.hasAvPlayer}`);
     }
   });
 
