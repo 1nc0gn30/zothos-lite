@@ -439,6 +439,17 @@
       });
     }
 
+    document.getElementById('btnLoadHermesShowcase')?.addEventListener('click', () => {
+      video.src = 'assets/hermes-swarm-showcase-1080p.mp4';
+      video.poster = 'assets/hermes-swarm-showcase-poster.jpg';
+      video.load();
+      setupAudio();
+      if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
+      video.play().then(() => {
+        if (btnPlay) btnPlay.textContent = '⏸ Pause';
+      }).catch(() => {});
+    });
+
     video.addEventListener('timeupdate', () => {
       if (video.duration && scrubber) {
         scrubber.value = (video.currentTime / video.duration) * 100;
