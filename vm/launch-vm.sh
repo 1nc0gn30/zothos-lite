@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 # ==============================================================================
-# ZOTHOS-LITE v1.1 // QEMU/KVM AMNESIC RAM-ONLY GUI VM LAUNCHER
-# Boots zothos-lite-1.0-amd64.iso / vmlinuz + initrd-zothos-lite.img in KVM
+# ZOTHOS-LITE v1.2 // QEMU/KVM AMNESIC RAM-ONLY GUI VM LAUNCHER
+# Boots zothos-lite-1.2-amd64.iso / vmlinuz + initrd-zothos-lite.img in KVM
 # with 3072 MB volatile RAM, 4 vCPUs, 0 hard disks, Amnesic RAM OverlayFS,
-# Xorg :0 (1280x800) + ZothOS-Lite 1-Bit Black & White Graphical Desktop!
+# Xorg :0 (1280x800) + ZothOS-Lite Tails-Style Amnesic Monotone Desktop!
 # ==============================================================================
 set -euo pipefail
 
@@ -12,7 +12,8 @@ VM_DIR="${ZOTHOS_LITE_DIR:-$(dirname "$SCRIPT_DIR")}/vm"
 KERNEL="/boot/vmlinuz-6.12.107+deb13-amd64"
 [ ! -f "$KERNEL" ] && KERNEL="/boot/vmlinuz"
 INITRD="$VM_DIR/initrd-zothos-lite.img"
-ISO="$VM_DIR/zothos-lite-1.0-amd64.iso"
+ISO="$VM_DIR/zothos-lite-1.2-amd64.iso"
+[ ! -f "$ISO" ] && ISO="$VM_DIR/zothos-lite-1.0-amd64.iso"
 PIDFILE="/tmp/zothos-lite-vm.pid"
 SERIAL_SOCK="/tmp/zothos-lite-serial.sock"
 QMP_SOCK="/tmp/zothos-lite-qmp.sock"
@@ -37,9 +38,9 @@ if [ -n "$XAUTH_FILE" ]; then
   export XAUTHORITY="$XAUTH_FILE"
 fi
 
-echo "[::] Launching ZothOS-Lite v1.1 QEMU/KVM Graphical Virtual Machine (Xorg 1280x800 GUI)..."
+echo "[::] Launching ZothOS-Lite v1.2 QEMU/KVM Graphical Virtual Machine (Xorg 1280x800 GUI)..."
 qemu-system-x86_64 \
-  -name "ZothOS-Lite v1.1 // Amnesic 1-Bit Monotone OS (GUI + RAM Overlay)" \
+  -name "ZothOS-Lite v1.2 // Amnesic Monotone OS (GUI + RAM Overlay)" \
   -enable-kvm \
   -cpu host \
   -smp 4 \

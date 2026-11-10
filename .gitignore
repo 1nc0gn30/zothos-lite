@@ -8,6 +8,7 @@ node_modules/
 /vm/*.iso
 /vm/*.img
 /vm/*.qcow2
+/build/live-work/
 .DS_Store
 
 # Local Netlify folder

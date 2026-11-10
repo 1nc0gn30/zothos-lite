@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 # ==============================================================================
-# ZOTHOS-LITE v1.1 // AMNESIC 1-BIT MONOTONE VM & BOOTABLE ISO BUILDER (GUI + CLI)
+# ZOTHOS-LITE v1.2 // AMNESIC MONOTONE VM & BOOTABLE ISO BUILDER (GUI + CLI)
 # Builds:
 #   1. ${ZOTHOS_LITE_DIR:-$(pwd)}/vm/initrd-zothos-lite.img
-#   2. ${ZOTHOS_LITE_DIR:-$(pwd)}/vm/zothos-lite-1.0-amd64.iso
+#   2. ${ZOTHOS_LITE_DIR:-$(pwd)}/vm/zothos-lite-1.2-amd64.iso
 # Boots Linux 6.12 -> Amnesic RAM OverlayFS -> Xorg :0 (1280x800) -> ZothOS-Lite GUI!
 # ==============================================================================
 set -euo pipefail
@@ -15,7 +15,7 @@ KVER="6.12.107+deb13-amd64"
 KERNEL="/boot/vmlinuz-$KVER"
 [ ! -f "$KERNEL" ] && KERNEL="/boot/vmlinuz"
 
-echo "[::] Building ZothOS-Lite v1.1 Amnesic RAM Initramfs (with GUI X11/DRM/9p/OverlayFS) & ISO..."
+echo "[::] Building ZothOS-Lite v1.2 Amnesic Monotone RAM Initramfs (with GUI X11/DRM/9p/OverlayFS) & ISO..."
 rm -rf "$ROOTFS" "$ISO_ROOT"
 mkdir -p "$ROOTFS"/{bin,sbin,usr/bin,usr/sbin,usr/local/bin,etc/zoth-lite,proc,sys,dev,tmp,run,var/lib/zoth-lite/pulled,root,lib/x86_64-linux-gnu,lib64,lib/modules,mnt/lower,mnt/ram,mnt/newroot}
 
@@ -92,11 +92,12 @@ EOF
 
 cat > "$ROOTFS/etc/zoth-lite/release" << 'EOF'
 DISTRO="ZothOS-Lite"
-VERSION="1.0-MONOTONE"
-CODENAME="AMNESIC-OBSIDIAN"
+VERSION="1.2-MONOTONE"
+CODENAME="AMNESIC-MONOTONE"
 BOOT_MODE="toram noswap slab_nomerge init_on_alloc=1 init_on_free=1"
-PALETTE="1-Bit Black & White (#000000 / #FFFFFF)"
-CORE_TOOLS="zoth-envguard zoth-ghostbyte zoth-hexstrike zoth-tor-bridge zoth-cold-sign zoth-azoth-dev"
+PALETTE="Paper Ivory (#F7F7F4) + Black Ink (#000000) + Bayer Dither + U+2800 Braille"
+AI_MODELS="56 Curated Models Across 8 Providers"
+CORE_TOOLS="zoth-lite-models zoth-lite-welcome zoth-lite-storage zoth-lite-pkg zothnet zoth-envguard zoth-ghostbyte zoth-hexstrike zoth-cold-sign"
 EOF
 
 cat > "$ROOTFS/var/lib/zoth-lite/pulled_packages.txt" << 'EOF'
@@ -277,14 +278,14 @@ mkdir -p "$APP_DST/public/assets" "$APP_DST/bin"
 for f in server.js package.json; do
   if [ -f "$APP_SRC_DIR/$f" ]; then cp -f "$APP_SRC_DIR/$f" "$APP_DST/$f"; fi
 done
-for f in zothos-lite zothos-lite-tui; do
+for f in zothos-lite zothos-lite-tui zoth-lite-models zoth-lite-welcome zoth-lite-storage zoth-lite-pkg zoth-cot zoth-cot-mcp zoth_cot_mcp.py; do
   if [ -f "$APP_SRC_DIR/bin/$f" ]; then
     cp -f "$APP_SRC_DIR/bin/$f" "$APP_DST/bin/$f"
     cp -f "$APP_SRC_DIR/bin/$f" "$ROOTFS/usr/local/bin/$f"
     chmod +x "$APP_DST/bin/$f" "$ROOTFS/usr/local/bin/$f"
   fi
 done
-for f in index.html robots.txt sitemap.xml llms.txt; do
+for f in index.html app.js style.css sovereign_tutorial.js robots.txt sitemap.xml llms.txt og-banner.jpg og-image.png; do
   if [ -f "$APP_SRC_DIR/public/$f" ]; then cp -f "$APP_SRC_DIR/public/$f" "$APP_DST/public/$f"; fi
 done
 for f in "$APP_SRC_DIR/public/assets/"*.js "$APP_SRC_DIR/public/assets/"*.svg "$APP_SRC_DIR/public/assets/"*.png; do
@@ -459,7 +460,7 @@ echo "[::] Packing $VM_DIR/initrd-zothos-lite.img..."
 (cd "$ROOTFS" && find . -print0 | cpio --null -ov --format=newc 2>/dev/null | gzip -6 > "$VM_DIR/initrd-zothos-lite.img")
 ls -lh "$VM_DIR/initrd-zothos-lite.img"
 
-# 7. Build bootable GRUB ISO (zothos-lite-1.0-amd64.iso)
+# 7. Build bootable GRUB ISO (zothos-lite-1.2-amd64.iso + compatibility symlink zothos-lite-1.0-amd64.iso)
 mkdir -p "$ISO_ROOT/boot/grub"
 cp "$KERNEL" "$ISO_ROOT/boot/vmlinuz"
 cp "$VM_DIR/initrd-zothos-lite.img" "$ISO_ROOT/boot/initrd.img"
@@ -470,14 +471,15 @@ set default=0
 set menu_color_normal=white/black
 set menu_color_highlight=black/white
 
-menuentry "ZothOS-Lite v1.1 // Amnesic 1-Bit Monotone GUI + CLI (toram noswap)" {
+menuentry "ZothOS-Lite v1.2 // Amnesic Monotone GUI + 56-Model AI CLI (toram noswap)" {
     linux /boot/vmlinuz toram noswap slab_nomerge init_on_alloc=1 init_on_free=1 console=tty0 console=ttyS0,115200n8
     initrd /boot/initrd.img
 }
 EOF
 
-echo "[::] Building bootable ISO $VM_DIR/zothos-lite-1.0-amd64.iso..."
-grub-mkrescue -o "$VM_DIR/zothos-lite-1.0-amd64.iso" "$ISO_ROOT" 2>/dev/null
+echo "[::] Building bootable ISO $VM_DIR/zothos-lite-1.2-amd64.iso..."
+grub-mkrescue -o "$VM_DIR/zothos-lite-1.2-amd64.iso" "$ISO_ROOT" 2>/dev/null
+ln -sf "zothos-lite-1.2-amd64.iso" "$VM_DIR/zothos-lite-1.0-amd64.iso"
 rm -rf "$ROOTFS" "$ISO_ROOT"
-ls -lh "$VM_DIR/zothos-lite-1.0-amd64.iso"
-echo "[OK] ZothOS-Lite v1.1 GUI Bootable ISO & Initramfs ready."
+ls -lh "$VM_DIR/zothos-lite-1.2-amd64.iso"
+echo "[OK] ZothOS-Lite v1.2 GUI Bootable ISO & Initramfs ready."

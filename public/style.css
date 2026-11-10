@@ -8,7 +8,7 @@
   --bg-card: #FFFFFF;
   --bg-card-subtle: #EFEFEB;
   --bg-card-alt: #DFDFD8;
-  --bg-terminal: #0A0A0E;
+  --bg-terminal: #000000;
   
   --ink-primary: #000000;
   --ink-secondary: #262624;
@@ -625,7 +625,7 @@ code, pre {
 
 .input-block-row input {
   flex: 1;
-  min-width: 240px;
+  min-width: min(100%, 220px);
 }
 
 /* Monotone Console Output */
@@ -634,14 +634,15 @@ code, pre {
   border: 2px solid var(--border-bold);
   border-radius: var(--radius-sm);
   padding: 14px;
-  color: #F0FDF4;
+  color: #F7F7F4;
   font-family: var(--font-mono);
   font-size: 12px;
   line-height: 1.55;
-  min-height: 220px;
-  max-height: 480px;
+  min-height: 200px;
+  max-height: 460px;
   overflow-y: auto;
   white-space: pre-wrap;
+  word-break: break-word;
 }
 
 /* Canvas & Media Windows */
@@ -715,7 +716,7 @@ code, pre {
 /* 🛡️ PILLARS GRID */
 .pillars-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr));
   gap: 16px;
 }
 
@@ -804,6 +805,8 @@ code, pre {
   border: 1.5px solid var(--border-bold);
   padding: 20px;
   min-height: 360px;
+  min-width: 0;
+  max-width: 100%;
 }
 
 .guide-pane-item {
@@ -841,7 +844,7 @@ code, pre {
 .code-terminal-box pre {
   font-family: var(--font-mono);
   font-size: 11.5px;
-  color: #86EFAC;
+  color: #F7F7F4;
   line-height: 1.55;
 }
 
@@ -894,45 +897,22 @@ code, pre {
 
 
 /* 📱 RESPONSIVE ADAPTATIONS */
-@media (max-width: 860px) {
-  .specs-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-  .azoth-card {
-    grid-template-columns: 1fr;
-  }
-  .guide-layout {
-    grid-template-columns: 1fr;
-  }
-  .guide-tabs {
-    display: flex;
-    flex-direction: row;
-    overflow-x: auto;
-    border-right: none;
-    border-bottom: 2px solid var(--border-bold);
-    padding-bottom: 6px;
-  }
-  .guide-tab-btn {
-    white-space: nowrap;
-    border-left: none;
-    border-bottom: 3px solid transparent;
-  }
-  .guide-tab-btn.active {
-    border-left: none;
-    border-bottom: 3px solid var(--ink-primary);
-  }
+.guide-container > *,
+.azoth-card > *,
+.specs-grid > *,
+.pillars-grid > *,
+.tool-pane {
+  min-width: 0;
+  max-width: 100%;
 }
 
-@media (max-width: 640px) {
-  .top-hud-inner {
-    flex-direction: column;
-    gap: 6px;
-    text-align: center;
-  }
-  .top-hud-meta {
-    justify-content: center;
-    flex-wrap: wrap;
-  }
+.nav-links,
+.tools-tab-bar,
+.provider-chips-row {
+  scrollbar-width: thin;
+}
+
+@media (max-width: 1080px) {
   .nav-inner {
     flex-wrap: wrap;
     justify-content: space-between;
@@ -941,15 +921,60 @@ code, pre {
   .nav-links {
     order: 3;
     width: 100%;
-    overflow-x: auto;
-    padding-bottom: 4px;
-    gap: 8px;
+    flex-wrap: wrap;
+    gap: 6px 10px;
+    padding-top: 6px;
+    border-top: 1px solid var(--border-light);
     justify-content: flex-start;
   }
   .nav-links a {
     white-space: nowrap;
+    font-size: 11.5px;
+    padding: 4px 8px;
+  }
+}
+
+@media (max-width: 860px) {
+  .specs-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .azoth-card {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  .wrapper {
+    padding: 0 14px;
+  }
+  .hud-inner {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+  }
+  .brand {
+    font-size: 15px;
+  }
+  .nav-actions {
+    width: 100%;
+    display: flex;
+    gap: 8px;
+  }
+  .btn-nav-action {
+    flex: 1;
+    justify-content: center;
+    min-height: 44px;
+  }
+  .nav-links {
+    flex-wrap: wrap;
+    overflow-x: visible;
+    gap: 6px;
+  }
+  .nav-links a {
     font-size: 11px;
-    padding: 3px 6px;
+    padding: 6px 8px;
+    display: inline-flex;
+    align-items: center;
   }
   .hero-h1 {
     font-size: 28px;
@@ -957,11 +982,25 @@ code, pre {
   .hero-p {
     font-size: 14px;
   }
+  .btn-monotone-primary,
+  .btn-monotone-outline {
+    width: 100%;
+    justify-content: center;
+    min-height: 44px;
+    white-space: normal;
+    text-align: center;
+  }
+  .input-block-row {
+    flex-direction: column;
+  }
   .specs-grid {
     grid-template-columns: 1fr;
   }
-  .tool-workspace-grid {
-    grid-template-columns: 1fr !important;
+  .guide-pane-content {
+    padding: 14px;
+  }
+  .tool-pane {
+    padding: 14px;
   }
   .footer-inner {
     flex-direction: column;
