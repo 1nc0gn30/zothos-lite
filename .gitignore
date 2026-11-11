@@ -1,4 +1,7 @@
 node_modules/
+__pycache__/
+*.py[cod]
+.pytest_cache/
 .env
 .env.*
 *.log
@@ -10,6 +13,4 @@ node_modules/
 /vm/*.qcow2
 /build/live-work/
 .DS_Store
-
-# Local Netlify folder
-.netlify
+.netlify/
